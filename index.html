@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VolumeEdge Pro v2.1 — Parameter Guide & Trading Tips</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="favicon.png">
+<meta name="description" content="VolumeEdge Pro v2.1 — Complete parameter guide, bin-based signal engine, Edge Exhaustion logic, Discord alerts, and trading workflow for cTrader.">
+<meta property="og:title" content="VolumeEdge Pro v2.1 — Parameter Guide">
+<meta property="og:description" content="Bin-based signal engine · Phase 1 gates · Discord alerts · 14 symbols · Complete trading workflow">
+<meta property="og:image" content="og-image.png">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="VolumeEdge Pro v2.1">
+<meta name="twitter:description" content="Complete parameter guide and trading workflow">
+<meta name="twitter:image" content="og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#08091A;--surface:#0E1020;--surface2:#141628;--border:#1C2040;
+  --green:#26DE8A;--red:#FF4E6A;--yellow:#FFD700;--white:#E8EAF6;
+  --gray:#6B7A9F;--accent:#6C8CFF;--teal:#26A69A;--gold:#FFD700;
+  --font-display:'Syne',sans-serif;--font-mono:'Space Mono',monospace;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--white);font-family:var(--font-display);font-size:14px;line-height:1.65;overflow-x:hidden}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+.layout{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
+.sidebar{position:sticky;top:0;height:100vh;overflow-y:auto;background:var(--surface);border-right:1px solid var(--border);padding:28px 0;display:flex;flex-direction:column}
+.sidebar-logo{padding:0 24px 24px;border-bottom:1px solid var(--border);margin-bottom:16px}
+.sidebar-logo .name{font-size:17px;font-weight:800;color:var(--yellow);letter-spacing:-.3px}
+.sidebar-logo .ver{font-size:10px;color:var(--gray);font-family:var(--font-mono);margin-top:2px}
+.nav-group{padding:0 16px;margin-bottom:6px}
+.nav-group-label{font-size:9px;font-weight:700;letter-spacing:2px;color:var(--gray);text-transform:uppercase;padding:8px 8px 4px}
+.nav-item{display:block;padding:7px 12px;border-radius:6px;color:var(--gray);text-decoration:none;font-size:12px;font-weight:600;transition:all .15s;border:1px solid transparent;margin-bottom:2px}
+.nav-item:hover{color:var(--white);background:var(--surface2);border-color:var(--border)}
+.nav-item.active{color:var(--yellow);background:rgba(255,215,0,.08);border-color:rgba(255,215,0,.2)}
+.nav-num{font-family:var(--font-mono);font-size:10px;color:var(--border);margin-right:6px}
+.nav-item.new-section{color:var(--teal)}
+.nav-item.new-section.active{color:var(--teal);background:rgba(38,166,154,.08);border-color:rgba(38,166,154,.2)}
+main{padding:48px 56px 80px;max-width:900px}
+.hero{margin-bottom:56px;padding-bottom:40px;border-bottom:1px solid var(--border)}
+.hero-badge{display:inline-block;font-family:var(--font-mono);font-size:10px;color:var(--teal);background:rgba(38,166,154,.1);border:1px solid rgba(38,166,154,.25);padding:4px 12px;border-radius:4px;letter-spacing:1px;margin-bottom:16px}
+.hero h1{font-size:44px;font-weight:800;letter-spacing:-1.5px;line-height:1.05;margin-bottom:12px}
+.hero h1 span{color:var(--yellow)}
+.hero-sub{font-size:14px;color:var(--gray);font-family:var(--font-mono);margin-bottom:24px}
+.hero-pills{display:flex;flex-wrap:wrap;gap:8px}
+.pill{font-family:var(--font-mono);font-size:10px;padding:4px 10px;border-radius:4px;border:1px solid var(--border);color:var(--gray)}
+.pill strong{color:var(--white)}
+.pill.new{border-color:rgba(38,166,154,.3);color:var(--teal)}
+.pill.new strong{color:var(--teal)}
+section{margin-bottom:64px;scroll-margin-top:32px}
+.section-label{font-family:var(--font-mono);font-size:10px;letter-spacing:3px;color:var(--accent);text-transform:uppercase;margin-bottom:8px}
+.section-label.new{color:var(--teal)}
+h2{font-size:26px;font-weight:800;letter-spacing:-.5px;margin-bottom:6px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+h3{font-size:15px;font-weight:700;color:var(--accent);margin:24px 0 10px}
+h3.new{color:var(--teal)}
+p{color:#B0BAD4;margin-bottom:12px;font-size:13.5px}
+.kw{cursor:pointer;border-bottom:1px dashed;padding-bottom:1px;transition:color .15s;position:relative;display:inline-block}
+.kw-green{color:var(--green);border-color:var(--green)}
+.kw-red{color:var(--red);border-color:var(--red)}
+.kw-yellow{color:var(--yellow);border-color:var(--yellow)}
+.kw-teal{color:var(--teal);border-color:var(--teal)}
+.kw-accent{color:var(--accent);border-color:var(--accent)}
+.kw-white{color:var(--white);border-color:var(--gray)}
+.tooltip{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:#1C2040;border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--white);white-space:nowrap;max-width:280px;white-space:normal;z-index:100;pointer-events:none;opacity:0;transition:opacity .2s;box-shadow:0 8px 32px rgba(0,0,0,.6);font-family:var(--font-display);line-height:1.5;min-width:200px}
+.tooltip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:#1C2040}
+.kw:hover .tooltip{opacity:1}
+.param-table{width:100%;border-collapse:collapse;margin-bottom:16px;font-size:12.5px}
+.param-table th{text-align:left;padding:8px 12px;background:var(--surface2);color:var(--gray);font-size:10px;letter-spacing:1px;font-family:var(--font-mono);border-bottom:1px solid var(--border);font-weight:400}
+.param-table td{padding:10px 12px;border-bottom:1px solid rgba(28,32,64,.6);vertical-align:top;line-height:1.5}
+.param-table tr:last-child td{border-bottom:none}
+.param-table tr:hover td{background:rgba(255,255,255,.02)}
+.param-name{font-family:var(--font-mono);color:var(--teal);font-size:11.5px}
+.param-default{font-family:var(--font-mono);color:var(--yellow);font-size:11px}
+.param-desc{color:#A0AABB;font-size:12.5px}
+.param-new{font-family:var(--font-mono);font-size:9px;background:rgba(38,166,154,.1);color:var(--teal);padding:1px 5px;border-radius:3px;border:1px solid rgba(38,166,154,.25);vertical-align:middle;margin-left:6px}
+.callout{display:flex;gap:14px;padding:14px 16px;border-radius:8px;margin-bottom:12px;align-items:flex-start}
+.callout-tip{background:rgba(38,222,138,.06);border:1px solid rgba(38,222,138,.2);border-left:3px solid var(--green)}
+.callout-warn{background:rgba(255,215,0,.06);border:1px solid rgba(255,215,0,.2);border-left:3px solid var(--yellow)}
+.callout-note{background:rgba(108,140,255,.06);border:1px solid rgba(108,140,255,.2);border-left:3px solid var(--accent)}
+.callout-new{background:rgba(38,166,154,.06);border:1px solid rgba(38,166,154,.2);border-left:3px solid var(--teal)}
+.callout-icon{font-size:14px;flex-shrink:0;margin-top:1px}
+.callout-body{font-size:12.5px;line-height:1.6}
+.callout-body strong{display:block;margin-bottom:4px;font-size:11px;letter-spacing:.5px;text-transform:uppercase}
+.callout-tip .callout-body strong{color:var(--green)}
+.callout-warn .callout-body strong{color:var(--yellow)}
+.callout-note .callout-body strong{color:var(--accent)}
+.callout-new .callout-body strong{color:var(--teal)}
+.callout-body p{color:#A0AABB;margin:0}
+.color-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.color-card{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px 16px}
+.color-swatch{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:6px;flex-shrink:0}
+.color-name{font-family:var(--font-mono);font-weight:700;font-size:13px;display:flex;align-items:center;margin-bottom:6px}
+.color-desc{font-size:12px;color:var(--gray);line-height:1.5}
+.color-examples{margin-top:8px;display:flex;flex-wrap:wrap;gap:4px}
+.color-ex{font-family:var(--font-mono);font-size:10px;padding:2px 6px;border-radius:3px}
+.signal-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.signal-card{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px 16px}
+.signal-card .sig-type{font-family:var(--font-mono);font-size:10px;letter-spacing:1px;margin-bottom:6px}
+.signal-card h4{font-size:13px;font-weight:700;color:var(--white);margin-bottom:4px}
+.signal-card p{font-size:12px;color:var(--gray);margin:0}
+.bin-example{background:#0A0C18;border:1px solid var(--border);border-radius:8px;padding:14px 16px;font-family:var(--font-mono);font-size:11px;line-height:2;margin-bottom:12px}
+.bin-row{display:flex;align-items:center;gap:12px;padding:2px 0}
+.bin-bar{height:14px;border-radius:2px;flex-shrink:0}
+.bin-label{color:var(--gray);font-size:10px;flex:1}
+.bin-empty{color:var(--border);font-style:italic}
+.bin-green{background:rgba(38,222,138,.6)}
+.bin-red{background:rgba(255,78,106,.6)}
+.bin-gray{background:rgba(107,122,159,.3)}
+.bin-signal{color:var(--yellow);font-weight:700}
+.discord-embed{background:#36393F;border-radius:8px;overflow:hidden;margin-bottom:12px;border-left:4px solid var(--green)}
+.discord-embed.blocked{border-left-color:var(--yellow)}
+.discord-embed.suppressed{border-left-color:var(--red)}
+.discord-header{background:#2F3136;padding:10px 14px;font-size:11px;font-weight:700;color:#DCDDDE;font-family:var(--font-mono)}
+.discord-body{padding:12px 14px;font-size:11px;color:#DCDDDE;font-family:var(--font-mono);line-height:1.8}
+.discord-green{color:#26DE8A}
+.discord-yellow{color:#FFD700}
+.discord-gray{color:#72767D}
+.sess-table{width:100%;border-collapse:collapse;font-size:12px}
+.sess-table th{padding:8px 10px;text-align:left;background:var(--surface2);color:var(--gray);font-size:10px;letter-spacing:1px;font-family:var(--font-mono);border-bottom:1px solid var(--border);font-weight:400}
+.sess-table td{padding:9px 10px;border-bottom:1px solid rgba(28,32,64,.5);vertical-align:middle}
+.sess-table tr:hover td{background:rgba(255,255,255,.02)}
+.sess-sym{font-family:var(--font-mono);font-weight:700;color:var(--yellow)}
+.sess-prime{color:var(--teal);font-family:var(--font-mono);font-size:11px}
+.sess-hkt{color:var(--accent);font-family:var(--font-mono);font-size:11px}
+.step-list{display:flex;flex-direction:column;gap:10px}
+.step{display:grid;grid-template-columns:48px 140px 1fr;background:var(--surface2);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.step-num{background:rgba(255,215,0,.08);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--yellow);border-right:1px solid var(--border);padding:14px 8px}
+.step-title{padding:14px;border-right:1px solid var(--border);font-size:12.5px;font-weight:700;color:var(--white);display:flex;align-items:center}
+.step-desc{padding:14px 16px;font-size:12px;color:#9AAABB;line-height:1.6;display:flex;align-items:center}
+.toc-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:32px}
+.toc-item{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;text-decoration:none;transition:all .15s}
+.toc-item:hover{border-color:rgba(255,215,0,.3);background:rgba(255,215,0,.04)}
+.toc-item.new-item{border-color:rgba(38,166,154,.2)}
+.toc-item.new-item:hover{border-color:rgba(38,166,154,.4);background:rgba(38,166,154,.04)}
+.toc-num{font-family:var(--font-mono);font-size:10px;color:var(--yellow);min-width:24px}
+.toc-item.new-item .toc-num{color:var(--teal)}
+.toc-name{font-size:12px;color:var(--white);font-weight:600}
+.toc-badge{font-size:9px;background:rgba(38,166,154,.15);color:var(--teal);padding:1px 5px;border-radius:3px;margin-left:6px}
+hr.sec{border:none;border-top:1px solid var(--border);margin:32px 0}
+code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1);color:var(--accent);padding:2px 6px;border-radius:3px}
+.tag-b{font-family:var(--font-mono);font-size:10px;background:rgba(107,122,159,.15);color:var(--gray);padding:1px 5px;border-radius:3px;border:1px solid var(--border)}
+.tag-new{font-family:var(--font-mono);font-size:9px;background:rgba(38,166,154,.1);color:var(--teal);padding:1px 6px;border-radius:3px;border:1px solid rgba(38,166,154,.2);vertical-align:middle}
+.version-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(38,166,154,.1);border:1px solid rgba(38,166,154,.3);border-radius:6px;padding:6px 14px;font-family:var(--font-mono);font-size:11px;color:var(--teal);margin-bottom:20px}
+.changelog{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+.changelog-item{display:flex;gap:10px;padding:8px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;font-size:12px}
+.changelog-tag{font-family:var(--font-mono);font-size:9px;padding:2px 6px;border-radius:3px;flex-shrink:0;height:fit-content;margin-top:1px}
+.tag-added{background:rgba(38,222,138,.1);color:var(--green);border:1px solid rgba(38,222,138,.2)}
+.tag-changed{background:rgba(108,140,255,.1);color:var(--accent);border:1px solid rgba(108,140,255,.2)}
+.tag-fixed{background:rgba(255,215,0,.1);color:var(--yellow);border:1px solid rgba(255,215,0,.2)}
+.changelog-text{color:#A0AABB;line-height:1.5}
+.validated-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.validated-card{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:10px 12px}
+.validated-sym{font-family:var(--font-mono);font-weight:700;color:var(--yellow);font-size:12px;margin-bottom:4px}
+.validated-result{font-size:11px;color:var(--gray)}
+.validated-result.correct{color:var(--green)}
+.validated-result.blocked{color:var(--red)}
+</style>
+</head>
+<body>
+<div class="layout">
+
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="name">VolumeEdge Pro</div>
+    <div class="ver">v2.1 · COMPLETE GUIDE · MAY 2026</div>
+  </div>
+  <div class="nav-group">
+    <div class="nav-group-label">Overview</div>
+    <a class="nav-item active" href="#changelog"><span class="nav-num">00</span>What's New in v2.1</a>
+    <a class="nav-item" href="#intro"><span class="nav-num">01</span>What is VolumeEdge Pro</a>
+    <a class="nav-item" href="#colors"><span class="nav-num">02</span>Color System</a>
+  </div>
+  <div class="nav-group">
+    <div class="nav-group-label">Parameters</div>
+    <a class="nav-item" href="#params-ui"><span class="nav-num">03</span>UI & Dashboard</a>
+    <a class="nav-item" href="#params-range"><span class="nav-num">04</span>Range Settings</a>
+    <a class="nav-item" href="#params-adx"><span class="nav-num">05</span>ADX Settings</a>
+    <a class="nav-item" href="#params-vol"><span class="nav-num">06</span>Volatility Filter</a>
+    <a class="nav-item" href="#params-signals"><span class="nav-num">07</span>Signal Toggles</a>
+    <a class="nav-item" href="#params-visuals"><span class="nav-num">08</span>Visuals & Labels</a>
+    <a class="nav-item" href="#params-backtest"><span class="nav-num">09</span>Backtest Settings</a>
+    <a class="nav-item" href="#params-discord"><span class="nav-num">10</span>Discord / Comms</a>
+  </div>
+  <div class="nav-group">
+    <div class="nav-group-label">Phase 1 Gates</div>
+    <a class="nav-item" href="#phase1-session"><span class="nav-num">11</span>Session Filter</a>
+    <a class="nav-item" href="#phase1-confluence"><span class="nav-num">12</span>Confluence Gate</a>
+    <a class="nav-item" href="#phase1-cooldown"><span class="nav-num">13</span>Signal Cooldown</a>
+  </div>
+  <div class="nav-group">
+    <div class="nav-group-label">Signal Logic v2.1</div>
+    <a class="nav-item new-section" href="#bin-engine"><span class="nav-num">14</span>Bin-Based Engine ★</a>
+    <a class="nav-item new-section" href="#edge-exh-logic"><span class="nav-num">15</span>Edge Exhaustion Logic ★</a>
+    <a class="nav-item new-section" href="#other-signals"><span class="nav-num">16</span>POC / VA TRAP / Rejection ★</a>
+  </div>
+  <div class="nav-group">
+    <div class="nav-group-label">Analysis & Strategy</div>
+    <a class="nav-item" href="#analysis-panel"><span class="nav-num">17</span>Analysis Panel</a>
+    <a class="nav-item" href="#gate-audit"><span class="nav-num">18</span>Gate Performance Audit</a>
+    <a class="nav-item" href="#discord-alerts"><span class="nav-num">19</span>Discord Alerts ★</a>
+    <a class="nav-item" href="#sessions"><span class="nav-num">20</span>Symbol Session Matrix</a>
+    <a class="nav-item" href="#settings"><span class="nav-num">21</span>Recommended Settings</a>
+    <a class="nav-item" href="#workflow"><span class="nav-num">22</span>Trading Workflow</a>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="version-badge">VolumeEdge Pro v2.1 — May 2026</div>
+  <div class="hero-badge">FRVP MASTER PRO v3.2 → VOLUMEEDGE PRO v2.1</div>
+  <h1>VolumeEdge<br><span>Pro Guide</span></h1>
+  <p class="hero-sub">Bin-Based Signal Engine · Phase 1 Gates · Discord Alerts · Trading Workflow</p>
+  <div class="hero-pills">
+    <div class="pill"><strong>cTrader</strong> / .NET 6</div>
+    <div class="pill"><strong>14 symbols</strong> supported</div>
+    <div class="pill"><strong>3 profiles</strong> max</div>
+    <div class="pill"><strong>4 signal types</strong></div>
+    <div class="pill"><strong>2H Discord</strong> alerts</div>
+    <div class="pill new"><strong>★ Bin engine</strong> v2.1</div>
+    <div class="pill new"><strong>★ Empty bin</strong> EDGE EXH</div>
+    <div class="pill new"><strong>★ Blocked</strong> Discord alerts</div>
+  </div>
+</div>
+
+<!-- TOC -->
+<div class="toc-grid">
+  <a class="toc-item new-item" href="#changelog"><span class="toc-num">00</span><span class="toc-name">What's New in v2.1 <span class="toc-badge">NEW</span></span></a>
+  <a class="toc-item" href="#intro"><span class="toc-num">01</span><span class="toc-name">What is VolumeEdge Pro</span></a>
+  <a class="toc-item" href="#colors"><span class="toc-num">02</span><span class="toc-name">Color System</span></a>
+  <a class="toc-item" href="#params-discord"><span class="toc-num">10</span><span class="toc-name">Discord / Communications</span></a>
+  <a class="toc-item new-item" href="#bin-engine"><span class="toc-num">14</span><span class="toc-name">Bin-Based Signal Engine <span class="toc-badge">NEW</span></span></a>
+  <a class="toc-item new-item" href="#edge-exh-logic"><span class="toc-num">15</span><span class="toc-name">Edge Exhaustion Logic <span class="toc-badge">NEW</span></span></a>
+  <a class="toc-item new-item" href="#other-signals"><span class="toc-num">16</span><span class="toc-name">POC / VA TRAP / Rejection <span class="toc-badge">NEW</span></span></a>
+  <a class="toc-item new-item" href="#discord-alerts"><span class="toc-num">19</span><span class="toc-name">Discord Alerts <span class="toc-badge">UPDATED</span></span></a>
+  <a class="toc-item" href="#gate-audit"><span class="toc-num">18</span><span class="toc-name">Gate Performance Audit</span></a>
+  <a class="toc-item" href="#workflow"><span class="toc-num">22</span><span class="toc-name">Trading Workflow</span></a>
+</div>
+
+<!-- SECTION 0: CHANGELOG -->
+<section id="changelog">
+  <div class="section-label new">Section 00 · New</div>
+  <h2>What's New in v2.1</h2>
+  <p>v2.1 is a complete rewrite of the signal detection engine. Every signal now reads the horizontal histogram bins directly — not just price bar position. The result is fewer, higher-quality signals that are directly grounded in institutional order flow.</p>
+
+  <div class="changelog">
+    <div class="changelog-item"><span class="changelog-tag tag-added">ADDED</span><span class="changelog-text"><strong>Bin-Based Signal Engine</strong> — BinZoneAnalysis class + AnalyseBinZone() method. All 4 signals now read histogram bins before firing. Price bar position is only the trigger — bins are the judge.</span></div>
+    <div class="changelog-item"><span class="changelog-tag tag-added">ADDED</span><span class="changelog-text"><strong>Empty Bin Rule for Edge Exhaustion</strong> — EDGE EXH fires only when at least 1 empty bin exists at the profile boundary. Empty bin = zero institutional activity at that price = genuine exhaustion. Validated against 9 real chart examples across 7 symbols.</span></div>
+    <div class="changelog-item"><span class="changelog-tag tag-added">ADDED</span><span class="changelog-text"><strong>POC Integrity Check for VA TRAP</strong> — VA TRAP BUY now requires POC bin to show buyer dominance. VA TRAP SELL requires seller dominance at POC. Eliminates false VA TRAP signals when POC is broken.</span></div>
+    <div class="changelog-item"><span class="changelog-tag tag-added">ADDED</span><span class="changelog-text"><strong>Bin Confirmation for POC Touch</strong> — POC Touch now reads ±2 bins around the POC level. Requires dominant side with sufficient imbalance ratio. Weak/balanced POC = suppressed.</span></div>
+    <div class="changelog-item"><span class="changelog-tag tag-added">ADDED</span><span class="changelog-text"><strong>LVN Check for Rejection</strong> — Rejection signals at thin/empty boundaries are suppressed as stop hunts. Only fires when real volume exists at the boundary.</span></div>
+    <div class="changelog-item"><span class="changelog-tag tag-added">ADDED</span><span class="changelog-text"><strong>Symbol-Specific Bin Parameters</strong> — Each of 14 symbols now has LvnThreshold, RatioStrong/Neutral/Weak, BoundaryScanPct, InnerScanPct. BTCUSD uses stricter ratios than EURUSD. GBPJPY uses deeper scan depth than FX majors.</span></div>
+    <div class="changelog-item"><span class="changelog-tag tag-added">ADDED</span><span class="changelog-text"><strong>Send Blocked Signal Alerts</strong> — New Discord parameter. When enabled, blocked signals send a ⚠️ yellow embed with the exact reason they were suppressed. Default off.</span></div>
+    <div class="changelog-item"><span class="changelog-tag tag-changed">CHANGED</span><span class="changelog-text"><strong>Signal & Alert Toggles now control Discord too</strong> — Enable EDGE EXH Signals = No means no chart arrow AND no Discord alert. One toggle controls both. No separate Discord signal toggles needed.</span></div>
+    <div class="changelog-item"><span class="changelog-tag tag-changed">CHANGED</span><span class="changelog-text"><strong>Discord embed colors</strong> — Fired signals: green (BUY) or red (SELL) embed. Blocked signals: yellow embed. Clear visual distinction at a glance in Discord.</span></div>
+    <div class="changelog-item"><span class="changelog-tag tag-fixed">FIXED</span><span class="changelog-text"><strong>Auto lookback consistency</strong> — H4 was 132 bars (22 days). Now 12 bars (~2 days), matching H2. All timeframes now cover consistent real-time windows.</span></div>
+    <div class="changelog-item"><span class="changelog-tag tag-fixed">FIXED</span><span class="changelog-text"><strong>Timestamps now show correct HKT</strong> — Server.Time returns UTC regardless of broker offset. All display times now use DateTime.UtcNow.AddHours(8) = correct UTC+8 / HKT.</span></div>
+    <div class="changelog-item"><span class="changelog-tag tag-fixed">FIXED</span><span class="changelog-text"><strong>Signal bar timestamps</strong> — Signals now stamp the bar's actual open time, not the current scan time. Recent outcomes no longer show all signals with the same timestamp.</span></div>
+  </div>
+</section>
+
+<!-- SECTION 1: INTRO -->
+<section id="intro">
+  <div class="section-label">Section 01</div>
+  <h2>What is VolumeEdge Pro?</h2>
+  <p>VolumeEdge Pro is a <span class="kw kw-white">Fixed Range Volume Profile (FRVP)<span class="tooltip">Plots a horizontal histogram of traded volume over a fixed number of bars. Each horizontal bar = one price bucket (bin), width = volume at that price. Shows where institutional activity was concentrated.</span></span> indicator for cTrader. It draws horizontal volume histograms on your chart and fires signals based on what the histogram bins show — not just where price is.</p>
+
+  <h3>Core FRVP Levels</h3>
+  <div class="signal-grid">
+    <div class="signal-card" style="border-left:3px solid var(--yellow)">
+      <div class="sig-type" style="color:var(--yellow)">POC — POINT OF CONTROL</div>
+      <h4>Highest volume price level</h4>
+      <p>Most traded price bin. Acts as a magnet. Shown as a <span style="color:var(--yellow)">yellow solid line</span>.</p>
+    </div>
+    <div class="signal-card" style="border-left:3px solid var(--green)">
+      <div class="sig-type" style="color:var(--green)">VAH — VALUE AREA HIGH</div>
+      <h4>Upper value boundary</h4>
+      <p>Price above VAH = bullish breakout zone. Shown as a <span style="color:var(--green)">green dotted line</span>.</p>
+    </div>
+    <div class="signal-card" style="border-left:3px solid var(--red)">
+      <div class="sig-type" style="color:var(--red)">VAL — VALUE AREA LOW</div>
+      <h4>Lower value boundary</h4>
+      <p>Price below VAL = bearish breakdown zone. Shown as a <span style="color:var(--red)">red dotted line</span>.</p>
+    </div>
+    <div class="signal-card" style="border-left:3px solid var(--accent)">
+      <div class="sig-type" style="color:var(--accent)">VA — VALUE AREA</div>
+      <h4>Institutional activity zone</h4>
+      <p>Contains your configured % of total volume (default 40%). Where most activity occurred.</p>
+    </div>
+  </div>
+
+  <h3>Signal Types</h3>
+  <div class="signal-grid">
+    <div class="signal-card">
+      <div class="sig-type" style="color:var(--teal)">POC TOUCH · MEAN REVERSION</div>
+      <h4>Price returns to POC</h4>
+      <p>Best in <span class="kw kw-yellow">ranging markets<span class="tooltip">ADX below 20. Price oscillating without clear directional trend.</span></span> (ADX &lt; 20). Bin confirmation: POC zone must show dominant side with sufficient ratio.</p>
+    </div>
+    <div class="signal-card">
+      <div class="sig-type" style="color:var(--teal)">VA TRAP · MEAN REVERSION</div>
+      <h4>Price re-enters value area</h4>
+      <p>Trapped breakout traders reversing. Bin confirmation: POC must show correct directional dominance to confirm the level is holding.</p>
+    </div>
+    <div class="signal-card">
+      <div class="sig-type" style="color:var(--accent)">EDGE EXHAUSTION · MOMENTUM</div>
+      <h4>Stalls at profile boundary</h4>
+      <p>Best in <span class="kw kw-green">trending markets<span class="tooltip">ADX above 25. Price moving directionally with institutional backing.</span></span> (ADX &gt; 25). <strong style="color:var(--teal)">v2.1: fires only when empty bins exist at boundary.</strong></p>
+    </div>
+    <div class="signal-card">
+      <div class="sig-type" style="color:var(--accent)">REJECTION · MOMENTUM</div>
+      <h4>Wick + volume spike reversal</h4>
+      <p>Wick into key level with volume spike, close pulls back. v2.1: LVN check added — thin boundary = stop hunt = suppressed.</p>
+    </div>
+  </div>
+
+  <h3>Volume Label Tags</h3>
+  <table class="param-table">
+    <thead><tr><th>Tag</th><th>Name</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td class="param-name">(HVN)</td><td class="param-default">High Volume Node</td><td class="param-desc">Highest volume bin — the POC. Price gravitates here.</td></tr>
+      <tr><td class="param-name">(IMB)</td><td class="param-default">Imbalance</td><td class="param-desc">One side has 3× more volume. Strong directional conviction.</td></tr>
+      <tr><td class="param-name">(ABS)</td><td class="param-default">Absorption</td><td class="param-desc">Large volume but losing side absorbed. Reversal potential.</td></tr>
+      <tr><td class="param-name">(EXH)</td><td class="param-default">Exhaustion</td><td class="param-desc">Volume below 15% of max. Price moved through with very little resistance — gray bin.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- SECTION 2: COLORS -->
+<section id="colors">
+  <div class="section-label">Section 02</div>
+  <h2>Color System</h2>
+  <p>Five colors. Same meaning everywhere — chart, HUD, analysis panel, Discord embeds. No decorative colors.</p>
+  <div class="color-grid">
+    <div class="color-card" style="border-top:3px solid var(--green)">
+      <div class="color-name"><span class="color-swatch" style="background:var(--green)"></span><span style="color:var(--green)">GREEN</span></div>
+      <div class="color-desc">BUY · Active · Win · Passed · Bullish</div>
+      <div class="color-examples">
+        <span class="color-ex" style="background:rgba(38,222,138,.1);color:var(--green)">BUY signal</span>
+        <span class="color-ex" style="background:rgba(38,222,138,.1);color:var(--green)">WIN outcome</span>
+        <span class="color-ex" style="background:rgba(38,222,138,.1);color:var(--green)">PRIME session</span>
+        <span class="color-ex" style="background:rgba(38,222,138,.1);color:var(--green)">gate OPEN</span>
+        <span class="color-ex" style="background:rgba(38,222,138,.1);color:var(--green)">Discord BUY embed</span>
+      </div>
+    </div>
+    <div class="color-card" style="border-top:3px solid var(--red)">
+      <div class="color-name"><span class="color-swatch" style="background:var(--red)"></span><span style="color:var(--red)">RED</span></div>
+      <div class="color-desc">SELL · Dead · Loss · Blocked · Bearish</div>
+      <div class="color-examples">
+        <span class="color-ex" style="background:rgba(255,78,106,.1);color:var(--red)">SELL signal</span>
+        <span class="color-ex" style="background:rgba(255,78,106,.1);color:var(--red)">LOSS outcome</span>
+        <span class="color-ex" style="background:rgba(255,78,106,.1);color:var(--red)">DEAD session</span>
+        <span class="color-ex" style="background:rgba(255,78,106,.1);color:var(--red)">Discord SELL embed</span>
+      </div>
+    </div>
+    <div class="color-card" style="border-top:3px solid var(--yellow)">
+      <div class="color-name"><span class="color-swatch" style="background:var(--yellow)"></span><span style="color:var(--yellow)">YELLOW</span></div>
+      <div class="color-desc">WARNING · Caution · Blocked · Breakeven</div>
+      <div class="color-examples">
+        <span class="color-ex" style="background:rgba(255,215,0,.1);color:var(--yellow)">cooldown</span>
+        <span class="color-ex" style="background:rgba(255,215,0,.1);color:var(--yellow)">BE outcome</span>
+        <span class="color-ex" style="background:rgba(255,215,0,.1);color:var(--yellow)">VA COILED</span>
+        <span class="color-ex" style="background:rgba(255,215,0,.1);color:var(--yellow)">Discord BLOCKED embed</span>
+      </div>
+    </div>
+    <div class="color-card" style="border-top:3px solid var(--white)">
+      <div class="color-name"><span class="color-swatch" style="background:var(--white)"></span><span style="color:var(--white)">WHITE</span></div>
+      <div class="color-desc">NEUTRAL · No directional bias · Wait</div>
+      <div class="color-examples">
+        <span class="color-ex" style="background:rgba(232,234,246,.08);color:var(--white)">at POC</span>
+        <span class="color-ex" style="background:rgba(232,234,246,.08);color:var(--white)">neutral ADX</span>
+      </div>
+    </div>
+  </div>
+  <div class="color-card" style="border-top:3px solid var(--gray)">
+    <div class="color-name"><span class="color-swatch" style="background:var(--gray)"></span><span style="color:var(--gray)">GRAY</span></div>
+    <div class="color-desc">Non-critical · Reference only · Blocked signal rows on chart</div>
+    <div class="color-examples">
+      <span class="color-ex" style="background:rgba(107,122,159,.1);color:var(--gray)">timestamps</span>
+      <span class="color-ex" style="background:rgba(107,122,159,.1);color:var(--gray)">[B] blocked rows</span>
+      <span class="color-ex" style="background:rgba(107,122,159,.1);color:var(--gray)">suppressed arrows on chart</span>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 3-10: PARAMETERS (condensed) -->
+<section id="params-ui">
+  <div class="section-label">Section 03</div>
+  <h2>UI & Dashboard Parameters</h2>
+  <table class="param-table">
+    <thead><tr><th>Parameter</th><th>Default</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td class="param-name">Show Dashboard HUD</td><td class="param-default">Yes</td><td class="param-desc">Top-right HUD overlay. Shows ADX, ATR, POC, VA, confluence, session, gate status.</td></tr>
+      <tr><td class="param-name">Dash Font Size</td><td class="param-default">9</td><td class="param-desc">HUD text size. Range 6–14.</td></tr>
+      <tr><td class="param-name">Dashboard Vertical Alignment</td><td class="param-default">Top</td><td class="param-desc">Top or Bottom.</td></tr>
+      <tr><td class="param-name">Dashboard Horizontal Alignment</td><td class="param-default">Right</td><td class="param-desc">Left, Center, or Right.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="params-range">
+  <div class="section-label">Section 04</div>
+  <h2>Range Settings</h2>
+  <table class="param-table">
+    <thead><tr><th>Parameter</th><th>Default</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td class="param-name">Number of Profiles</td><td class="param-default">3</td><td class="param-desc">Profiles drawn simultaneously. 1=most recent, 2=prior, 3=oldest. Max 3.</td></tr>
+      <tr><td class="param-name">Use Auto Lookback</td><td class="param-default">Yes</td><td class="param-desc">Auto-sets lookback per timeframe: M5=288, M15=96, M30=48, H1=24, H2=24, H4=12, Daily=10, Weekly=8. All cover consistent real-time windows.</td></tr>
+      <tr><td class="param-name">Bars Lookback</td><td class="param-default">24</td><td class="param-desc">Manual lookback (Auto Lookback = No only).</td></tr>
+      <tr><td class="param-name">Price Rows (Bins)</td><td class="param-default">30</td><td class="param-desc">Number of price buckets. Auto-detect overrides: XAUUSD=40, BTCUSD=50, FX=30.</td></tr>
+      <tr><td class="param-name">Value Area Volume %</td><td class="param-default">40</td><td class="param-desc">% of total volume defining the value area. 40% is tighter than institutional standard (70%) for cleaner signals.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="params-adx">
+  <div class="section-label">Section 05</div>
+  <h2>ADX Settings</h2>
+  <table class="param-table">
+    <thead><tr><th>Parameter</th><th>Default</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td class="param-name">ADX Period</td><td class="param-default">14</td><td class="param-desc">Welles Wilder standard.</td></tr>
+      <tr><td class="param-name">ADX Trend Threshold</td><td class="param-default">25.0</td><td class="param-desc">ADX above = TRENDING. Edge Exhaustion and Rejection preferred. Also sets stricter bin ratio requirement.</td></tr>
+      <tr><td class="param-name">ADX Range Threshold</td><td class="param-default">20.0</td><td class="param-desc">ADX below = RANGING. POC Touch and VA Trap preferred. Lighter bin ratio requirement.</td></tr>
+    </tbody>
+  </table>
+  <div class="callout callout-warn">
+    <div class="callout-icon">⚠️</div>
+    <div class="callout-body"><strong>ADX 20–25 = Neutral Zone</strong><p>All signal types active. Most ambiguous zone — reduce position size or wait for ADX to resolve. In v2.1, neutral zone uses RatioNeutral for bin confirmation.</p></div>
+  </div>
+</section>
+
+<section id="params-vol">
+  <div class="section-label">Section 06</div>
+  <h2>Volatility Filter</h2>
+  <table class="param-table">
+    <thead><tr><th>Parameter</th><th>Default</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td class="param-name">Enable Volatility Filter</td><td class="param-default">Yes</td><td class="param-desc">Suppresses signals when market is too quiet.</td></tr>
+      <tr><td class="param-name">Min ATR % of Price</td><td class="param-default">0.03</td><td class="param-desc">ATR as % of price. Auto-detect applies per symbol: XAUUSD=0.04%, BTCUSD=0.05%, FX=0.02%.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="params-signals">
+  <div class="section-label">Section 07</div>
+  <h2>Signal & Alert Toggles</h2>
+  <p>These toggles control <strong>both</strong> the chart arrows AND Discord alerts. If a signal type is disabled here, it will not draw on chart and will not send to Discord.</p>
+  <table class="param-table">
+    <thead><tr><th>Parameter</th><th>Default</th><th>Controls</th></tr></thead>
+    <tbody>
+      <tr><td class="param-name">Enable POC Signals</td><td class="param-default">Yes</td><td class="param-desc">POC Touch chart arrows + Discord POC alerts.</td></tr>
+      <tr><td class="param-name">Enable VA TRAP Signals</td><td class="param-default">Yes</td><td class="param-desc">VA Trap chart arrows + Discord VA TRAP alerts.</td></tr>
+      <tr><td class="param-name">Enable EDGE EXH Signals</td><td class="param-default">Yes</td><td class="param-desc">Edge Exhaustion chart arrows + Discord EDGE EXH alerts. Uses empty bin rule in v2.1.</td></tr>
+      <tr><td class="param-name">Enable REJECTION Signals</td><td class="param-default">Yes</td><td class="param-desc">Rejection chart arrows + Discord Rejection alerts.</td></tr>
+    </tbody>
+  </table>
+  <div class="callout callout-tip">
+    <div class="callout-icon">💡</div>
+    <div class="callout-body"><strong>Recommended for low-noise Discord</strong><p>Set Enable POC = No, Enable Rejection = No, Enable VA TRAP = Yes, Enable EDGE EXH = Yes. You'll only receive the two highest-conviction signal types on Discord.</p></div>
+  </div>
+</section>
+
+<section id="params-visuals">
+  <div class="section-label">Section 08</div>
+  <h2>Visuals & Labels</h2>
+  <table class="param-table">
+    <thead><tr><th>Parameter</th><th>Default</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td class="param-name">Show Alert Labels</td><td class="param-default">Yes</td><td class="param-desc">Signal text labels on chart ("EDGE EXH SELL", "POC BUY" etc).</td></tr>
+      <tr><td class="param-name">Show Volume Labels</td><td class="param-default">Yes</td><td class="param-desc">Buy/sell volume numbers on each bin. Format: 64471 / 7478(IMB). Green = buyers winning, Red = sellers.</td></tr>
+      <tr><td class="param-name">Profile Opacity (0–255)</td><td class="param-default">120</td><td class="param-desc">Histogram transparency. 120 lets candles show through.</td></tr>
+      <tr><td class="param-name">Alert Font Size</td><td class="param-default">9</td><td class="param-desc">Signal label font size on chart.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="params-backtest">
+  <div class="section-label">Section 09</div>
+  <h2>Backtest Settings</h2>
+  <table class="param-table">
+    <thead><tr><th>Parameter</th><th>Default</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td class="param-name">Enable Win Ratio Scanner</td><td class="param-default">Yes</td><td class="param-desc">Historical scan computing win rate by signal type.</td></tr>
+      <tr><td class="param-name">Target Win-Ratio %</td><td class="param-default">55.0</td><td class="param-desc">Green in HUD if above. At 2:1 RR you only need 34% to break even.</td></tr>
+      <tr><td class="param-name">Reward Ratio (vs ATR)</td><td class="param-default">2.0</td><td class="param-desc">TP = ATR × 2.0.</td></tr>
+      <tr><td class="param-name">Risk Ratio (vs ATR)</td><td class="param-default">1.0</td><td class="param-desc">SL = ATR × 1.0. Default = 2:1 RR.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="params-discord">
+  <div class="section-label">Section 10</div>
+  <h2>Discord / Communications</h2>
+  <table class="param-table">
+    <thead><tr><th>Parameter</th><th>Default</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td class="param-name">Enable Discord Alerts</td><td class="param-default">No</td><td class="param-desc">Master toggle. Alerts fire on 2H bar-close only.</td></tr>
+      <tr><td class="param-name">Webhook URL</td><td class="param-default">(empty)</td><td class="param-desc">Your Discord webhook URL. Channel Settings → Integrations → Webhooks → New Webhook → Copy URL.</td></tr>
+      <tr><td class="param-name">Show Test Button</td><td class="param-default">No</td><td class="param-desc">Blue TEST DISCORD button on chart. Click to verify connection. Disable after confirming.</td></tr>
+      <tr><td class="param-name">Send Blocked Signal Alerts <span class="param-new">NEW v2.1</span></td><td class="param-default">No</td><td class="param-desc">When Yes: blocked signals send a ⚠️ yellow Discord embed with the exact reason they were suppressed. Useful for auditing your gates. Default No to keep alerts minimal.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- SECTION 11-13: PHASE 1 -->
+<section id="phase1-session">
+  <div class="section-label">Section 11 · Phase 1</div>
+  <h2>Session Filter</h2>
+  <p>Each symbol has defined UTC hours where it is <span class="kw kw-green">PRIME<span class="tooltip">Highest institutional volume. Signals most reliable. Full size.</span></span>, <span class="kw kw-yellow">ACTIVE<span class="tooltip">Tradeable but lower conviction. Consider half size.</span></span>, or <span class="kw kw-red">DEAD<span class="tooltip">Very low volume. Signals unreliable. All signals suppressed.</span></span>.</p>
+  <table class="param-table">
+    <thead><tr><th>Parameter</th><th>Default</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td class="param-name">Enable Session Filter</td><td class="param-default">Yes</td><td class="param-desc">Master toggle. When disabled, signals fire at any hour.</td></tr>
+      <tr><td class="param-name">Auto DST Adjustment</td><td class="param-default">Yes</td><td class="param-desc">Auto-adjusts London (BST) and New York (EDT) for Daylight Saving Time. Keeps filter accurate year-round.</td></tr>
+    </tbody>
+  </table>
+  <div class="callout callout-tip">
+    <div class="callout-icon">💡</div>
+    <div class="callout-body"><strong>UTC internally, HKT displayed</strong><p>Session filter uses DateTime.UtcNow internally — always accurate regardless of broker server timezone. All display times use UTC+8 (HKT) to match your cTrader clock. The two never conflict.</p></div>
+  </div>
+</section>
+
+<section id="phase1-confluence">
+  <div class="section-label">Section 12 · Phase 1</div>
+  <h2>Confluence Gate</h2>
+  <p>Scores how many profiles agree on a level. Score 1 = one profile sees it. Score 3 = all three profiles agree within 5 pips.</p>
+  <table class="param-table">
+    <thead><tr><th>Parameter</th><th>Default</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td class="param-name">Min Confluence to Fire Signal</td><td class="param-default">2</td><td class="param-desc">Minimum score to fire. 1 = any signal passes. 2 = two profiles agree (recommended). 3 = very selective.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="phase1-cooldown">
+  <div class="section-label">Section 13 · Phase 1</div>
+  <h2>Signal Cooldown</h2>
+  <table class="param-table">
+    <thead><tr><th>Parameter</th><th>Default</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td class="param-name">Enable Signal Cooldown</td><td class="param-default">Yes</td><td class="param-desc">Prevents same level firing again until cooldown expires.</td></tr>
+      <tr><td class="param-name">Cooldown Duration (bars)</td><td class="param-default">5</td><td class="param-desc">How many bars the cooldown lasts. On 2H: 5 bars = 10 hours. On M30: 5 bars = 2.5 hours.</td></tr>
+      <tr><td class="param-name">Cooldown Distance (x ATR)</td><td class="param-default">1.0</td><td class="param-desc">Price must move this far from fired level before cooldown resets early.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- SECTION 14: BIN ENGINE -->
+<section id="bin-engine">
+  <div class="section-label new">Section 14 · New in v2.1</div>
+  <h2>Bin-Based Signal Engine</h2>
+  <div class="callout callout-new">
+    <div class="callout-icon">★</div>
+    <div class="callout-body"><strong>Core principle shift in v2.1</strong><p>Signals no longer fire based on price bar conditions alone. The horizontal histogram BINS confirm or suppress every signal. Price bar position is only the trigger to start reading the bins. The bins are the judge.</p></div>
+  </div>
+
+  <h3 class="new">Why bins, not price bars?</h3>
+  <p>Price bars are noisy — a wick can touch a level with zero volume. The histogram bins show you the settled reality of where institutions actually traded. A bin with zero volume means nobody traded there — that IS the signal.</p>
+
+  <h3 class="new">BinZoneAnalysis — what it measures</h3>
+  <table class="param-table">
+    <thead><tr><th>Property</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td class="param-name">IsLVN</td><td class="param-desc">Low Volume Node — bin volume below LvnThreshold % of POC. Too thin to trust.</td></tr>
+      <tr><td class="param-name">IsHVN</td><td class="param-desc">High Volume Node — heavy two-sided institutional activity. Both sides > 30% of total AND total > 50% of POC.</td></tr>
+      <tr><td class="param-name">BullDominant</td><td class="param-desc">Buy volume > sell volume × 1.2. Buyers in control of this zone.</td></tr>
+      <tr><td class="param-name">BearDominant</td><td class="param-desc">Sell volume > buy volume × 1.2. Sellers in control.</td></tr>
+      <tr><td class="param-name">IsBalanced</td><td class="param-desc">Neither dominant. No directional conviction — suppress signals.</td></tr>
+      <tr><td class="param-name">ImbalanceRatio</td><td class="param-desc">Dominant side / weaker side. Must exceed requiredRatio for signal to fire.</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="new">ADX sets the required ratio — instantly, no bar counting</h3>
+  <p>The required imbalance ratio adjusts based on current ADX value. No bar-by-bar comparison — just the current reading:</p>
+  <table class="param-table">
+    <thead><tr><th>ADX</th><th>Regime</th><th>BTCUSD ratio</th><th>FX major ratio</th><th>GBPJPY ratio</th></tr></thead>
+    <tbody>
+      <tr><td class="param-name">&gt; 25</td><td class="param-default">TRENDING</td><td class="param-desc">2.0× (strictest)</td><td class="param-desc">1.6×</td><td class="param-desc">1.8×</td></tr>
+      <tr><td class="param-name">20–25</td><td class="param-default">NEUTRAL</td><td class="param-desc">1.6×</td><td class="param-desc">1.3×</td><td class="param-desc">1.4×</td></tr>
+      <tr><td class="param-name">&lt; 20</td><td class="param-default">RANGING</td><td class="param-desc">1.3×</td><td class="param-desc">1.1×</td><td class="param-desc">1.2×</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="new">Symbol-specific bin parameters</h3>
+  <p>Each symbol has its own scan depth and LVN threshold. BTCUSD needs stricter ratios than EURUSD because its volume spikes are larger and noisier. GBPJPY uses deeper scan depth because it's the most volatile Yen pair.</p>
+  <table class="param-table">
+    <thead><tr><th>Symbol class</th><th>LVN threshold</th><th>Boundary scan</th><th>Inner scan</th></tr></thead>
+    <tbody>
+      <tr><td class="param-name">BTCUSD (Crypto)</td><td class="param-default">10%</td><td class="param-desc">16% of bins</td><td class="param-desc">24% of bins</td></tr>
+      <tr><td class="param-name">XAUUSD / XAGUSD (Metals)</td><td class="param-default">12%</td><td class="param-desc">15% of bins</td><td class="param-desc">25% of bins</td></tr>
+      <tr><td class="param-name">GBPJPY (Volatile Yen)</td><td class="param-default">15%</td><td class="param-desc">14% of bins</td><td class="param-desc">24% of bins</td></tr>
+      <tr><td class="param-name">AUDJPY / CADJPY / USDJPY</td><td class="param-default">18%</td><td class="param-desc">13% of bins</td><td class="param-desc">23% of bins</td></tr>
+      <tr><td class="param-name">FX Majors (EURUSD etc)</td><td class="param-default">20%</td><td class="param-desc">13% of bins</td><td class="param-desc">23% of bins</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- SECTION 15: EDGE EXH LOGIC -->
+<section id="edge-exh-logic">
+  <div class="section-label new">Section 15 · New in v2.1</div>
+  <h2>Edge Exhaustion Logic</h2>
+  <div class="callout callout-new">
+    <div class="callout-icon">★</div>
+    <div class="callout-body"><strong>The Empty Bin Rule</strong><p>EDGE EXH fires when at least 1 empty bin exists at the profile boundary. An empty bin means price briefly visited that level with zero institutional activity — genuine exhaustion. This single rule, validated against 9 real chart examples, replaces all previous complex pattern logic.</p></div>
+  </div>
+
+  <h3 class="new">What an empty bin means</h3>
+  <div class="bin-example">
+    <div class="bin-row">
+      <div class="bin-bar bin-green" style="width:60px"></div>
+      <span class="bin-label">18571 / 0 (IMB) — buyers pushed here</span>
+    </div>
+    <div class="bin-row">
+      <div class="bin-bar bin-green" style="width:45px"></div>
+      <span class="bin-label">12801 / 2810 (IMB) — buyers dominant</span>
+    </div>
+    <div class="bin-row">
+      <div class="bin-bar" style="width:4px;background:var(--border)"></div>
+      <span class="bin-label bin-empty">[ empty bin ] ← nobody traded here</span>
+    </div>
+    <div class="bin-row">
+      <div class="bin-bar bin-red" style="width:80px"></div>
+      <span class="bin-label">0 / 25998 (IMB) — seller wall</span>
+    </div>
+    <div style="margin-top:8px;color:var(--yellow);font-size:10px">▼ EDGE EXH SELL fires — empty bin confirms buyer exhaustion at boundary</div>
+  </div>
+
+  <h3 class="new">EDGE EXH SELL — fires when</h3>
+  <p>At least 1 empty bin exists in the top boundary zone (near profile High). Price briefly touched that level with zero institutional interest = buyers had no conviction at the High.</p>
+
+  <h3 class="new">EDGE EXH BUY — fires when</h3>
+  <p>At least 1 empty bin exists in the bottom boundary zone (near profile Low). Price briefly touched that level with zero institutional interest = sellers had no conviction at the Low.</p>
+
+  <h3 class="new">Validated across 9 real chart examples</h3>
+  <div class="validated-grid">
+    <div class="validated-card">
+      <div class="validated-sym">EURUSD BUY</div>
+      <div class="validated-result correct">3 empty bins at Low → price UP ✓</div>
+    </div>
+    <div class="validated-card">
+      <div class="validated-sym">USDCAD BUY</div>
+      <div class="validated-result correct">Near-empty bins at Low → price UP ✓</div>
+    </div>
+    <div class="validated-card">
+      <div class="validated-sym">AUDJPY BUY</div>
+      <div class="validated-result correct">3 empty bins at Low → price UP ✓</div>
+    </div>
+    <div class="validated-card">
+      <div class="validated-sym">AUDUSD BUY</div>
+      <div class="validated-result correct">1 empty bin at Low → price UP ✓</div>
+    </div>
+    <div class="validated-card">
+      <div class="validated-sym">AUDUSD SELL</div>
+      <div class="validated-result correct">1 empty bin at High → price DOWN ✓</div>
+    </div>
+    <div class="validated-card">
+      <div class="validated-sym">CADJPY SELL</div>
+      <div class="validated-result correct">1 empty bin at High → price DOWN ✓</div>
+    </div>
+    <div class="validated-card">
+      <div class="validated-sym">XAUUSD SELL</div>
+      <div class="validated-result correct">Gray + empty bins → price DOWN ✓</div>
+    </div>
+    <div class="validated-card">
+      <div class="validated-sym">BTCUSD BUY</div>
+      <div class="validated-result blocked">0 empty bins → correctly BLOCKED ✓</div>
+    </div>
+    <div class="validated-card">
+      <div class="validated-sym">XAGUSD BUY</div>
+      <div class="validated-result blocked">0/113322 massive seller → BLOCKED ✓</div>
+    </div>
+  </div>
+
+  <div class="callout callout-warn">
+    <div class="callout-icon">⚠️</div>
+    <div class="callout-body"><strong>False signal protection</strong><p>BTCUSD had heavy seller IMBs (0/44022, 0/17000) with zero empty bins at the Low — price continued DOWN. XAGUSD had a massive 0/113322 seller bin — no empty bins, price continued DOWN. Both correctly blocked. The empty bin rule protects you from mistaking heavy selling for exhaustion.</p></div>
+  </div>
+
+  <div class="callout callout-tip">
+    <div class="callout-icon">💡</div>
+    <div class="callout-body"><strong>Why not gray bins?</strong><p>Gray bins (EXH tag, volume &lt;15% of POC) show thinly traded levels — not zero. We considered adding gray bin logic but found it introduced ambiguity (how many? what threshold?). The empty bin rule is objective: volume is either 0 or it isn't. Keep it simple — add gray logic later only if you find consistent real examples.</p></div>
+  </div>
+</section>
+
+<!-- SECTION 16: OTHER SIGNALS -->
+<section id="other-signals">
+  <div class="section-label new">Section 16 · Updated in v2.1</div>
+  <h2>POC Touch / VA TRAP / Rejection — v2.1 Updates</h2>
+
+  <h3 class="new">POC Touch — bin zone confirmation</h3>
+  <p>Price touching the POC is not enough. The ±2 bins around the POC must show directional dominance:</p>
+  <table class="param-table">
+    <thead><tr><th>Condition</th><th>Result</th></tr></thead>
+    <tbody>
+      <tr><td class="param-name">POC zone BullDominant + ratio ≥ required</td><td class="param-desc" style="color:var(--green)">POC BUY fires ✓</td></tr>
+      <tr><td class="param-name">POC zone BearDominant + ratio ≥ required</td><td class="param-desc" style="color:var(--red)">POC SELL fires ✓</td></tr>
+      <tr><td class="param-name">POC zone IsBalanced (50/50)</td><td class="param-desc" style="color:var(--gray)">Suppressed — no conviction at POC</td></tr>
+      <tr><td class="param-name">POC zone IsLVN (weak node)</td><td class="param-desc" style="color:var(--gray)">Suppressed — POC has no volume weight</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="new">VA TRAP — POC integrity check</h3>
+  <p>Before firing a VA TRAP signal, the indicator checks whether the POC is actually holding in the expected direction:</p>
+  <table class="param-table">
+    <thead><tr><th>Signal</th><th>POC must show</th><th>If POC shows opposite</th></tr></thead>
+    <tbody>
+      <tr><td class="param-name">VA TRAP BUY</td><td class="param-desc" style="color:var(--green)">Buyers dominant at POC — POC holding as support</td><td class="param-desc" style="color:var(--gray)">Suppressed — POC broken, price will continue down</td></tr>
+      <tr><td class="param-name">VA TRAP SELL</td><td class="param-desc" style="color:var(--red)">Sellers dominant at POC — POC holding as resistance</td><td class="param-desc" style="color:var(--gray)">Suppressed — POC broken, price will continue up</td></tr>
+    </tbody>
+  </table>
+  <div class="callout callout-tip">
+    <div class="callout-icon">💡</div>
+    <div class="callout-body"><strong>Why this matters</strong><p>The classic false VA TRAP: price drops below VAL, bounces back into VA, VA TRAP BUY fires — but POC shows sellers dominant (20059/46904 seller-biased). POC is broken. Price continues down. v2.1 suppresses this correctly.</p></div>
+  </div>
+
+  <h3 class="new">Rejection — LVN stop hunt filter</h3>
+  <p>Rejection signals at thin/empty boundaries are suppressed as stop hunts:</p>
+  <table class="param-table">
+    <thead><tr><th>Boundary volume</th><th>Result</th></tr></thead>
+    <tbody>
+      <tr><td class="param-name">Boundary IsLVN (thin/empty)</td><td class="param-desc" style="color:var(--gray)">Suppressed — thin boundary = stop hunt, not genuine rejection</td></tr>
+      <tr><td class="param-name">Boundary has real volume</td><td class="param-desc" style="color:var(--green)">Existing wick + volume spike logic applies → may fire</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- SECTION 17: ANALYSIS PANEL -->
+<section id="analysis-panel">
+  <div class="section-label">Section 17</div>
+  <h2>Analysis Panel</h2>
+  <p>Click ANALYSIS button bottom-left. Auto-refreshes each new bar. Four sections:</p>
+
+  <h3>Session Filter</h3>
+  <table class="param-table">
+    <thead><tr><th>Row</th><th>What it shows</th></tr></thead>
+    <tbody>
+      <tr><td class="param-name">Current session</td><td class="param-desc">Asian (00–09 UTC), London (07–16), NY overlap (12–17), NY late (17–21).</td></tr>
+      <tr><td class="param-name">Broker time</td><td class="param-desc">HKT (UTC+8) with UTC in brackets. Always matches your cTrader clock.</td></tr>
+      <tr><td class="param-name">Symbol status</td><td class="param-desc"><span style="color:var(--green)">PRIME</span> = highest volume. <span style="color:var(--yellow)">ACTIVE</span> = tradeable. <span style="color:var(--red)">DEAD</span> = suppressed.</td></tr>
+      <tr><td class="param-name">Signal gate</td><td class="param-desc"><span style="color:var(--green)">OPEN</span> = all gates clear. <span style="color:var(--red)">CLOSED</span> = reason shown.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Active Signals</h3>
+  <table class="param-table">
+    <thead><tr><th>Status</th><th>Color</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td class="param-name">FIRED</td><td style="color:var(--green)">green/red</td><td class="param-desc">Passed all gates + bin confirmation. Arrow on chart. Discord sent (2H only).</td></tr>
+      <tr><td class="param-name">BLOCKED</td><td style="color:var(--gray)">gray</td><td class="param-desc">Suppressed. Reason shown: "dead session" / "conf 1 &lt; 2" / "cooldown X bars" / "no empty bins".</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Recent Outcomes</h3>
+  <table class="param-table">
+    <thead><tr><th>Label</th><th>Color</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td class="param-name">WIN</td><td style="color:var(--green)">green word</td><td class="param-desc">Hit TP. Rest of row: direction color (buy=green, sell=red).</td></tr>
+      <tr><td class="param-name">LOSS</td><td style="color:var(--red)">red word</td><td class="param-desc">Hit SL. Rest of row: direction color.</td></tr>
+      <tr><td class="param-name">BE</td><td style="color:var(--yellow)">yellow word</td><td class="param-desc">Breakeven — expired near entry.</td></tr>
+      <tr><td class="param-name"><span class="tag-b">[B]</span> tag</td><td style="color:var(--gray)">gray row</td><td class="param-desc">Blocked signal. Outcome is hypothetical. Use for gate auditing.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- SECTION 18: GATE AUDIT -->
+<section id="gate-audit">
+  <div class="section-label">Section 18</div>
+  <h2>Gate Performance Audit</h2>
+  <p>The <span class="tag-b">[B]</span> tag in recent outcomes is your gate performance report. Three scenarios:</p>
+
+  <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px">
+    <div class="signal-card" style="border-left:3px solid var(--yellow)">
+      <div class="sig-type" style="color:var(--yellow)">SCENARIO 1 — Mostly [B] WIN rows</div>
+      <h4>Gates are too strict</h4>
+      <p>Good signals being filtered. Action: lower MinConfluenceGate from 2 to 1, or reduce CooldownBars, or check session filter hours for this symbol.</p>
+    </div>
+    <div class="signal-card" style="border-left:3px solid var(--green)">
+      <div class="sig-type" style="color:var(--green)">SCENARIO 2 — Mostly [B] LOSS rows</div>
+      <h4>Gates are working perfectly</h4>
+      <p>Bad setups being caught before they hurt you. Do not change anything — the gates are your edge.</p>
+    </div>
+    <div class="signal-card" style="border-left:3px solid var(--accent)">
+      <div class="sig-type" style="color:var(--accent)">SCENARIO 3 — Mixed [B] results</div>
+      <h4>Look at which gate is blocking</h4>
+      <p>If most [B] WIN are blocked by cooldown but [B] LOSS are blocked by confluence — confluence gate is good but cooldown is too aggressive. Reduce CooldownBars. Keep confluence at 2.</p>
+    </div>
+  </div>
+
+  <div class="callout callout-tip">
+    <div class="callout-icon">💡</div>
+    <div class="callout-body"><strong>Decision Rule</strong><p>If blocked LOSSes &gt; blocked WINs in total pips → gates net-positive, keep them.<br>If blocked WINs &gt; blocked LOSSes in total pips → gates net-negative, loosen them.</p></div>
+  </div>
+</section>
+
+<!-- SECTION 19: DISCORD -->
+<section id="discord-alerts">
+  <div class="section-label new">Section 19 · Updated in v2.1</div>
+  <h2>Discord Alerts</h2>
+
+  <h3>Setup (5 steps)</h3>
+  <div class="step-list" style="margin-bottom:20px">
+    <div class="step"><div class="step-num">1</div><div class="step-title">Open Discord channel</div><div class="step-desc">Go to the channel you want alerts in.</div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-title">Create webhook</div><div class="step-desc">Channel Settings → Integrations → Webhooks → New Webhook → give it a name → Copy URL.</div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-title">Paste in parameters</div><div class="step-desc">Enable Discord Alerts = Yes. Paste URL into Webhook URL field.</div></div>
+    <div class="step"><div class="step-num">4</div><div class="step-title">Test connection</div><div class="step-desc">Show Test Button = Yes. Click the blue TEST DISCORD button on chart.</div></div>
+    <div class="step"><div class="step-num">5</div><div class="step-title">Disable test button</div><div class="step-desc">Show Test Button = No after confirming the test message arrived.</div></div>
+  </div>
+
+  <h3 class="new">Signal & Alert Toggles control Discord</h3>
+  <p>Which signal types send to Discord is controlled by the Signal & Alert Toggles — not separate Discord parameters. If Enable EDGE EXH Signals = No, no Edge Exhaustion alerts will ever reach Discord.</p>
+
+  <h3 class="new">Three embed types</h3>
+
+  <div class="discord-embed">
+    <div class="discord-header">✅ SIGNAL FIRED — EDGE EXH BUY</div>
+    <div class="discord-body">
+      <span class="discord-gray">Symbol: AUDJPY | TF: Hour2</span><br><br>
+      <span class="discord-green">✅ SIGNAL FIRED</span><br>
+      EDGE EXH BUY<br>
+      Entry: 112.85000 | TP: 113.21000 | SL: 112.67000<br>
+      POC: 113.42000 VAH: 113.81000 VAL: 113.38000<br>
+      ADX: 18.4 [RANGING] | Session: Asian PRIME | Conf: MED **<br>
+      ATR: 8.2 pips | Time: 23/05 09:14 HKT<br>
+      <span class="discord-gray">VolumeEdge Pro v2.1 | 23/05/2026 09:14 HKT</span>
+    </div>
+  </div>
+
+  <div class="discord-embed blocked">
+    <div class="discord-header">⚠️ SIGNAL DETECTED — NOT ADVISABLE</div>
+    <div class="discord-body">
+      <span class="discord-gray">Symbol: EURUSD | TF: Hour2</span><br><br>
+      <span class="discord-yellow">⚠️ SIGNAL DETECTED — NOT ADVISABLE</span><br>
+      EDGE EXH BUY<br>
+      Blocked: Dead session (22:30 UTC — outside London/NY)<br>
+      Entry if taken: 1.16140 | TP: 1.16420 | SL: 1.16000<br>
+      POC: 1.16126 VAH: 1.16241 VAL: 1.16072<br>
+      ADX: 15.2 [RANGING] | Session: DEAD ○ | Conf: HIGH ***<br>
+      ATR: 8.8 pips | Time: 23/05 06:30 HKT<br>
+      <span class="discord-gray">VolumeEdge Pro v2.1 | 23/05/2026 06:30 HKT</span>
+    </div>
+  </div>
+
+  <div class="discord-embed suppressed" style="border-left-color:var(--red)">
+    <div class="discord-header">⚠️ SIGNAL DETECTED — NOT ADVISABLE</div>
+    <div class="discord-body">
+      <span class="discord-gray">Symbol: BTCUSD | TF: Hour2</span><br><br>
+      <span style="color:var(--red)">⚠️ SIGNAL DETECTED — NOT ADVISABLE</span><br>
+      EDGE EXH BUY<br>
+      Blocked: No empty bins at boundary<br>
+      Entry if taken: 75103.80 | TP: 76743 | SL: 74284<br>
+      POC: 78138 VAH: 79200 VAL: 76500<br>
+      ADX: 28.4 [TRENDING] | Session: 24h PRIME | Conf: LOW *<br>
+      ATR: 820 pips | Time: 23/05 21:00 HKT<br>
+      <span class="discord-gray">VolumeEdge Pro v2.1 | 23/05/2026 21:00 HKT</span>
+    </div>
+  </div>
+
+  <div class="callout callout-note" style="margin-top:16px">
+    <div class="callout-icon">📋</div>
+    <div class="callout-body"><strong>Blocked alerts are off by default</strong><p>Send Blocked Signal Alerts = No by default. Enable it temporarily when tuning your gates — the block reasons tell you exactly which gate is firing most. Disable again once your gates are calibrated to reduce Discord noise.</p></div>
+  </div>
+
+  <div class="callout callout-tip">
+    <div class="callout-icon">💡</div>
+    <div class="callout-body"><strong>2H only — why</strong><p>Discord alerts fire on 2H bar-close only regardless of which chart you add the indicator to. This gives you 2 hours to react before the next bar. Use M30 for entry timing after receiving the 2H alert.</p></div>
+  </div>
+</section>
+
+<!-- SECTION 20: SESSION MATRIX -->
+<section id="sessions">
+  <div class="section-label">Section 20</div>
+  <h2>Symbol Session Matrix</h2>
+  <p>All hours UTC. Add 8 hours for HKT.</p>
+  <table class="sess-table">
+    <thead><tr><th>Symbol</th><th>Class</th><th>Prime hours (UTC)</th><th>HKT equivalent</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td class="sess-sym">XAUUSD</td><td style="color:var(--gray);font-size:11px">Metal</td><td class="sess-prime">07:00–17:00</td><td class="sess-hkt">15:00–01:00</td><td style="font-size:11px;color:#8090A8">London + NY overlap. High ATR filter.</td></tr>
+      <tr><td class="sess-sym">XAGUSD</td><td style="color:var(--gray);font-size:11px">Metal</td><td class="sess-prime">08:00–16:00</td><td class="sess-hkt">16:00–00:00</td><td style="font-size:11px;color:#8090A8">Less liquid than XAU. Edge EXH most reliable.</td></tr>
+      <tr><td class="sess-sym">BTCUSD</td><td style="color:var(--gray);font-size:11px">Crypto</td><td class="sess-prime">24h — no gate</td><td class="sess-hkt">All day</td><td style="font-size:11px;color:#8090A8">No session filter. All hours valid.</td></tr>
+      <tr><td class="sess-sym">XTIUSD</td><td style="color:var(--gray);font-size:11px">Energy</td><td class="sess-prime">12:00–20:00</td><td class="sess-hkt">20:00–04:00</td><td style="font-size:11px;color:#8090A8">WTI settlement ~14:30 UTC shifts POC.</td></tr>
+      <tr><td class="sess-sym">EURUSD</td><td style="color:var(--gray);font-size:11px">FX Major</td><td class="sess-prime">08:00–16:00</td><td class="sess-hkt">16:00–00:00</td><td style="font-size:11px;color:#8090A8">London + NY overlap. VA Trap primary.</td></tr>
+      <tr><td class="sess-sym">GBPUSD</td><td style="color:var(--gray);font-size:11px">FX Major</td><td class="sess-prime">08:00–15:00</td><td class="sess-hkt">16:00–23:00</td><td style="font-size:11px;color:#8090A8">GBP spikes at London open.</td></tr>
+      <tr><td class="sess-sym">AUDUSD</td><td style="color:var(--gray);font-size:11px">FX Major</td><td class="sess-prime">00:00–08:00</td><td class="sess-hkt">08:00–16:00</td><td style="font-size:11px;color:#8090A8">Asian session. Correlates with XAUUSD.</td></tr>
+      <tr><td class="sess-sym">USDCHF</td><td style="color:var(--gray);font-size:11px">FX Major</td><td class="sess-prime">08:00–16:00</td><td class="sess-hkt">16:00–00:00</td><td style="font-size:11px;color:#8090A8">Safe-haven. SNB intervention risk.</td></tr>
+      <tr><td class="sess-sym">USDCAD</td><td style="color:var(--gray);font-size:11px">FX Major</td><td class="sess-prime">13:00–20:00</td><td class="sess-hkt">21:00–04:00</td><td style="font-size:11px;color:#8090A8">Oil-linked. BoC events cluster at POC.</td></tr>
+      <tr><td class="sess-sym">USDJPY</td><td style="color:var(--gray);font-size:11px">FX Yen</td><td class="sess-prime">00:00–08:00 + 13:00–16:00</td><td class="sess-hkt">08:00–16:00 + 21:00–00:00</td><td style="font-size:11px;color:#8090A8">BOJ intervention risk.</td></tr>
+      <tr><td class="sess-sym">AUDJPY</td><td style="color:var(--gray);font-size:11px">FX Yen</td><td class="sess-prime">00:00–08:00</td><td class="sess-hkt">08:00–16:00</td><td style="font-size:11px;color:#8090A8">Asian primary. Correlates with XAUUSD.</td></tr>
+      <tr><td class="sess-sym">CADJPY</td><td style="color:var(--gray);font-size:11px">FX Yen</td><td class="sess-prime">13:00–19:00</td><td class="sess-hkt">21:00–03:00</td><td style="font-size:11px;color:#8090A8">Oil + JPY. NY overlap cleanest.</td></tr>
+      <tr><td class="sess-sym">GBPJPY</td><td style="color:var(--gray);font-size:11px">FX Yen</td><td class="sess-prime">08:00–15:00</td><td class="sess-hkt">16:00–23:00</td><td style="font-size:11px;color:#8090A8">Most volatile Yen pair. 2 profiles max.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- SECTION 21: SETTINGS -->
+<section id="settings">
+  <div class="section-label">Section 21</div>
+  <h2>Recommended Settings per Symbol</h2>
+  <p>Applied automatically when Auto-Detect Symbol Settings = Yes.</p>
+  <table class="param-table">
+    <thead><tr><th>Symbol</th><th>Bins</th><th>VA %</th><th>LVN threshold</th><th>Ratio (Strong/Neutral/Weak)</th><th>Profiles</th></tr></thead>
+    <tbody>
+      <tr><td class="param-name" style="color:var(--yellow)">XAUUSD</td><td class="param-default">40</td><td class="param-default">35%</td><td class="param-default">12%</td><td class="param-desc">1.8 / 1.4 / 1.2</td><td class="param-default">3</td></tr>
+      <tr><td class="param-name" style="color:var(--yellow)">XAGUSD</td><td class="param-default">35</td><td class="param-default">40%</td><td class="param-default">12%</td><td class="param-desc">1.8 / 1.4 / 1.2</td><td class="param-default">3</td></tr>
+      <tr><td class="param-name" style="color:var(--yellow)">BTCUSD</td><td class="param-default">50</td><td class="param-default">35%</td><td class="param-default">10%</td><td class="param-desc">2.0 / 1.6 / 1.3</td><td class="param-default">2</td></tr>
+      <tr><td class="param-name" style="color:var(--yellow)">XTIUSD</td><td class="param-default">40</td><td class="param-default">35%</td><td class="param-default">12%</td><td class="param-desc">1.8 / 1.4 / 1.2</td><td class="param-default">3</td></tr>
+      <tr><td class="param-name" style="color:var(--yellow)">EURUSD</td><td class="param-default">30</td><td class="param-default">40%</td><td class="param-default">20%</td><td class="param-desc">1.6 / 1.3 / 1.1</td><td class="param-default">3</td></tr>
+      <tr><td class="param-name" style="color:var(--yellow)">GBPUSD</td><td class="param-default">30</td><td class="param-default">38%</td><td class="param-default">18%</td><td class="param-desc">1.7 / 1.3 / 1.1</td><td class="param-default">3</td></tr>
+      <tr><td class="param-name" style="color:var(--yellow)">AUDUSD</td><td class="param-default">30</td><td class="param-default">42%</td><td class="param-default">20%</td><td class="param-desc">1.6 / 1.3 / 1.1</td><td class="param-default">3</td></tr>
+      <tr><td class="param-name" style="color:var(--yellow)">USDCHF</td><td class="param-default">30</td><td class="param-default">40%</td><td class="param-default">20%</td><td class="param-desc">1.6 / 1.3 / 1.1</td><td class="param-default">3</td></tr>
+      <tr><td class="param-name" style="color:var(--yellow)">USDCAD</td><td class="param-default">30</td><td class="param-default">40%</td><td class="param-default">20%</td><td class="param-desc">1.6 / 1.3 / 1.1</td><td class="param-default">3</td></tr>
+      <tr><td class="param-name" style="color:var(--yellow)">USDJPY</td><td class="param-default">30</td><td class="param-default">40%</td><td class="param-default">18%</td><td class="param-desc">1.7 / 1.3 / 1.1</td><td class="param-default">3</td></tr>
+      <tr><td class="param-name" style="color:var(--yellow)">AUDJPY</td><td class="param-default">30</td><td class="param-default">42%</td><td class="param-default">18%</td><td class="param-desc">1.7 / 1.3 / 1.1</td><td class="param-default">3</td></tr>
+      <tr><td class="param-name" style="color:var(--yellow)">CADJPY</td><td class="param-default">30</td><td class="param-default">40%</td><td class="param-default">18%</td><td class="param-desc">1.7 / 1.4 / 1.2</td><td class="param-default">3</td></tr>
+      <tr><td class="param-name" style="color:var(--yellow)">GBPJPY</td><td class="param-default">35</td><td class="param-default">35%</td><td class="param-default">15%</td><td class="param-desc">1.8 / 1.4 / 1.2</td><td class="param-default">2</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- SECTION 22: WORKFLOW -->
+<section id="workflow">
+  <div class="section-label">Section 22</div>
+  <h2>Trading Workflow</h2>
+  <p>2H timeframe with M30 entry timing across your 13 symbols.</p>
+  <div class="step-list">
+    <div class="step"><div class="step-num">01</div><div class="step-title">Check ADX regime</div><div class="step-desc">HUD ADX row. &gt;25 = TRENDING (Edge EXH + Rejection). &lt;20 = RANGING (POC + VA Trap). 20–25 = NEUTRAL — reduce size.</div></div>
+    <div class="step"><div class="step-num">02</div><div class="step-title">Check session status</div><div class="step-desc">HUD SESSION row. PRIME = full size. ACTIVE = half size. DEAD = skip. AUDJPY at 10:00 HKT = Asian prime. EURUSD at 10:00 HKT = dead.</div></div>
+    <div class="step"><div class="step-num">03</div><div class="step-title">Check confluence</div><div class="step-desc">HUD CONFLUENCE. HIGH ★★★ = full size. MED ★★ = moderate. LOW ★ = skip or wait.</div></div>
+    <div class="step"><div class="step-num">04</div><div class="step-title">Read the bins</div><div class="step-desc">Look at the histogram. Are there empty bins at the boundary? That's your EDGE EXH setup. Is the POC heavily traded in one direction? That's your POC/VA TRAP setup.</div></div>
+    <div class="step"><div class="step-num">05</div><div class="step-title">Check analysis panel</div><div class="step-desc">BIAS SUMMARY: green = look for buys, red = look for sells, yellow = wait. VA COILED = breakout likely — size up on first fired signal.</div></div>
+    <div class="step"><div class="step-num">06</div><div class="step-title">M30 for entry timing</div><div class="step-desc">2H gives the level and direction. M30 micro-structure gives the entry. Wait for M30 signal matching your 2H thesis.</div></div>
+    <div class="step"><div class="step-num">07</div><div class="step-title">Use ATR levels</div><div class="step-desc">TP and SL shown in analysis panel active signals. Pre-calculated at ATR×2.0 (TP) and ATR×1.0 (SL).</div></div>
+    <div class="step"><div class="step-num">08</div><div class="step-title">Let Discord monitor</div><div class="step-desc">For other 12 symbols, rely on Discord 2H alerts. Check: session, confluence, ADX, ATR room to TP. If all good, open chart for confirmation.</div></div>
+  </div>
+
+  <div class="callout callout-warn" style="margin-top:20px">
+    <div class="callout-icon">⚠️</div>
+    <div class="callout-body"><strong>Correlation Risk</strong><p>XAUUSD often leads AUDUSD and AUDJPY. Running correlated pairs in the same direction = one signal with double risk. BTCUSD risk-on/off affects CADJPY direction.</p></div>
+  </div>
+  <div class="callout callout-new" style="margin-top:10px">
+    <div class="callout-icon">🚀</div>
+    <div class="callout-body"><strong>Phase 2 — Coming Next</strong><p>Naked POC Tracker · TP/SL zones on chart as colored rectangles · Daily P&L tracker in analysis panel</p></div>
+  </div>
+
+  <div style="border-top:1px solid var(--border);padding-top:24px;margin-top:32px;text-align:center">
+    <p style="font-family:var(--font-mono);font-size:11px;color:var(--gray)">VolumeEdge Pro v2.1 · Complete Guide · May 2026 · Based on FRVP Master Pro v3.2</p>
+  </div>
+</section>
+
+</main>
+</div>
+
+<script>
+const sections = document.querySelectorAll('section[id]');
+const navItems = document.querySelectorAll('.nav-item');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navItems.forEach(n => n.classList.remove('active'));
+      const active = document.querySelector('.nav-item[href="#' + e.target.id + '"]');
+      if (active) active.classList.add('active');
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
