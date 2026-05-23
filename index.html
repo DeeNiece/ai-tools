@@ -533,7 +533,7 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
 <section id="phase1-confluence">
   <div class="section-label">Section 12 · Phase 1</div>
   <h2>Confluence Gate</h2>
-  <p>Scores how many profiles agree on a level. Score 1 = one profile sees it. Score 3 = all three profiles agree within 5 pips.</p>
+  <p>Scores how many profiles agree on a level. Score 1 = one profile sees it. Score 3 = all three profiles agree within <span class="kw kw-teal">5 pips<span class="tooltip">The confluence zone width. If Profile 1 POC, Profile 2 POC, and Profile 3 POC are all within 5 pips of each other, they count as agreeing. Three different lookback windows all pointing to the same level = very high institutional memory at that price.</span></span>.</p>
   <table class="param-table">
     <thead><tr><th>Parameter</th><th>Default</th><th>Description</th></tr></thead>
     <tbody>
@@ -561,22 +561,22 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
   <h2>Bin-Based Signal Engine</h2>
   <div class="callout callout-new">
     <div class="callout-icon">★</div>
-    <div class="callout-body"><strong>Core principle shift in v2.1</strong><p>Signals no longer fire based on price bar conditions alone. The horizontal histogram BINS confirm or suppress every signal. Price bar position is only the trigger to start reading the bins. The bins are the judge.</p></div>
+    <div class="callout-body"><strong>Core principle shift in v2.1</strong><p>Signals no longer fire based on price bar conditions alone. The <span class="kw kw-teal">horizontal histogram BINS<span class="tooltip">Each horizontal bar in the FRVP histogram = one price bucket. Width = volume traded at that price. The bins are drawn from historical data — they don't change bar by bar. They show the settled reality of where institutions traded.</span></span> confirm or suppress every signal. Price bar position is only the trigger to start reading the bins. The bins are the judge.</p></div>
   </div>
 
   <h3 class="new">Why bins, not price bars?</h3>
-  <p>Price bars are noisy — a wick can touch a level with zero volume. The histogram bins show you the settled reality of where institutions actually traded. A bin with zero volume means nobody traded there — that IS the signal.</p>
+  <p>Price bars are noisy — a <span class="kw kw-yellow">wick<span class="tooltip">The thin line above/below a candle body. Represents the high/low price briefly reached but not sustained. A wick touch at a level with zero bin volume = stop hunt or random volatility, not institutional activity.</span></span> can touch a level with zero volume. The histogram bins show you the settled reality of where institutions actually traded. A bin with zero volume means nobody traded there — that IS the signal.</p>
 
   <h3 class="new">BinZoneAnalysis — what it measures</h3>
   <table class="param-table">
     <thead><tr><th>Property</th><th>Meaning</th></tr></thead>
     <tbody>
-      <tr><td class="param-name">IsLVN</td><td class="param-desc">Low Volume Node — bin volume below LvnThreshold % of POC. Too thin to trust.</td></tr>
-      <tr><td class="param-name">IsHVN</td><td class="param-desc">High Volume Node — heavy two-sided institutional activity. Both sides > 30% of total AND total > 50% of POC.</td></tr>
-      <tr><td class="param-name">BullDominant</td><td class="param-desc">Buy volume > sell volume × 1.2. Buyers in control of this zone.</td></tr>
-      <tr><td class="param-name">BearDominant</td><td class="param-desc">Sell volume > buy volume × 1.2. Sellers in control.</td></tr>
-      <tr><td class="param-name">IsBalanced</td><td class="param-desc">Neither dominant. No directional conviction — suppress signals.</td></tr>
-      <tr><td class="param-name">ImbalanceRatio</td><td class="param-desc">Dominant side / weaker side. Must exceed requiredRatio for signal to fire.</td></tr>
+      <tr><td class="param-name">IsLVN</td><td class="param-desc"><span class="kw kw-yellow">Low Volume Node<span class="tooltip">A price level where very little volume was traded. Price moves THROUGH LVNs easily with no resistance or support. If the boundary is an LVN, price can continue beyond it — not a reversal signal.</span></span> — bin volume below LvnThreshold % of POC. Too thin to trust.</td></tr>
+      <tr><td class="param-name">IsHVN</td><td class="param-desc"><span class="kw kw-green">High Volume Node<span class="tooltip">A price level where heavy two-sided institutional activity occurred. Both buyers and sellers traded heavily here. Acts as strong support/resistance — price tends to respect and react at HVNs.</span></span> — heavy two-sided activity. Both sides &gt; 30% of total AND total &gt; 50% of POC.</td></tr>
+      <tr><td class="param-name">BullDominant</td><td class="param-desc">Buy volume &gt; sell volume × 1.2. Buyers in control of this zone.</td></tr>
+      <tr><td class="param-name">BearDominant</td><td class="param-desc">Sell volume &gt; buy volume × 1.2. Sellers in control.</td></tr>
+      <tr><td class="param-name">IsBalanced</td><td class="param-desc">Neither dominant. <span class="kw kw-yellow">No directional conviction<span class="tooltip">When buy and sell volume are close to equal at a level, neither side controls it. Price may oscillate without a clear reaction. Signals at balanced zones are lower quality.</span></span> — suppress signals.</td></tr>
+      <tr><td class="param-name">ImbalanceRatio</td><td class="param-desc">Dominant side / weaker side. Must exceed <span class="kw kw-teal">requiredRatio<span class="tooltip">The minimum imbalance ratio for a signal to fire. Set by ADX regime and symbol. BTCUSD trending = 2.0 (need 2x dominance). EURUSD ranging = 1.1 (slight dominance sufficient). Higher ratio = stricter, fewer signals.</span></span> for signal to fire.</td></tr>
     </tbody>
   </table>
 
@@ -611,7 +611,7 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
   <h2>Edge Exhaustion Logic</h2>
   <div class="callout callout-new">
     <div class="callout-icon">★</div>
-    <div class="callout-body"><strong>The Empty Bin Rule</strong><p>EDGE EXH fires when at least 1 empty bin exists at the profile boundary. An empty bin means price briefly visited that level with zero institutional activity — genuine exhaustion. This single rule, validated against 9 real chart examples, replaces all previous complex pattern logic.</p></div>
+    <div class="callout-body"><strong>The Empty Bin Rule</strong><p>EDGE EXH fires when at least 1 <span class="kw kw-teal">empty bin<span class="tooltip">A price bucket with TotalVols = 0. Means zero trades occurred at that price during the lookback window. Price briefly visited it but nobody was willing to trade there — instant rejection. The most objective exhaustion signal possible.</span></span> exists at the profile boundary. An empty bin means price briefly visited that level with zero institutional activity — genuine exhaustion. This single rule, validated against 9 real chart examples, replaces all previous complex pattern logic.</p></div>
   </div>
 
   <h3 class="new">What an empty bin means</h3>
@@ -636,10 +636,10 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
   </div>
 
   <h3 class="new">EDGE EXH SELL — fires when</h3>
-  <p>At least 1 empty bin exists in the top boundary zone (near profile High). Price briefly touched that level with zero institutional interest = buyers had no conviction at the High.</p>
+  <p>At least 1 empty bin exists in the <span class="kw kw-red">top boundary zone<span class="tooltip">The outermost bins near the profile High. Scanned depth = BoundaryScanPct% of total bins. EURUSD: ~4 bins. BTCUSD: ~8 bins. If any of these are empty = price reached the High with zero institutional conviction.</span></span> (near profile High). Price briefly touched that level with zero institutional interest = buyers had no conviction at the High.</p>
 
   <h3 class="new">EDGE EXH BUY — fires when</h3>
-  <p>At least 1 empty bin exists in the bottom boundary zone (near profile Low). Price briefly touched that level with zero institutional interest = sellers had no conviction at the Low.</p>
+  <p>At least 1 empty bin exists in the <span class="kw kw-green">bottom boundary zone<span class="tooltip">The outermost bins near the profile Low. If any are empty = sellers pushed price to the Low but couldn't find anyone to sell to. The void below the Low means sellers had no conviction — price must reverse.</span></span> (near profile Low). Price briefly touched that level with zero institutional interest = sellers had no conviction at the Low.</p>
 
   <h3 class="new">Validated across 9 real chart examples</h3>
   <div class="validated-grid">
@@ -698,7 +698,7 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
   <h2>POC Touch / VA TRAP / Rejection — v2.1 Updates</h2>
 
   <h3 class="new">POC Touch — bin zone confirmation</h3>
-  <p>Price touching the POC is not enough. The ±2 bins around the POC must show directional dominance:</p>
+  <p>Price touching the <span class="kw kw-yellow">POC<span class="tooltip">Point of Control — the price bin with the highest traded volume in the lookback window. Acts as a magnet for price. The most important level in the FRVP.</span></span> is not enough. The ±2 bins around the POC must show directional dominance:</p>
   <table class="param-table">
     <thead><tr><th>Condition</th><th>Result</th></tr></thead>
     <tbody>
@@ -710,7 +710,7 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
   </table>
 
   <h3 class="new">VA TRAP — POC integrity check</h3>
-  <p>Before firing a VA TRAP signal, the indicator checks whether the POC is actually holding in the expected direction:</p>
+  <p>Before firing a VA TRAP signal, the indicator checks whether the <span class="kw kw-yellow">POC is actually holding<span class="tooltip">POC integrity = the POC bin shows more volume on the expected side. For VA TRAP BUY: POC bull volume > bear volume × 1.2. If POC is seller-dominant when you expect a buy reversal, the level is broken — price will continue down.</span></span> in the expected direction:</p>
   <table class="param-table">
     <thead><tr><th>Signal</th><th>POC must show</th><th>If POC shows opposite</th></tr></thead>
     <tbody>
@@ -724,7 +724,7 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
   </div>
 
   <h3 class="new">Rejection — LVN stop hunt filter</h3>
-  <p>Rejection signals at thin/empty boundaries are suppressed as stop hunts:</p>
+  <p>Rejection signals at thin/empty boundaries are suppressed as <span class="kw kw-yellow">stop hunts<span class="tooltip">A stop hunt occurs when price briefly spikes beyond a key level to trigger stop-loss orders, then immediately reverses. Thin/empty bins at the boundary = very few orders there = easy for large players to push price through briefly. These are not genuine rejections.</span></span>:</p>
   <table class="param-table">
     <thead><tr><th>Boundary volume</th><th>Result</th></tr></thead>
     <tbody>
@@ -776,7 +776,7 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
 <section id="gate-audit">
   <div class="section-label">Section 18</div>
   <h2>Gate Performance Audit</h2>
-  <p>The <span class="tag-b">[B]</span> tag in recent outcomes is your gate performance report. Three scenarios:</p>
+  <p>The <span class="tag-b">[B]</span> tag in recent outcomes is your <span class="kw kw-teal">gate performance report<span class="tooltip">Every blocked signal shows in the analysis panel with a [B] tag and the outcome it would have had. Over time, patterns in [B] WIN vs [B] LOSS tell you if your gates are helping or hurting your edge.</span></span>. Three scenarios:</p>
 
   <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px">
     <div class="signal-card" style="border-left:3px solid var(--yellow)">
@@ -817,7 +817,7 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
   </div>
 
   <h3 class="new">Signal & Alert Toggles control Discord</h3>
-  <p>Which signal types send to Discord is controlled by the Signal & Alert Toggles — not separate Discord parameters. If Enable EDGE EXH Signals = No, no Edge Exhaustion alerts will ever reach Discord.</p>
+  <p>Which signal types send to Discord is controlled by the <span class="kw kw-teal">Signal & Alert Toggles<span class="tooltip">The four Enable toggles in the parameters panel. Setting Enable EDGE EXH Signals = No means no Edge Exhaustion arrows on chart AND no Edge Exhaustion Discord alerts. One toggle controls both outputs.</span></span> — not separate Discord parameters. If Enable EDGE EXH Signals = No, no Edge Exhaustion alerts will ever reach Discord.</p>
 
   <h3 class="new">Three embed types</h3>
 
@@ -935,8 +935,8 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
     <div class="step"><div class="step-num">01</div><div class="step-title">Check ADX regime</div><div class="step-desc">HUD ADX row. &gt;25 = TRENDING (Edge EXH + Rejection). &lt;20 = RANGING (POC + VA Trap). 20–25 = NEUTRAL — reduce size.</div></div>
     <div class="step"><div class="step-num">02</div><div class="step-title">Check session status</div><div class="step-desc">HUD SESSION row. PRIME = full size. ACTIVE = half size. DEAD = skip. AUDJPY at 10:00 HKT = Asian prime. EURUSD at 10:00 HKT = dead.</div></div>
     <div class="step"><div class="step-num">03</div><div class="step-title">Check confluence</div><div class="step-desc">HUD CONFLUENCE. HIGH ★★★ = full size. MED ★★ = moderate. LOW ★ = skip or wait.</div></div>
-    <div class="step"><div class="step-num">04</div><div class="step-title">Read the bins</div><div class="step-desc">Look at the histogram. Are there empty bins at the boundary? That's your EDGE EXH setup. Is the POC heavily traded in one direction? That's your POC/VA TRAP setup.</div></div>
-    <div class="step"><div class="step-num">05</div><div class="step-title">Check analysis panel</div><div class="step-desc">BIAS SUMMARY: green = look for buys, red = look for sells, yellow = wait. VA COILED = breakout likely — size up on first fired signal.</div></div>
+    <div class="step"><div class="step-num">04</div><div class="step-title">Read the bins</div><div class="step-desc">Look at the histogram. Are there <span class="kw kw-teal">empty bins<span class="tooltip">Empty bin = TotalVols = 0. Zero trades at that price. The strongest Edge Exhaustion signal — price visited with no institutional interest.</span></span> at the boundary? That's your EDGE EXH setup. Is the POC heavily traded in one direction? That's your POC/VA TRAP setup.</div></div>
+    <div class="step"><div class="step-num">05</div><div class="step-title">Check analysis panel</div><div class="step-desc">BIAS SUMMARY: green = look for buys, red = look for sells, yellow = wait. <span class="kw kw-yellow">VA COILED<span class="tooltip">Value Area width is less than 50% of ATR. The market is compressed — buyers and sellers agree on a tight range. This energy will release. Watch for the first FIRED signal after COILED appears — it often catches the start of a significant move. Consider sizing up.</span></span> = breakout likely — size up on first fired signal.</div></div>
     <div class="step"><div class="step-num">06</div><div class="step-title">M30 for entry timing</div><div class="step-desc">2H gives the level and direction. M30 micro-structure gives the entry. Wait for M30 signal matching your 2H thesis.</div></div>
     <div class="step"><div class="step-num">07</div><div class="step-title">Use ATR levels</div><div class="step-desc">TP and SL shown in analysis panel active signals. Pre-calculated at ATR×2.0 (TP) and ATR×1.0 (SL).</div></div>
     <div class="step"><div class="step-num">08</div><div class="step-title">Let Discord monitor</div><div class="step-desc">For other 12 symbols, rely on Discord 2H alerts. Check: session, confluence, ADX, ATR room to TP. If all good, open chart for confirmation.</div></div>
