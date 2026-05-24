@@ -203,6 +203,8 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
   </div>
   <div class="nav-group">
     <div class="nav-group-label">Analysis & Strategy</div>
+    <a class="nav-item new-section" href="#what-are-bins"><span class="nav-num">23</span>What are Bins? ★</a>
+    <a class="nav-item new-section" href="#ai-analysis"><span class="nav-num">24</span>AI Analysis ★</a>
     <a class="nav-item" href="#analysis-panel"><span class="nav-num">17</span>Analysis Panel</a>
     <a class="nav-item" href="#gate-audit"><span class="nav-num">18</span>Gate Performance Audit</a>
     <a class="nav-item" href="#discord-alerts"><span class="nav-num">19</span>Discord Alerts ★</a>
@@ -263,7 +265,16 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
     <div class="changelog-item"><span class="changelog-tag tag-added">ADDED</span><span class="changelog-text"><strong>Send Blocked Signal Alerts</strong> — New Discord parameter. When enabled, blocked signals send a ⚠️ yellow embed with the exact reason they were suppressed. Default off.</span></div>
     <div class="changelog-item"><span class="changelog-tag tag-changed">CHANGED</span><span class="changelog-text"><strong>Signal & Alert Toggles now control Discord too</strong> — Enable EDGE EXH Signals = No means no chart arrow AND no Discord alert. One toggle controls both. No separate Discord signal toggles needed.</span></div>
     <div class="changelog-item"><span class="changelog-tag tag-changed">CHANGED</span><span class="changelog-text"><strong>Discord embed colors</strong> — Fired signals: green (BUY) or red (SELL) embed. Blocked signals: yellow embed. Clear visual distinction at a glance in Discord.</span></div>
-    <div class="changelog-item"><span class="changelog-tag tag-fixed">FIXED</span><span class="changelog-text"><strong>Auto lookback consistency</strong> — H4 was 132 bars (22 days). Now 12 bars (~2 days), matching H2. All timeframes now cover consistent real-time windows.</span></div>
+    <div class="changelog-item"><span class="changelog-tag tag-added">ADDED</span><span class="changelog-text"><strong>AI Bias Analysis button</strong> — ▶ AI Analysis button next to BIAS SUMMARY header. Sends profile data to AI provider on click. Shows ⏳ loading state while waiting. Displays 4-sentence bias below rule-based summary. Never triggers automatically — only on manual click.</span></div>
+    <div class="changelog-item"><span class="changelog-tag tag-added">ADDED</span><span class="changelog-text"><strong>7 AI provider options</strong> — ClaudeHaiku, ClaudeSonnet, ClaudeOpus, GeminiFlash, GeminiPro, DeepSeekFlash, DeepSeekPro. All use current 2026 model strings. Gemini restricted in HK region — use DeepSeek or Claude from HK.</span></div>
+    <div class="changelog-item"><span class="changelog-tag tag-added">ADDED</span><span class="changelog-text"><strong>Bin data with price levels sent to AI</strong> — Format: @price BuyVol:X SellVol:Y. AI clearly understands volume at each price level, not confused by raw numbers.</span></div>
+    <div class="changelog-item"><span class="changelog-tag tag-added">ADDED</span><span class="changelog-text"><strong>Analysis panel position parameters</strong> — Analysis Panel Vertical Position and Horizontal Position dropdowns under UI Controls. Moves both the ANALYSIS button and panel. Default Bottom/Left. Change to Top/Left if panel clips at bottom of screen.</span></div>
+    <div class="changelog-item"><span class="changelog-tag tag-fixed">FIXED</span><span class="changelog-text"><strong>Recent outcomes now matches chart arrows</strong> — LogSignalsFromProfile uses identical bin conditions as DrawSignalLabels. Colored arrow on chart = OPEN in outcomes. Gray arrow = BLOCKED in outcomes. No more mismatch.</span></div>
+    <div class="changelog-item"><span class="changelog-tag tag-fixed">FIXED</span><span class="changelog-text"><strong>Session label uses bar's actual time</strong> — Historical signal bars now show the session at their own open time (e.g. 22:00 HKT = NY late, not Asian). Uses GetSessionLabelForHour(barUtcHour).</span></div>
+    <div class="changelog-item"><span class="changelog-tag tag-fixed">FIXED</span><span class="changelog-text"><strong>All profiles logged in recent outcomes</strong> — LogSignalsFromProfile now called for all 3 profiles, not just profile 0. VA TRAP signals from profile 1 or 2 now appear in recent outcomes.</span></div>
+    <div class="changelog-item"><span class="changelog-tag tag-fixed">FIXED</span><span class="changelog-text"><strong>Confluence computed before DrawProfile</strong> — _latestConfluence now set before DrawSignalLabels runs. Chart arrows and log entries use the same confluence value.</span></div>
+    <div class="changelog-item"><span class="changelog-tag tag-changed">CHANGED</span><span class="changelog-text"><strong>RECENT OUTCOMES label</strong> — Removed misleading "last 20 signals" text. Now reads "RECENT OUTCOMES (broker time)". Display is limited to 8 rows.</span></div>
+    <div class="changelog-item"><span class="changelog-tag tag-changed">CHANGED</span><span class="changelog-text"><strong>AI text wraps in panel</strong> — AddPanelFullRow now uses TextWrapping.Wrap. Long AI responses display across multiple lines within the panel width instead of overflowing.</span></div>
     <div class="changelog-item"><span class="changelog-tag tag-fixed">FIXED</span><span class="changelog-text"><strong>Timestamps now show correct HKT</strong> — Server.Time returns UTC regardless of broker offset. All display times now use DateTime.UtcNow.AddHours(8) = correct UTC+8 / HKT.</span></div>
     <div class="changelog-item"><span class="changelog-tag tag-fixed">FIXED</span><span class="changelog-text"><strong>Signal bar timestamps</strong> — Signals now stamp the bar's actual open time, not the current scan time. Recent outcomes no longer show all signals with the same timestamp.</span></div>
   </div>
@@ -927,6 +938,139 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
 </section>
 
 <!-- SECTION 22: WORKFLOW -->
+<!-- SECTION 23: WHAT ARE BINS -->
+<section id="what-are-bins">
+  <div class="section-label new">Section 23 · Concept</div>
+  <h2>What are Bins?</h2>
+  <p><span class="kw kw-teal">Bins<span class="tooltip">Short for histogram bins — equal-width price buckets that divide the profile's price range. Each bin records how much volume was traded within that price slice.</span></span> are the fundamental building blocks of the Fixed Range Volume Profile. The name comes from statistics — a histogram groups data into equal-width buckets called bins.</p>
+
+  <h3>How bins are created</h3>
+  <p>When you set a lookback of 24 bars on H2, the indicator reads every bar in that window and finds the overall High and Low. That price range is then divided into equal slices — one slice per bin:</p>
+
+  <div class="bin-example">
+    <div style="color:var(--gray);font-size:10px;margin-bottom:8px">BTCUSD H2 — 50 bins — price range 76828 to 77134 (306 points)</div>
+    <div class="bin-row"><div class="bin-bar bin-green" style="width:45px"></div><span class="bin-label">Bin 50 — @77128  BuyVol:15526  SellVol:0 (IMB)</span></div>
+    <div class="bin-row"><div class="bin-bar" style="width:2px;background:var(--border)"></div><span class="bin-label bin-empty">Bin 49 — @77122  [empty — nobody traded here]</span></div>
+    <div class="bin-row"><div class="bin-bar bin-red" style="width:80px"></div><span class="bin-label">Bin 48 — @77116  BuyVol:11601  SellVol:10204 (ABS)</span></div>
+    <div class="bin-row"><div class="bin-bar bin-green" style="width:120px"></div><span class="bin-label">Bin 25 — @76702  BuyVol:42990  SellVol:25789 (HVN) ← POC</span></div>
+    <div class="bin-row"><div class="bin-bar bin-red" style="width:30px"></div><span class="bin-label">Bin 3  — @74196  BuyVol:0       SellVol:37257 (IMB)</span></div>
+    <div class="bin-row"><div class="bin-bar" style="width:2px;background:var(--border)"></div><span class="bin-label bin-empty">Bin 2  — @74190  [empty — nobody traded here]</span></div>
+    <div class="bin-row"><div class="bin-bar" style="width:2px;background:var(--border)"></div><span class="bin-label bin-empty">Bin 1  — @74184  [empty — nobody traded here]</span></div>
+  </div>
+
+  <h3>What each bin stores</h3>
+  <table class="param-table">
+    <thead><tr><th>Field</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td class="param-name">BuyVol</td><td class="param-desc">Total buy-side volume traded within this price slice. A bar where Close ≥ Open contributes its volume here.</td></tr>
+      <tr><td class="param-name">SellVol</td><td class="param-desc">Total sell-side volume traded within this price slice. A bar where Close &lt; Open contributes here.</td></tr>
+      <tr><td class="param-name">TotalVols</td><td class="param-desc">BuyVol + SellVol. Used for width of the histogram bar.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Why bin size matters</h3>
+  <p>Bin size = (High − Low) ÷ number of bins. More bins = finer resolution but noisier. Fewer bins = cleaner but loses precision at key levels.</p>
+  <table class="param-table">
+    <thead><tr><th>Symbol</th><th>Default bins</th><th>Why</th></tr></thead>
+    <tbody>
+      <tr><td class="param-name">EURUSD</td><td class="param-default">30</td><td class="param-desc">Tight range, 30 bins gives ~3 pip resolution per bin</td></tr>
+      <tr><td class="param-name">XAUUSD</td><td class="param-default">40</td><td class="param-desc">Wider daily range, needs more bins for precision</td></tr>
+      <tr><td class="param-name">BTCUSD</td><td class="param-default">50</td><td class="param-desc">Massive range, 50 bins keeps resolution meaningful</td></tr>
+    </tbody>
+  </table>
+
+  <h3>The empty bin — the most powerful signal</h3>
+  <p>An <span class="kw kw-teal">empty bin<span class="tooltip">TotalVols = 0. Price passed through this price level so quickly that zero volume was recorded. The market had zero interest in trading at this price. This is the strongest exhaustion signal — genuine price rejection.</span></span> means <code>TotalVols[b] == 0</code>. Nobody traded at that price during the entire lookback window. Price visited that level briefly but the market had zero interest in transacting there — it was immediately rejected. This is the foundation of the EDGE EXH signal in v2.1.</p>
+
+  <div class="callout callout-tip">
+    <div class="callout-icon">💡</div>
+    <div class="callout-body"><strong>Think of it like an auction</strong><p>Each price level is an auction. If nobody shows up to bid or offer at a price, that auction fails instantly. An empty bin = a failed auction = the market doesn't want to trade there = price must reverse.</p></div>
+  </div>
+</section>
+
+<!-- SECTION 24: AI ANALYSIS -->
+<section id="ai-analysis">
+  <div class="section-label new">Section 24 · Feature</div>
+  <h2>AI Bias Analysis</h2>
+  <p>The AI Analysis button in the Bias Summary section sends your current profile data to an AI provider and returns a plain-language trading bias in seconds. It reads bin volumes, price position, ADX, ATR, session, and confluence — and tells you what the data means in plain English.</p>
+
+  <h3>Setup</h3>
+  <table class="param-table">
+    <thead><tr><th>Parameter</th><th>Default</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td class="param-name">Enable AI Bias Summary</td><td class="param-default">No</td><td class="param-desc">Shows the ▶ AI Analysis button next to BIAS SUMMARY header.</td></tr>
+      <tr><td class="param-name">AI Provider</td><td class="param-default">ClaudeHaiku</td><td class="param-desc">Dropdown of 7 model options across 3 providers.</td></tr>
+      <tr><td class="param-name">AI API Key</td><td class="param-default">(empty)</td><td class="param-desc">Your API key for the selected provider.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Available providers</h3>
+  <table class="param-table">
+    <thead><tr><th>Option</th><th>Model</th><th>Cost</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td class="param-name">ClaudeHaiku</td><td class="param-default">claude-haiku-4-5-20251001</td><td class="param-desc">$1/M tokens</td><td class="param-desc">Fast, cheap, reliable ✓</td></tr>
+      <tr><td class="param-name">ClaudeSonnet</td><td class="param-default">claude-sonnet-4-6</td><td class="param-desc">$3/M tokens</td><td class="param-desc">Balanced quality/cost ✓</td></tr>
+      <tr><td class="param-name">ClaudeOpus</td><td class="param-default">claude-opus-4-7</td><td class="param-desc">$5/M tokens</td><td class="param-desc">Most capable ✓</td></tr>
+      <tr><td class="param-name">GeminiFlash</td><td class="param-default">gemini-2.5-flash</td><td class="param-desc">Free tier</td><td class="param-desc">⚠️ HK region restricted</td></tr>
+      <tr><td class="param-name">GeminiPro</td><td class="param-default">gemini-2.5-pro</td><td class="param-desc">Paid</td><td class="param-desc">⚠️ HK region restricted</td></tr>
+      <tr><td class="param-name">DeepSeekFlash</td><td class="param-default">deepseek-v4-flash</td><td class="param-desc">$0.04/M tokens</td><td class="param-desc">Cheapest, works from HK ✓</td></tr>
+      <tr><td class="param-name">DeepSeekPro</td><td class="param-default">deepseek-v4-pro</td><td class="param-desc">$0.14/M tokens</td><td class="param-desc">Smarter reasoning ✓</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-warn">
+    <div class="callout-icon">⚠️</div>
+    <div class="callout-body"><strong>Gemini HK restriction</strong><p>Google restricts the Gemini API based on the IP address making the request. From Hong Kong, both GeminiFlash and GeminiPro return FAILED_PRECONDITION error. Use DeepSeek or Claude when in HK. Switch to Gemini when traveling outside HK.</p></div>
+  </div>
+
+  <h3>What gets sent to the AI</h3>
+  <p>Each click sends a snapshot of the current profile state:</p>
+  <div class="bin-example" style="font-size:10px;line-height:1.8">
+    Symbol:EURUSD TF:Hour2 Price:1.16016 POC:1.16106(WEAK) VAH:1.16156 VAL:1.16037<br>
+    ADX:13.9[RANGING] ATR:8.2p Session:PRIME Confluence:LOW<br>
+    TopBins: @1.16154 BuyVol:0 SellVol:0 [empty]  @1.16147 BuyVol:3287 SellVol:0<br>
+    BotBins: @1.16039 BuyVol:0 SellVol:2075 [empty]  @1.16032 BuyVol:0 SellVol:0 [empty]
+  </div>
+
+  <h3>Button states</h3>
+  <table class="param-table">
+    <thead><tr><th>State</th><th>Appearance</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td class="param-name">Ready</td><td class="param-default" style="color:var(--accent)">▶ AI Analysis</td><td class="param-desc">Click to request bias analysis</td></tr>
+      <tr><td class="param-name">Loading</td><td class="param-default" style="color:var(--yellow)">⏳ Analysing...</td><td class="param-desc">API call in progress (1-3 seconds)</td></tr>
+      <tr><td class="param-name">Done</td><td class="param-default" style="color:var(--accent)">▶ AI Analysis</td><td class="param-desc">Response shown in panel below button</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="new">AI Analysis vs Human Analysis</h3>
+
+  <div class="color-grid">
+    <div class="signal-card" style="border-left:3px solid var(--green)">
+      <div class="sig-type" style="color:var(--green)">WHERE AI WINS</div>
+      <h4>Speed & Consistency</h4>
+      <p>Reads all bin data, POC, VAH, VAL, ADX, ATR, session in under 3 seconds. Same analytical framework every time — no emotions, no fatigue, no recency bias. Good for monitoring 13 symbols simultaneously.</p>
+    </div>
+    <div class="signal-card" style="border-left:3px solid var(--red)">
+      <div class="sig-type" style="color:var(--red)">WHERE HUMAN WINS</div>
+      <h4>Context & Experience</h4>
+      <p>You know what happened yesterday, last week. The AI only sees the current profile. You're aware of news, Fed meetings, geopolitical events. You've seen the same BTCUSD pattern 20 times and know it fakes out before reversing.</p>
+    </div>
+  </div>
+
+  <div class="callout callout-tip">
+    <div class="callout-icon">💡</div>
+    <div class="callout-body"><strong>Best use case</strong><p>You get a Discord alert on AUDJPY at 3am HKT. You open the analysis panel, click AI Analysis, get a 4-sentence summary in 3 seconds. You decide in 10 seconds whether it's worth waking up fully to trade it — or going back to sleep. AI accelerates your first-pass decision. It doesn't replace your judgment.</p></div>
+  </div>
+
+  <div class="callout callout-warn">
+    <div class="callout-icon">⚠️</div>
+    <div class="callout-body"><strong>AI limitations</strong><p>The AI has no awareness of macro events, news releases, or multi-timeframe context. It only sees what's in the current H2 profile. Always cross-check against your own reading before trading. AI can and does hallucinate — treat it as a second opinion, not a signal.</p></div>
+  </div>
+
+  <h3>DeepSeek reasoning mode note</h3>
+  <p>DeepSeek Flash and Pro use a chain-of-thought reasoning model. They think through the problem first (stored in <code>reasoning_content</code>) then give the final answer. VolumeEdge Pro automatically extracts the conclusion from the reasoning chain and displays only the final bias — not the thinking process.</p>
+</section>
+
 <section id="workflow">
   <div class="section-label">Section 22</div>
   <h2>Trading Workflow</h2>
