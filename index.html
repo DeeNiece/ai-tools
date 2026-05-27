@@ -1298,7 +1298,7 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
 
   <div class="callout callout-tip">
     <div class="callout-icon">💡</div>
-    <div class="callout-body"><strong>Practical workflow</strong><p>Open your D1 chart at 7:45 AM HKT. Read the D1 Direction Dashboard once — note the BIAS, POC price, and VA boundaries. Write them down or screenshot. Switch to H2 for the rest of the session. The D1 levels you recorded are your anchors for the day.</p></div>
+    <div class="callout-body"><strong>Practical workflow</strong><p>Open your D1 chart at <span class="tz-time tz-inline" data-utc="1425">7:45 AM</span> <span class="tz-label-inline"></span>. Read the D1 Direction Dashboard once — note the BIAS, POC price, and VA boundaries. Write them down or screenshot. Switch to H2 for the rest of the session. The D1 levels you recorded are your anchors for the day.</p></div>
   </div>
 
   <div class="callout callout-warn">
@@ -1390,14 +1390,14 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
 
     <div class="plan-section" id="sn-sessions">
       <div class="plan-section-label sniper">Section 04</div>
-      <h2>Session Windows (HKT)</h2>
+      <h2>Session Windows <span class="tz-label-inline"></span></h2>
       <div class="sess-bar">
-        <div class="sess-bar-row"><span class="sess-bar-label">7:45 AM</span><span class="sess-bar-time">Pre-session — D1 read, mark levels</span><span class="sbt sbt-watch">PREPARE</span></div>
-        <div class="sess-bar-row"><span class="sess-bar-label">8–3:30 PM</span><span class="sess-bar-time">Tokyo session</span><span class="sbt sbt-sec">WATCH ONLY</span></div>
-        <div class="sess-bar-row"><span class="sess-bar-label">4–5 PM ⭐</span><span class="sess-bar-time">London open — primary hunt window</span><span class="sbt sbt-prime">A+ WINDOW</span></div>
-        <div class="sess-bar-row"><span class="sess-bar-label">5–8 PM</span><span class="sess-bar-time">London distribution — manage only</span><span class="sbt sbt-sec">MANAGE</span></div>
-        <div class="sess-bar-row"><span class="sess-bar-label">8–9 PM ⭐</span><span class="sess-bar-time">NY open — second hunt window</span><span class="sbt sbt-prime">A WINDOW</span></div>
-        <div class="sess-bar-row"><span class="sess-bar-label">12:00 AM</span><span class="sess-bar-time">Hard close — London ends</span><span class="sbt sbt-watch">CLOSE ALL</span></div>
+        <div class="sess-bar-row"><span class="sess-bar-label tz-time" data-utc="1425">7:45 AM</span><span class="sess-bar-time">Pre-session — D1 read, mark levels</span><span class="sbt sbt-watch">PREPARE</span></div>
+        <div class="sess-bar-row"><span class="sess-bar-label tz-time" data-utc="0-450">8–3:30 PM</span><span class="sess-bar-time">Tokyo session</span><span class="sbt sbt-sec">WATCH ONLY</span></div>
+        <div class="sess-bar-row"><span class="sess-bar-label tz-time" data-utc="480-540">4–5 PM ⭐</span><span class="sess-bar-time">London open — primary hunt window</span><span class="sbt sbt-prime">A+ WINDOW</span></div>
+        <div class="sess-bar-row"><span class="sess-bar-label tz-time" data-utc="540-720">5–8 PM</span><span class="sess-bar-time">London distribution — manage only</span><span class="sbt sbt-sec">MANAGE</span></div>
+        <div class="sess-bar-row"><span class="sess-bar-label tz-time" data-utc="720-780">8–9 PM ⭐</span><span class="sess-bar-time">NY open — second hunt window</span><span class="sbt sbt-prime">A WINDOW</span></div>
+        <div class="sess-bar-row"><span class="sess-bar-label tz-time" data-utc="960">12:00 AM</span><span class="sess-bar-time">Hard close — London ends</span><span class="sbt sbt-watch">CLOSE ALL</span></div>
       </div>
     </div>
 
@@ -1422,7 +1422,7 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
       </div>
       <div class="chk-list" id="sn-chk-list">
         <div class="chk-item"><div class="chk-box sniper" onclick="updateProgress(this,'sniper','sn',8)"></div><div class="chk-text"><strong>D1 bias confirmed</strong> — Price above <span class="kw kw-yellow">D1 POC<span class="tooltip">Point of Control — highest volume price level. Above = institutional demand in control = long bias only.</span></span> = long only. Below = short only.</div></div>
-        <div class="chk-item"><div class="chk-box sniper" onclick="updateProgress(this,'sniper','sn',8)"></div><div class="chk-text"><strong>Session window active</strong> — London 4–5 PM or NY 8–9 PM HKT only.</div></div>
+        <div class="chk-item"><div class="chk-box sniper" onclick="updateProgress(this,'sniper','sn',8)"></div><div class="chk-text"><strong>Session window active</strong> — London <span class="tz-time tz-inline" data-utc="480-540">4–5 PM</span> or NY <span class="tz-time tz-inline" data-utc="720-780">8–9 PM</span> <span class="tz-label-inline"></span> only.</div></div>
         <div class="chk-item"><div class="chk-box sniper" onclick="updateProgress(this,'sniper','sn',8)"></div><div class="chk-text"><strong>H2 VA TRAP or EDGE EXH fires in bias direction</strong> — Signal matches D1 direction. Opposite signal = skip entirely.</div></div>
         <div class="chk-item"><div class="chk-box sniper" onclick="updateProgress(this,'sniper','sn',8)"></div><div class="chk-text"><strong>H2 ADX below 25</strong> — <span class="kw kw-yellow">ADX<span class="tooltip">Average Directional Index. Below 20 = ranging. 20–25 = neutral. Above 25 = trending. For VA TRAP entries, ADX must be below 25 — confirms the spike was manipulation, not real momentum.</span></span> shows RANGING or NEUTRAL. Trending = spike may be real breakout.</div></div>
         <div class="chk-item"><div class="chk-box sniper" onclick="updateProgress(this,'sniper','sn',8)"></div><div class="chk-text"><strong>H2 confluence ★★★</strong> — All three FRVP profiles agree on the level.</div></div>
@@ -1451,12 +1451,12 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
       <div class="plan-section-label sniper">Section 08</div>
       <h2>Daily Routine</h2>
       <div class="timeline">
-        <div class="tl-item warn"><div class="tl-time">7:45 AM HKT</div><div class="tl-title">Pre-Session Read</div><div class="tl-desc">D1 bias, mark POC/VAH/VAL. Identify today's single Sniper target level. Lock it in — do not change during session.</div></div>
-        <div class="tl-item"><div class="tl-time">8:00 AM – 3:30 PM</div><div class="tl-title">Tokyo — Observation Only</div><div class="tl-desc">Watch price approach pre-marked level. Remap M30 to 8 bars at 3:30 PM (captures full Tokyo range).</div></div>
-        <div class="tl-item ps"><div class="tl-time">4:00 – 5:00 PM HKT ⭐</div><div class="tl-title">A+ Hunt Window — London Open</div><div class="tl-desc">Watch H2 for VA TRAP or EDGE EXH at your pre-marked level in D1 bias direction. If fires → M30 pullback + EDGE EXH → execute checklist.</div></div>
-        <div class="tl-item"><div class="tl-time">5:00 – 7:30 PM</div><div class="tl-title">Manage or Reset</div><div class="tl-desc">If trade on: TP1 at H2 POC, trail stop. If missed: remap M30 to 6 bars at 7:30 PM for NY window.</div></div>
-        <div class="tl-item ps"><div class="tl-time">8:00 – 9:00 PM HKT ⭐</div><div class="tl-title">A Hunt Window — NY Open</div><div class="tl-desc">Final window. Same process. If no valid setup appears — no trade today. Close charts. Discipline over FOMO.</div></div>
-        <div class="tl-item"><div class="tl-time">12:00 AM</div><div class="tl-title">Hard Close</div><div class="tl-desc">Close all positions. No exceptions.</div></div>
+        <div class="tl-item warn"><div class="tl-time tz-time" data-utc="1425">7:45 AM HKT</div><div class="tl-title">Pre-Session Read</div><div class="tl-desc">D1 bias, mark POC/VAH/VAL. Identify today's single Sniper target level. Lock it in — do not change during session.</div></div>
+        <div class="tl-item"><div class="tl-time tz-time" data-utc="0-450">8:00 AM – 3:30 PM</div><div class="tl-title">Tokyo — Observation Only</div><div class="tl-desc">Watch price approach pre-marked level. Remap M30 to 8 bars at 3:30 PM (captures full Tokyo range).</div></div>
+        <div class="tl-item ps"><div class="tl-time tz-time" data-utc="480-540">4:00 – 5:00 PM HKT ⭐</div><div class="tl-title">A+ Hunt Window — London Open</div><div class="tl-desc">Watch H2 for VA TRAP or EDGE EXH at your pre-marked level in D1 bias direction. If fires → M30 pullback + EDGE EXH → execute checklist.</div></div>
+        <div class="tl-item"><div class="tl-time tz-time" data-utc="540-690">5:00 – 7:30 PM</div><div class="tl-title">Manage or Reset</div><div class="tl-desc">If trade on: TP1 at H2 POC, trail stop. If missed: remap M30 to 6 bars at 7:30 PM for NY window.</div></div>
+        <div class="tl-item ps"><div class="tl-time tz-time" data-utc="720-780">8:00 – 9:00 PM HKT ⭐</div><div class="tl-title">A Hunt Window — NY Open</div><div class="tl-desc">Final window. Same process. If no valid setup appears — no trade today. Close charts. Discipline over FOMO.</div></div>
+        <div class="tl-item"><div class="tl-time tz-time" data-utc="960">12:00 AM</div><div class="tl-title">Hard Close</div><div class="tl-desc">Close all positions. No exceptions.</div></div>
       </div>
     </div>
 
@@ -1481,9 +1481,9 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
     <div class="plan-section" id="sn-d1dash">
       <div class="plan-section-label sniper">Section 11 · New in v2.2</div>
       <h2>Using the D1 Direction Dashboard</h2>
-      <p>The D1 Direction Dashboard is the Sniper's <strong>pre-session intelligence tool</strong>. Open your D1 chart at 7:45 AM HKT, read the panel once, lock in your bias — then switch to H2 and never look back.</p>
+      <p>The D1 Direction Dashboard is the Sniper's <strong>pre-session intelligence tool</strong>. Open your D1 chart at <span class="tz-time tz-inline" data-utc="1425">7:45 AM</span> <span class="tz-label-inline"></span>, read the panel once, lock in your bias — then switch to H2 and never look back.</p>
 
-      <h3 class="sniper">Step-by-step at 7:45 AM</h3>
+      <h3 class="sniper">Step-by-step at <span class="tz-time tz-inline" data-utc="1425">7:45 AM</span> <span class="tz-label-inline"></span></h3>
       <div class="chk-list">
         <div class="chk-item"><div class="chk-box sniper" onclick="toggleChk(this,'sniper')"></div><div class="chk-text"><strong>Open D1 chart</strong> — The D1 Direction Dashboard appears automatically. No setup needed.</div></div>
         <div class="chk-item"><div class="chk-box sniper" onclick="toggleChk(this,'sniper')"></div><div class="chk-text"><strong>Read BIAS row</strong> — <span class="kw kw-green">⬆ LONG<span class="tooltip">Price above D1 VAH. Strong bullish institutional control. Today you only take LONG signals on H2/M30.</span></span> = long only today. <span class="kw kw-red">⬇ SHORT<span class="tooltip">Price below D1 VAL. Strong bearish institutional control. Today you only take SHORT signals on H2/M30.</span></span> = short only today. <span class="kw kw-yellow">→ NEUTRAL<span class="tooltip">Price at or near D1 POC. No clear edge. This is the hardest day to trade as a Sniper — consider sitting out or waiting for bias to resolve above VAH or below VAL before entering.</span></span> = no trade today.</div></div>
@@ -1598,16 +1598,16 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
 
     <div class="plan-section" id="fd-windows">
       <div class="plan-section-label fade">Section 04</div>
-      <h2>Fade Windows (HKT)</h2>
+      <h2>Fade Windows <span class="tz-label-inline"></span></h2>
       <div class="sess-bar">
-        <div class="sess-bar-row"><span class="sess-bar-label">3:45 PM</span><span class="sess-bar-time">Mark H1 VAH, VAL, POC precisely</span><span class="sbt sbt-watch">PREPARE</span></div>
-        <div class="sess-bar-row"><span class="sess-bar-label">4:00 PM ⭐</span><span class="sess-bar-time">London open — spike expected</span><span class="sbt sbt-prime">PRIMARY FADE</span></div>
-        <div class="sess-bar-row"><span class="sess-bar-label">4:00–4:30</span><span class="sess-bar-time">Watch for H1 VA TRAP</span><span class="sbt sbt-prime">ACTIVE WATCH</span></div>
-        <div class="sess-bar-row"><span class="sess-bar-label">4:30–5:30</span><span class="sess-bar-time">Entry window if trap confirmed</span><span class="sbt sbt-prime">ENTRY WINDOW</span></div>
-        <div class="sess-bar-row"><span class="sess-bar-label">5:30–8 PM</span><span class="sess-bar-time">Manage trade toward H1 POC</span><span class="sbt sbt-sec">MANAGE</span></div>
-        <div class="sess-bar-row"><span class="sess-bar-label">7:45 PM</span><span class="sess-bar-time">Remap M15 lookback for NY window</span><span class="sbt sbt-watch">PREPARE</span></div>
-        <div class="sess-bar-row"><span class="sess-bar-label">8:00 PM ⭐</span><span class="sess-bar-time">NY open — second fade window</span><span class="sbt sbt-prime">SECONDARY FADE</span></div>
-        <div class="sess-bar-row"><span class="sess-bar-label">12:00 AM</span><span class="sess-bar-time">Hard close</span><span class="sbt sbt-watch">CLOSE ALL</span></div>
+        <div class="sess-bar-row"><span class="sess-bar-label tz-time" data-utc="465">3:45 PM</span><span class="sess-bar-time">Mark H1 VAH, VAL, POC precisely</span><span class="sbt sbt-watch">PREPARE</span></div>
+        <div class="sess-bar-row"><span class="sess-bar-label tz-time" data-utc="480">4:00 PM ⭐</span><span class="sess-bar-time">London open — spike expected</span><span class="sbt sbt-prime">PRIMARY FADE</span></div>
+        <div class="sess-bar-row"><span class="sess-bar-label tz-time" data-utc="480-510">4:00–4:30</span><span class="sess-bar-time">Watch for H1 VA TRAP</span><span class="sbt sbt-prime">ACTIVE WATCH</span></div>
+        <div class="sess-bar-row"><span class="sess-bar-label tz-time" data-utc="510-570">4:30–5:30</span><span class="sess-bar-time">Entry window if trap confirmed</span><span class="sbt sbt-prime">ENTRY WINDOW</span></div>
+        <div class="sess-bar-row"><span class="sess-bar-label tz-time" data-utc="570-720">5:30–8 PM</span><span class="sess-bar-time">Manage trade toward H1 POC</span><span class="sbt sbt-sec">MANAGE</span></div>
+        <div class="sess-bar-row"><span class="sess-bar-label tz-time" data-utc="705">7:45 PM</span><span class="sess-bar-time">Remap M15 lookback for NY window</span><span class="sbt sbt-watch">PREPARE</span></div>
+        <div class="sess-bar-row"><span class="sess-bar-label tz-time" data-utc="720">8:00 PM ⭐</span><span class="sess-bar-time">NY open — second fade window</span><span class="sbt sbt-prime">SECONDARY FADE</span></div>
+        <div class="sess-bar-row"><span class="sess-bar-label tz-time" data-utc="960">12:00 AM</span><span class="sess-bar-time">Hard close</span><span class="sbt sbt-watch">CLOSE ALL</span></div>
       </div>
     </div>
 
@@ -1632,7 +1632,7 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
       </div>
       <div class="chk-list" id="fd-chk-list">
         <div class="chk-item"><div class="chk-box fade" onclick="updateProgress(this,'fade','fd',7)"></div><div class="chk-text"><strong>H4 context read</strong> — Know H4 bias before the spike happens.</div></div>
-        <div class="chk-item"><div class="chk-box fade" onclick="updateProgress(this,'fade','fd',7)"></div><div class="chk-text"><strong>Session window active</strong> — London 4–4:30 PM or NY 8–8:30 PM HKT only.</div></div>
+        <div class="chk-item"><div class="chk-box fade" onclick="updateProgress(this,'fade','fd',7)"></div><div class="chk-text"><strong>Session window active</strong> — London <span class="tz-time tz-inline" data-utc="480-510">4–4:30 PM</span> or NY <span class="tz-time tz-inline" data-utc="720-750">8–8:30 PM</span> <span class="tz-label-inline"></span> only.</div></div>
         <div class="chk-item"><div class="chk-box fade" onclick="updateProgress(this,'fade','fd',7)"></div><div class="chk-text"><strong>H1 VA TRAP fired</strong> — Spike pierced VAH/VAL and closed back inside. Signal confirmed on H1.</div></div>
         <div class="chk-item"><div class="chk-box fade" onclick="updateProgress(this,'fade','fd',7)"></div><div class="chk-text"><strong>H1 ADX below 25</strong> — Not trending strongly. Spike is manipulation, not momentum.</div></div>
         <div class="chk-item"><div class="chk-box fade" onclick="updateProgress(this,'fade','fd',7)"></div><div class="chk-text"><strong>M15 pullback to M15 VAH/VAL</strong> — Wait for retracement after H1 trap. Do not enter on H1 close.</div></div>
@@ -1660,13 +1660,13 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
       <div class="plan-section-label fade">Section 08</div>
       <h2>Daily Routine</h2>
       <div class="timeline">
-        <div class="tl-item warn"><div class="tl-time">7:45 AM</div><div class="tl-title">Morning Read</div><div class="tl-desc">Check H4 bias. Note yesterday's H1 VAH, VAL, POC. These are today's fade targets.</div></div>
-        <div class="tl-item"><div class="tl-time">8:00 AM – 3:45 PM</div><div class="tl-title">Tokyo — Watch Accumulation</div><div class="tl-desc">Observe. Tokyo builds the range London will spike through. Do not trade.</div></div>
-        <div class="tl-item warn"><div class="tl-time">3:45 PM</div><div class="tl-title">Pre-London Prep</div><div class="tl-desc">Mark H1 levels precisely. Set M15 lookback to 12 bars. Have alerts ready.</div></div>
-        <div class="tl-item pf"><div class="tl-time">4:00 – 5:30 PM ⭐</div><div class="tl-title">London Fade Window</div><div class="tl-desc">Watch H1 VA TRAP → M15 pullback + EDGE EXH → execute. Target H1 POC.</div></div>
-        <div class="tl-item"><div class="tl-time">5:30 – 7:45 PM</div><div class="tl-title">Manage + Prep NY</div><div class="tl-desc">TP1 at H1 POC. Breakeven on runner. Remap M15 at 7:45 PM for NY window.</div></div>
-        <div class="tl-item pf"><div class="tl-time">8:00 – 9:30 PM ⭐</div><div class="tl-title">NY Fade Window</div><div class="tl-desc">Same process. H1 VA TRAP → M15 entry. Second and final fade of the day.</div></div>
-        <div class="tl-item"><div class="tl-time">12:00 AM</div><div class="tl-title">Hard Close</div><div class="tl-desc">Close all. No overnight holds.</div></div>
+        <div class="tl-item warn"><div class="tl-time tz-time" data-utc="1425">7:45 AM</div><div class="tl-title">Morning Read</div><div class="tl-desc">Check H4 bias. Note yesterday's H1 VAH, VAL, POC. These are today's fade targets.</div></div>
+        <div class="tl-item"><div class="tl-time tz-time" data-utc="0-465">8:00 AM – 3:45 PM</div><div class="tl-title">Tokyo — Watch Accumulation</div><div class="tl-desc">Observe. Tokyo builds the range London will spike through. Do not trade.</div></div>
+        <div class="tl-item warn"><div class="tl-time tz-time" data-utc="465">3:45 PM</div><div class="tl-title">Pre-London Prep</div><div class="tl-desc">Mark H1 levels precisely. Set M15 lookback to 12 bars. Have alerts ready.</div></div>
+        <div class="tl-item pf"><div class="tl-time tz-time" data-utc="480-570">4:00 – 5:30 PM ⭐</div><div class="tl-title">London Fade Window</div><div class="tl-desc">Watch H1 VA TRAP → M15 pullback + EDGE EXH → execute. Target H1 POC.</div></div>
+        <div class="tl-item"><div class="tl-time tz-time" data-utc="570-705">5:30 – 7:45 PM</div><div class="tl-title">Manage + Prep NY</div><div class="tl-desc">TP1 at H1 POC. Breakeven on runner. Remap M15 at 7:45 PM for NY window.</div></div>
+        <div class="tl-item pf"><div class="tl-time tz-time" data-utc="720-810">8:00 – 9:30 PM ⭐</div><div class="tl-title">NY Fade Window</div><div class="tl-desc">Same process. H1 VA TRAP → M15 entry. Second and final fade of the day.</div></div>
+        <div class="tl-item"><div class="tl-time tz-time" data-utc="960">12:00 AM</div><div class="tl-title">Hard Close</div><div class="tl-desc">Close all. No overnight holds.</div></div>
       </div>
     </div>
 
@@ -1828,12 +1828,12 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
       <div class="plan-section-label magnet">Section 08</div>
       <h2>Daily Routine</h2>
       <div class="timeline">
-        <div class="tl-item warn"><div class="tl-time">7:45 AM</div><div class="tl-title">Magnet Scan</div><div class="tl-desc">Open D1 for all watchlist symbols. Which ones have price significantly displaced from D1 POC? Rank by distance. These are today's magnet candidates.</div></div>
-        <div class="tl-item"><div class="tl-time">8:00 AM – 3:30 PM</div><div class="tl-title">Tokyo — Watch Journey Begin</div><div class="tl-desc">Asia pairs (USDJPY, AUDUSD) sometimes start the journey in Tokyo. B-setup only. Watch but size down.</div></div>
-        <div class="tl-item pm"><div class="tl-time">4:00 PM ⭐</div><div class="tl-title">London Open — Primary Magnet Window</div><div class="tl-desc">London provides momentum to drive price toward D1 POC. H2 signal → M30 entry → ride to H2 POC first, then D1 POC if momentum holds.</div></div>
-        <div class="tl-item"><div class="tl-time">5:00 – 8:00 PM</div><div class="tl-title">Manage the Journey</div><div class="tl-desc">TP1 at H2 POC. Trail stop. If stalling at intermediate H2 VAH/VAL — partial close and re-enter if price breaks through.</div></div>
-        <div class="tl-item pm"><div class="tl-time">8:00 PM ⭐</div><div class="tl-title">NY Open — Acceleration or Reset</div><div class="tl-desc">If D1 POC not yet reached — NY often provides the final momentum spike to complete the journey. New M30 entry if H2 holds structure.</div></div>
-        <div class="tl-item"><div class="tl-time">12:00 AM</div><div class="tl-title">Close All</div><div class="tl-desc">Even if not reached. The magnet still pulls tomorrow.</div></div>
+        <div class="tl-item warn"><div class="tl-time tz-time" data-utc="1425">7:45 AM</div><div class="tl-title">Magnet Scan</div><div class="tl-desc">Open D1 for all watchlist symbols. Which ones have price significantly displaced from D1 POC? Rank by distance. These are today's magnet candidates.</div></div>
+        <div class="tl-item"><div class="tl-time tz-time" data-utc="0-450">8:00 AM – 3:30 PM</div><div class="tl-title">Tokyo — Watch Journey Begin</div><div class="tl-desc">Asia pairs (USDJPY, AUDUSD) sometimes start the journey in Tokyo. B-setup only. Watch but size down.</div></div>
+        <div class="tl-item pm"><div class="tl-time tz-time" data-utc="480">4:00 PM ⭐</div><div class="tl-title">London Open — Primary Magnet Window</div><div class="tl-desc">London provides momentum to drive price toward D1 POC. H2 signal → M30 entry → ride to H2 POC first, then D1 POC if momentum holds.</div></div>
+        <div class="tl-item"><div class="tl-time tz-time" data-utc="540-720">5:00 – 8:00 PM</div><div class="tl-title">Manage the Journey</div><div class="tl-desc">TP1 at H2 POC. Trail stop. If stalling at intermediate H2 VAH/VAL — partial close and re-enter if price breaks through.</div></div>
+        <div class="tl-item pm"><div class="tl-time tz-time" data-utc="720">8:00 PM ⭐</div><div class="tl-title">NY Open — Acceleration or Reset</div><div class="tl-desc">If D1 POC not yet reached — NY often provides the final momentum spike to complete the journey. New M30 entry if H2 holds structure.</div></div>
+        <div class="tl-item"><div class="tl-time tz-time" data-utc="960">12:00 AM</div><div class="tl-title">Close All</div><div class="tl-desc">Even if not reached. The magnet still pulls tomorrow.</div></div>
       </div>
     </div>
 
@@ -1867,9 +1867,160 @@ function switchTab(id, btn) {
   document.getElementById('tab-' + id).classList.add('active');
   btn.classList.add('active');
   window.scrollTo(0, 0);
+  applyTimezone();  // re-apply tz when switching tabs
 }
 
-// ── Guide sidebar scroll spy ──
+// ── Scroll-to-top button ──
+window.addEventListener('scroll', function() {
+  var btn = document.getElementById('scroll-top');
+  if (!btn) return;
+  if (window.scrollY > 300) btn.classList.add('visible');
+  else btn.classList.remove('visible');
+});
+
+// ── Timezone engine ──────────────────────────────────────────────────────
+// All times are stored as UTC minutes from midnight (0-1439)
+// 1425 = 23:45 UTC = 7:45 HKT (crosses midnight, treated as prev-day)
+
+// DST-aware offsets for London and New York
+function getLondonOffset() {
+  // UK BST: last Sun March 01:00 UTC → last Sun October 01:00 UTC
+  var now = new Date();
+  var bstStart = lastSundayOf(now.getFullYear(), 2); bstStart.setUTCHours(1);
+  var bstEnd   = lastSundayOf(now.getFullYear(), 9); bstEnd.setUTCHours(1);
+  return (now >= bstStart && now < bstEnd) ? 60 : 0;
+}
+function getNYOffset() {
+  // US EDT: 2nd Sun March 02:00 → 1st Sun November 02:00 local
+  var now = new Date();
+  var edtStart = nthSundayOf(now.getFullYear(), 2, 2); edtStart.setHours(2);
+  var edtEnd   = nthSundayOf(now.getFullYear(), 10, 1); edtEnd.setHours(2);
+  return (now >= edtStart && now < edtEnd) ? -240 : -300;
+}
+function getSydneyOffset() {
+  // AEDT: 1st Sun Oct → 1st Sun Apr (southern hemisphere)
+  var now = new Date();
+  var aedtStart = nthSundayOf(now.getFullYear(), 9, 1);
+  var aedtEnd   = nthSundayOf(now.getFullYear() + 1, 3, 1);
+  // Also check previous year's end
+  var aedtEndPrev = nthSundayOf(now.getFullYear(), 3, 1);
+  var inAEDT = (now >= aedtStart) || (now < aedtEndPrev);
+  return inAEDT ? 660 : 600;
+}
+function lastSundayOf(year, month) {
+  var d = new Date(Date.UTC(year, month + 1, 0));
+  d.setUTCDate(d.getUTCDate() - d.getUTCDay());
+  return d;
+}
+function nthSundayOf(year, month, n) {
+  var d = new Date(year, month, 1);
+  var day = d.getDay();
+  d.setDate(1 + ((7 - day) % 7) + (n - 1) * 7);
+  return d;
+}
+
+function getOffsetMinutes() {
+  var sel = document.getElementById('tz-select');
+  if (!sel) return 480;
+  var val = sel.value;
+  if (val === 'auto') return -new Date().getTimezoneOffset();
+  if (val === '60')   return getLondonOffset();
+  if (val === '-300') return getNYOffset();
+  if (val === '600')  return getSydneyOffset();
+  return parseInt(val);
+}
+
+function getTzLabel() {
+  var sel = document.getElementById('tz-select');
+  if (!sel) return 'HKT';
+  var val = sel.value;
+  var off = getOffsetMinutes();
+  var h = Math.floor(Math.abs(off) / 60), m = Math.abs(off) % 60;
+  var sign = off >= 0 ? '+' : '-';
+  var utcStr = 'UTC' + sign + h + (m ? ':' + String(m).padStart(2,'0') : '');
+  if (val === 'auto') {
+    try { return Intl.DateTimeFormat().resolvedOptions().timeZone.split('/').pop().replace('_',' ') + ' ' + utcStr; }
+    catch(e) { return utcStr; }
+  }
+  var labels = {'480':'HKT','60': getLondonOffset()===60?'BST':'GMT',
+    '-300': getNYOffset()===-240?'EDT':'EST', '600': getSydneyOffset()===660?'AEDT':'AEST', '540':'JST'};
+  return (labels[val] || '') + ' ' + utcStr;
+}
+
+function fmtMinutes(totalMins) {
+  // Handle cross-midnight (values >= 1440 or used as prev-day marker like 1425)
+  var m = ((totalMins % 1440) + 1440) % 1440;
+  var h = Math.floor(m / 60);
+  var min = m % 60;
+  var ampm = h >= 12 ? 'PM' : 'AM';
+  var h12 = h % 12 || 12;
+  var minStr = min ? ':' + String(min).padStart(2,'0') : '';
+  return h12 + minStr + ' ' + ampm;
+}
+
+function convertUtcToLocal(utcStr, offsetMins) {
+  // utcStr: "480" (single) or "480-540" (range)
+  var hktOffset = 480; // HKT = UTC+8 = 480 mins
+  var parts = utcStr.split('-');
+  
+  function convert(utcMins) {
+    // utcMins is already UTC (stored as UTC minutes)
+    // Special case: 1425 = 23:45 UTC = 7:45 HKT (next-day wrap for display)
+    return ((parseInt(utcMins) + offsetMins) + 1440) % 1440;
+  }
+  
+  if (parts.length === 1) {
+    return fmtMinutes(convert(parts[0]));
+  } else {
+    // Handle negative range (e.g. "0-450" might cross midnight after conversion)
+    var start = convert(parts[0]);
+    var end   = convert(parts[1]);
+    return fmtMinutes(start) + '–' + fmtMinutes(end);
+  }
+}
+
+function applyTimezone() {
+  var offset = getOffsetMinutes();
+  var label  = getTzLabel();
+
+  // Update all tz-time elements
+  document.querySelectorAll('.tz-time').forEach(function(el) {
+    var utc = el.getAttribute('data-utc');
+    if (!utc) return;
+    var converted = convertUtcToLocal(utc, offset);
+    // Preserve star emoji if present in original
+    var hasStar = el.textContent.indexOf('⭐') >= 0;
+    el.textContent = converted + (hasStar ? ' ⭐' : '');
+  });
+
+  // Update all inline label spans
+  document.querySelectorAll('.tz-label-inline').forEach(function(el) {
+    el.textContent = label;
+  });
+
+  // Update h2 section headings
+  document.querySelectorAll('h2').forEach(function(el) {
+    el.innerHTML = el.innerHTML
+      .replace(/Session Windows.*?<\/h2>/i, '')
+      .replace(/Fade Windows.*?<\/h2>/i, '');
+  });
+}
+
+// Live clock
+function updateClock() {
+  var offset = getOffsetMinutes();
+  var now = new Date();
+  var localMs = now.getTime() + (offset - (-now.getTimezoneOffset())) * 60000;
+  var localDate = new Date(localMs);
+  var hh = String(localDate.getUTCHours()).padStart(2,'0');
+  var mm = String(localDate.getUTCMinutes()).padStart(2,'0');
+  var ss = String(localDate.getUTCSeconds()).padStart(2,'0');
+  var el = document.getElementById('tz-clock');
+  if (el) el.textContent = hh + ':' + mm + ':' + ss;
+}
+setInterval(updateClock, 1000);
+
+// ── Guide sidebar active on scroll ──
 (function() {
   var gSecs = document.querySelectorAll('#tab-guide section[id]');
   var gNavs = document.querySelectorAll('#tab-guide .nav-item');
@@ -1913,7 +2064,7 @@ document.querySelectorAll('.plan-nav-item').forEach(function(a) {
   });
 });
 
-// ── Simple checkbox (no progress bar) ──
+// ── Simple checkbox ──
 function toggleChk(el, plan) {
   el.classList.toggle('checked');
   el.classList.toggle(plan);
@@ -1933,6 +2084,15 @@ function updateProgress(el, plan, prefix, total) {
   if (bar) bar.style.width = pct + '%';
   if (txt) txt.textContent = done + ' / ' + total + ' checked' + (done === total ? ' ✓ Ready to trade' : '');
 }
+
+// ── Init on load ──
+window.addEventListener('DOMContentLoaded', function() {
+  // Set selector to local time by default
+  var sel = document.getElementById('tz-select');
+  if (sel) sel.value = 'auto';
+  applyTimezone();
+  updateClock();
+});
 </script>
 </body>
 </html>
