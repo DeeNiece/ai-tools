@@ -291,9 +291,41 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
 .quality-card p{font-size:12px;color:var(--gray);margin:0;line-height:1.5}
 /* ── FOOTER ── */
 .plan-footer{border-top:1px solid var(--border);padding-top:20px;margin-top:28px;text-align:center;font-family:var(--font-mono);font-size:11px;color:var(--gray)}
+
+/* ── Timezone bar ── */
+.tz-bar{position:fixed;top:48px;left:0;right:0;height:34px;z-index:250;background:var(--surface2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;padding:0 16px;font-family:var(--font-mono);font-size:11px}
+.tz-bar-icon{color:var(--gray)}
+.tz-clock{color:var(--accent);font-weight:700;min-width:80px;letter-spacing:.5px}
+.tz-bar-label{color:var(--gray)}
+.tz-bar select{background:var(--bg);border:1px solid var(--border);color:var(--white);font-family:var(--font-mono);font-size:10px;padding:2px 6px;border-radius:4px;cursor:pointer;outline:none}
+.tz-bar select:hover{border-color:var(--accent)}
+.tz-label-inline{font-family:var(--font-mono);font-size:10px;color:var(--accent);background:rgba(108,140,255,.1);border:1px solid rgba(108,140,255,.2);padding:1px 5px;border-radius:3px;margin-left:3px}
+/* Push plan tabs down for tz-bar */
+#tab-sniper,#tab-fade,#tab-magnet{padding-top:82px !important}
+/* Scroll-to-top */
+#scroll-top{position:fixed;bottom:22px;right:18px;z-index:500;width:34px;height:34px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--gray);font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s,color .2s,border-color .2s}
+#scroll-top.vis{opacity:1;pointer-events:auto}
+#scroll-top:hover{color:var(--white);border-color:var(--accent);background:var(--bg)}
 </style>
 </head>
 <body>
+<!-- TIMEZONE BAR -->
+<div class="tz-bar" id="tz-bar">
+  <span class="tz-bar-icon">🕐</span>
+  <span class="tz-clock" id="tz-clock">--:--:--</span>
+  <span class="tz-bar-label">Times in:</span>
+  <select id="tz-select" onchange="applyTimezone()">
+    <option value="auto">🏠 My Local Time</option>
+    <option value="480">🇭🇰 Hong Kong (HKT UTC+8)</option>
+    <option value="london">🇬🇧 London (GMT/BST)</option>
+    <option value="ny">🇺🇸 New York (EST/EDT)</option>
+    <option value="sydney">🇦🇺 Sydney (AEST/AEDT)</option>
+    <option value="540">🇯🇵 Tokyo (JST UTC+9)</option>
+  </select>
+</div>
+<!-- SCROLL TO TOP -->
+<button id="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</button>
+
 <!-- TAB BAR -->
 <div class="tab-bar">
   <div class="tab-bar-brand">
@@ -1860,167 +1892,120 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
 </div><!-- #tab-magnet -->
 
 <script>
-// ── Tab switching ──
+// ── Tab switching ──────────────────────────────────────────────────────────
 function switchTab(id, btn) {
   document.querySelectorAll('.tab-page').forEach(function(p) { p.classList.remove('active'); });
   document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
   document.getElementById('tab-' + id).classList.add('active');
   btn.classList.add('active');
   window.scrollTo(0, 0);
-  applyTimezone();  // re-apply tz when switching tabs
+  applyTimezone();
 }
 
-// ── Scroll-to-top button ──
+// ── Scroll-to-top ──────────────────────────────────────────────────────────
 window.addEventListener('scroll', function() {
   var btn = document.getElementById('scroll-top');
   if (!btn) return;
-  if (window.scrollY > 300) btn.classList.add('visible');
-  else btn.classList.remove('visible');
+  if (window.scrollY > 300) btn.classList.add('vis');
+  else btn.classList.remove('vis');
 });
 
-// ── Timezone engine ──────────────────────────────────────────────────────
-// All times are stored as UTC minutes from midnight (0-1439)
-// 1425 = 23:45 UTC = 7:45 HKT (crosses midnight, treated as prev-day)
-
-// DST-aware offsets for London and New York
-function getLondonOffset() {
-  // UK BST: last Sun March 01:00 UTC → last Sun October 01:00 UTC
-  var now = new Date();
-  var bstStart = lastSundayOf(now.getFullYear(), 2); bstStart.setUTCHours(1);
-  var bstEnd   = lastSundayOf(now.getFullYear(), 9); bstEnd.setUTCHours(1);
-  return (now >= bstStart && now < bstEnd) ? 60 : 0;
-}
-function getNYOffset() {
-  // US EDT: 2nd Sun March 02:00 → 1st Sun November 02:00 local
-  var now = new Date();
-  var edtStart = nthSundayOf(now.getFullYear(), 2, 2); edtStart.setHours(2);
-  var edtEnd   = nthSundayOf(now.getFullYear(), 10, 1); edtEnd.setHours(2);
-  return (now >= edtStart && now < edtEnd) ? -240 : -300;
-}
-function getSydneyOffset() {
-  // AEDT: 1st Sun Oct → 1st Sun Apr (southern hemisphere)
-  var now = new Date();
-  var aedtStart = nthSundayOf(now.getFullYear(), 9, 1);
-  var aedtEnd   = nthSundayOf(now.getFullYear() + 1, 3, 1);
-  // Also check previous year's end
-  var aedtEndPrev = nthSundayOf(now.getFullYear(), 3, 1);
-  var inAEDT = (now >= aedtStart) || (now < aedtEndPrev);
-  return inAEDT ? 660 : 600;
-}
-function lastSundayOf(year, month) {
+// ── DST helpers ────────────────────────────────────────────────────────────
+function lastSundayUTC(year, month) {
   var d = new Date(Date.UTC(year, month + 1, 0));
   d.setUTCDate(d.getUTCDate() - d.getUTCDay());
   return d;
 }
-function nthSundayOf(year, month, n) {
+function nthSunday(year, month, n) {
   var d = new Date(year, month, 1);
-  var day = d.getDay();
-  d.setDate(1 + ((7 - day) % 7) + (n - 1) * 7);
+  d.setDate(1 + ((7 - d.getDay()) % 7) + (n - 1) * 7);
   return d;
 }
-
-function getOffsetMinutes() {
-  var sel = document.getElementById('tz-select');
-  if (!sel) return 480;
-  var val = sel.value;
-  if (val === 'auto') return -new Date().getTimezoneOffset();
-  if (val === '60')   return getLondonOffset();
-  if (val === '-300') return getNYOffset();
-  if (val === '600')  return getSydneyOffset();
-  return parseInt(val);
+function getLondonOffset() {
+  var now = new Date();
+  var s = lastSundayUTC(now.getFullYear(), 2); s.setUTCHours(1);
+  var e = lastSundayUTC(now.getFullYear(), 9); e.setUTCHours(1);
+  return (now >= s && now < e) ? 60 : 0;
+}
+function getNYOffset() {
+  var now = new Date();
+  var s = nthSunday(now.getFullYear(), 2, 2); s.setHours(2);
+  var e = nthSunday(now.getFullYear(), 10, 1); e.setHours(2);
+  return (now >= s && now < e) ? -240 : -300;
+}
+function getSydneyOffset() {
+  var now = new Date();
+  var s = nthSunday(now.getFullYear(), 9, 1);
+  var ePrev = nthSunday(now.getFullYear(), 3, 1);
+  return (now >= s || now < ePrev) ? 660 : 600;
 }
 
+// ── Get offset in minutes for selected TZ ─────────────────────────────────
+function getOffsetMins() {
+  var val = (document.getElementById('tz-select') || {value:'auto'}).value;
+  if (val === 'auto')   return -new Date().getTimezoneOffset();
+  if (val === 'london') return getLondonOffset();
+  if (val === 'ny')     return getNYOffset();
+  if (val === 'sydney') return getSydneyOffset();
+  return parseInt(val) || 480;
+}
+
+// ── Get label string for selected TZ ──────────────────────────────────────
 function getTzLabel() {
-  var sel = document.getElementById('tz-select');
-  if (!sel) return 'HKT';
-  var val = sel.value;
-  var off = getOffsetMinutes();
-  var h = Math.floor(Math.abs(off) / 60), m = Math.abs(off) % 60;
-  var sign = off >= 0 ? '+' : '-';
-  var utcStr = 'UTC' + sign + h + (m ? ':' + String(m).padStart(2,'0') : '');
-  if (val === 'auto') {
-    try { return Intl.DateTimeFormat().resolvedOptions().timeZone.split('/').pop().replace('_',' ') + ' ' + utcStr; }
-    catch(e) { return utcStr; }
+  var val = (document.getElementById('tz-select') || {value:'auto'}).value;
+  var off = getOffsetMins();
+  var h = Math.floor(Math.abs(off)/60), m = Math.abs(off)%60;
+  var utc = 'UTC'+(off>=0?'+':'-')+h+(m?':'+String(m).padStart(2,'0'):'');
+  if (val==='auto') {
+    try { var tz=Intl.DateTimeFormat().resolvedOptions().timeZone.split('/').pop().replace(/_/g,' '); return tz+' '+utc; } catch(e) { return utc; }
   }
-  var labels = {'480':'HKT','60': getLondonOffset()===60?'BST':'GMT',
-    '-300': getNYOffset()===-240?'EDT':'EST', '600': getSydneyOffset()===660?'AEDT':'AEST', '540':'JST'};
-  return (labels[val] || '') + ' ' + utcStr;
+  var names = {'480':'HKT','london':getLondonOffset()===60?'BST':'GMT','ny':getNYOffset()===-240?'EDT':'EST','sydney':getSydneyOffset()===660?'AEDT':'AEST','540':'JST'};
+  return (names[val]||'') + ' ' + utc;
 }
 
-function fmtMinutes(totalMins) {
-  // Handle cross-midnight (values >= 1440 or used as prev-day marker like 1425)
-  var m = ((totalMins % 1440) + 1440) % 1440;
-  var h = Math.floor(m / 60);
-  var min = m % 60;
-  var ampm = h >= 12 ? 'PM' : 'AM';
-  var h12 = h % 12 || 12;
-  var minStr = min ? ':' + String(min).padStart(2,'0') : '';
-  return h12 + minStr + ' ' + ampm;
+// ── Format UTC minutes → local time string ─────────────────────────────────
+// Times stored as UTC minutes (0–1439). 1425 = 23:45 UTC = 7:45 HKT.
+function fmtMins(m) {
+  m = ((m % 1440) + 1440) % 1440;
+  var h = Math.floor(m/60), mn = m%60;
+  var ap = h>=12?'PM':'AM', h12 = h%12||12;
+  return h12 + (mn?':'+String(mn).padStart(2,'0'):'') + ' ' + ap;
+}
+function convertTime(utcStr, offsetMins) {
+  var parts = utcStr.toString().split('-');
+  var conv = function(v) { return ((parseInt(v)+offsetMins)+1440)%1440; };
+  if (parts.length===1) return fmtMins(conv(parts[0]));
+  return fmtMins(conv(parts[0])) + '–' + fmtMins(conv(parts[1]));
 }
 
-function convertUtcToLocal(utcStr, offsetMins) {
-  // utcStr: "480" (single) or "480-540" (range)
-  var hktOffset = 480; // HKT = UTC+8 = 480 mins
-  var parts = utcStr.split('-');
-  
-  function convert(utcMins) {
-    // utcMins is already UTC (stored as UTC minutes)
-    // Special case: 1425 = 23:45 UTC = 7:45 HKT (next-day wrap for display)
-    return ((parseInt(utcMins) + offsetMins) + 1440) % 1440;
-  }
-  
-  if (parts.length === 1) {
-    return fmtMinutes(convert(parts[0]));
-  } else {
-    // Handle negative range (e.g. "0-450" might cross midnight after conversion)
-    var start = convert(parts[0]);
-    var end   = convert(parts[1]);
-    return fmtMinutes(start) + '–' + fmtMinutes(end);
-  }
-}
-
+// ── Apply timezone to all tagged elements ──────────────────────────────────
 function applyTimezone() {
-  var offset = getOffsetMinutes();
-  var label  = getTzLabel();
-
-  // Update all tz-time elements
+  var off   = getOffsetMins();
+  var label = getTzLabel();
   document.querySelectorAll('.tz-time').forEach(function(el) {
     var utc = el.getAttribute('data-utc');
     if (!utc) return;
-    var converted = convertUtcToLocal(utc, offset);
-    // Preserve star emoji if present in original
     var hasStar = el.textContent.indexOf('⭐') >= 0;
-    el.textContent = converted + (hasStar ? ' ⭐' : '');
+    el.textContent = convertTime(utc, off) + (hasStar ? ' ⭐' : '');
   });
-
-  // Update all inline label spans
   document.querySelectorAll('.tz-label-inline').forEach(function(el) {
     el.textContent = label;
   });
-
-  // Update h2 section headings
-  document.querySelectorAll('h2').forEach(function(el) {
-    el.innerHTML = el.innerHTML
-      .replace(/Session Windows.*?<\/h2>/i, '')
-      .replace(/Fade Windows.*?<\/h2>/i, '');
-  });
 }
 
-// Live clock
+// ── Live clock ────────────────────────────────────────────────────────────
 function updateClock() {
-  var offset = getOffsetMinutes();
-  var now = new Date();
-  var localMs = now.getTime() + (offset - (-now.getTimezoneOffset())) * 60000;
-  var localDate = new Date(localMs);
-  var hh = String(localDate.getUTCHours()).padStart(2,'0');
-  var mm = String(localDate.getUTCMinutes()).padStart(2,'0');
-  var ss = String(localDate.getUTCSeconds()).padStart(2,'0');
-  var el = document.getElementById('tz-clock');
-  if (el) el.textContent = hh + ':' + mm + ':' + ss;
+  var off  = getOffsetMins();
+  var now  = new Date();
+  var ms   = now.getTime() + (off - (-now.getTimezoneOffset())) * 60000;
+  var d    = new Date(ms);
+  var pad  = function(n){ return String(n).padStart(2,'0'); };
+  var el   = document.getElementById('tz-clock');
+  if (el) el.textContent = pad(d.getUTCHours())+':'+pad(d.getUTCMinutes())+':'+pad(d.getUTCSeconds());
 }
 setInterval(updateClock, 1000);
 
-// ── Guide sidebar active on scroll ──
+// ── Guide sidebar scroll spy ───────────────────────────────────────────────
 (function() {
   var gSecs = document.querySelectorAll('#tab-guide section[id]');
   var gNavs = document.querySelectorAll('#tab-guide .nav-item');
@@ -2028,66 +2013,61 @@ setInterval(updateClock, 1000);
     entries.forEach(function(e) {
       if (e.isIntersecting) {
         gNavs.forEach(function(n) { n.classList.remove('active'); });
-        var a = document.querySelector('#tab-guide .nav-item[href="#' + e.target.id + '"]');
+        var a = document.querySelector('#tab-guide .nav-item[href="#'+e.target.id+'"]');
         if (a) a.classList.add('active');
       }
     });
-  }, { rootMargin: '-20% 0px -70% 0px' });
+  }, {rootMargin:'-20% 0px -70% 0px'});
   gSecs.forEach(function(s) { obs.observe(s); });
 })();
 
-// ── Plan sidebar scroll spy ──
+// ── Plan sidebar scroll spy ────────────────────────────────────────────────
 function planScrollSpy(tabId, activeClass) {
-  var secs = document.querySelectorAll('#' + tabId + ' .plan-section[id]');
-  var navs = document.querySelectorAll('#' + tabId + ' .plan-nav-item');
-  var obs = new IntersectionObserver(function(entries) {
+  var secs = document.querySelectorAll('#'+tabId+' .plan-section[id]');
+  var navs = document.querySelectorAll('#'+tabId+' .plan-nav-item');
+  var obs  = new IntersectionObserver(function(entries) {
     entries.forEach(function(e) {
       if (e.isIntersecting) {
-        navs.forEach(function(n) { n.classList.remove('active-sniper', 'active-fade', 'active-magnet'); });
-        var a = document.querySelector('#' + tabId + ' .plan-nav-item[href="#' + e.target.id + '"]');
+        navs.forEach(function(n) { n.classList.remove('active-sniper','active-fade','active-magnet'); });
+        var a = document.querySelector('#'+tabId+' .plan-nav-item[href="#'+e.target.id+'"]');
         if (a) a.classList.add(activeClass);
       }
     });
-  }, { rootMargin: '-20% 0px -70% 0px' });
+  }, {rootMargin:'-20% 0px -70% 0px'});
   secs.forEach(function(s) { obs.observe(s); });
 }
-planScrollSpy('tab-sniper', 'active-sniper');
-planScrollSpy('tab-fade', 'active-fade');
-planScrollSpy('tab-magnet', 'active-magnet');
+planScrollSpy('tab-sniper','active-sniper');
+planScrollSpy('tab-fade','active-fade');
+planScrollSpy('tab-magnet','active-magnet');
 
-// ── Smooth scroll plan nav ──
+// ── Smooth scroll plan nav ─────────────────────────────────────────────────
 document.querySelectorAll('.plan-nav-item').forEach(function(a) {
   a.addEventListener('click', function(e) {
     e.preventDefault();
     var t = document.querySelector(a.getAttribute('href'));
-    if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (t) t.scrollIntoView({behavior:'smooth',block:'start'});
   });
 });
 
-// ── Simple checkbox ──
+// ── Checkboxes ────────────────────────────────────────────────────────────
 function toggleChk(el, plan) {
-  el.classList.toggle('checked');
-  el.classList.toggle(plan);
+  el.classList.toggle('checked'); el.classList.toggle(plan);
   el.textContent = el.classList.contains('checked') ? '✓' : '';
 }
-
-// ── Progress checklist ──
 function updateProgress(el, plan, prefix, total) {
-  el.classList.toggle('checked');
-  el.classList.toggle(plan);
+  el.classList.toggle('checked'); el.classList.toggle(plan);
   el.textContent = el.classList.contains('checked') ? '✓' : '';
-  var list = document.getElementById(prefix + '-chk-list');
+  var list = document.getElementById(prefix+'-chk-list');
   var done = list ? list.querySelectorAll('.chk-box.checked').length : 0;
-  var pct = Math.round((done / total) * 100);
-  var bar = document.getElementById(prefix + '-prog-bar');
-  var txt = document.getElementById(prefix + '-prog-txt');
-  if (bar) bar.style.width = pct + '%';
-  if (txt) txt.textContent = done + ' / ' + total + ' checked' + (done === total ? ' ✓ Ready to trade' : '');
+  var pct  = Math.round((done/total)*100);
+  var bar  = document.getElementById(prefix+'-prog-bar');
+  var txt  = document.getElementById(prefix+'-prog-txt');
+  if (bar) bar.style.width = pct+'%';
+  if (txt) txt.textContent = done+' / '+total+' checked'+(done===total?' ✓ Ready to trade':'');
 }
 
-// ── Init on load ──
+// ── Init ──────────────────────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', function() {
-  // Set selector to local time by default
   var sel = document.getElementById('tz-select');
   if (sel) sel.value = 'auto';
   applyTimezone();
