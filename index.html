@@ -22,7 +22,7 @@
 :root{
   --bg:#08091A;--surface:#0E1020;--surface2:#141628;--border:#1C2040;
   --green:#26DE8A;--red:#FF4E6A;--yellow:#FFD700;--white:#E8EAF6;
-  --gray:#6B7A9F;--accent:#6C8CFF;--teal:#26A69A;--gold:#FFD700;
+  --gray:#8B9BBF;--accent:#6C8CFF;--teal:#2BBFB2;--gold:#FFD700;
   --font-display:'Syne',sans-serif;--font-mono:'Space Mono',monospace;
 }
 html{scroll-behavior:smooth}
@@ -60,7 +60,7 @@ section{margin-bottom:64px;scroll-margin-top:32px}
 h2{font-size:26px;font-weight:800;letter-spacing:-.5px;margin-bottom:6px;padding-bottom:16px;border-bottom:1px solid var(--border)}
 h3{font-size:15px;font-weight:700;color:var(--accent);margin:24px 0 10px}
 h3.new{color:var(--teal)}
-p{color:#B0BAD4;margin-bottom:12px;font-size:13.5px}
+p{color:#C8D0E0;margin-bottom:12px;font-size:13.5px}
 .kw{cursor:pointer;border-bottom:1px dashed;padding-bottom:1px;transition:color .15s;position:relative;display:inline-block}
 .kw-green{color:var(--green);border-color:var(--green)}
 .kw-red{color:var(--red);border-color:var(--red)}
@@ -78,7 +78,7 @@ p{color:#B0BAD4;margin-bottom:12px;font-size:13.5px}
 .param-table tr:hover td{background:rgba(255,255,255,.02)}
 .param-name{font-family:var(--font-mono);color:var(--teal);font-size:11.5px}
 .param-default{font-family:var(--font-mono);color:var(--yellow);font-size:11px}
-.param-desc{color:#A0AABB;font-size:12.5px}
+.param-desc{color:#B8C5D6;font-size:12.5px}
 .param-new{font-family:var(--font-mono);font-size:9px;background:rgba(38,166,154,.1);color:var(--teal);padding:1px 5px;border-radius:3px;border:1px solid rgba(38,166,154,.25);vertical-align:middle;margin-left:6px}
 .callout{display:flex;gap:14px;padding:14px 16px;border-radius:8px;margin-bottom:12px;align-items:flex-start}
 .callout-tip{background:rgba(38,222,138,.06);border:1px solid rgba(38,222,138,.2);border-left:3px solid var(--green)}
@@ -92,7 +92,7 @@ p{color:#B0BAD4;margin-bottom:12px;font-size:13.5px}
 .callout-warn .callout-body strong{color:var(--yellow)}
 .callout-note .callout-body strong{color:var(--accent)}
 .callout-new .callout-body strong{color:var(--teal)}
-.callout-body p{color:#A0AABB;margin:0}
+.callout-body p{color:#B8C5D6;margin:0}
 .color-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
 .color-card{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px 16px}
 .color-swatch{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:6px;flex-shrink:0}
@@ -121,7 +121,7 @@ p{color:#B0BAD4;margin-bottom:12px;font-size:13.5px}
 .discord-body{padding:12px 14px;font-size:11px;color:#DCDDDE;font-family:var(--font-mono);line-height:1.8}
 .discord-green{color:#26DE8A}
 .discord-yellow{color:#FFD700}
-.discord-gray{color:#72767D}
+.discord-gray{color:#B8C5D6}
 .sess-table{width:100%;border-collapse:collapse;font-size:12px}
 .sess-table th{padding:8px 10px;text-align:left;background:var(--surface2);color:var(--gray);font-size:10px;letter-spacing:1px;font-family:var(--font-mono);border-bottom:1px solid var(--border);font-weight:400}
 .sess-table td{padding:9px 10px;border-bottom:1px solid rgba(28,32,64,.5);vertical-align:middle}
@@ -133,7 +133,7 @@ p{color:#B0BAD4;margin-bottom:12px;font-size:13.5px}
 .step{display:grid;grid-template-columns:48px 140px 1fr;background:var(--surface2);border:1px solid var(--border);border-radius:8px;overflow:hidden}
 .step-num{background:rgba(255,215,0,.08);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--yellow);border-right:1px solid var(--border);padding:14px 8px}
 .step-title{padding:14px;border-right:1px solid var(--border);font-size:12.5px;font-weight:700;color:var(--white);display:flex;align-items:center}
-.step-desc{padding:14px 16px;font-size:12px;color:#9AAABB;line-height:1.6;display:flex;align-items:center}
+.step-desc{padding:14px 16px;font-size:12px;color:#B8C5D6;line-height:1.6;display:flex;align-items:center}
 .toc-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:32px}
 .toc-item{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;text-decoration:none;transition:all .15s}
 .toc-item:hover{border-color:rgba(255,215,0,.3);background:rgba(255,215,0,.04)}
@@ -154,7 +154,7 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
 .tag-added{background:rgba(38,222,138,.1);color:var(--green);border:1px solid rgba(38,222,138,.2)}
 .tag-changed{background:rgba(108,140,255,.1);color:var(--accent);border:1px solid rgba(108,140,255,.2)}
 .tag-fixed{background:rgba(255,215,0,.1);color:var(--yellow);border:1px solid rgba(255,215,0,.2)}
-.changelog-text{color:#A0AABB;line-height:1.5}
+.changelog-text{color:#B8C5D6;line-height:1.5}
 .validated-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
 .validated-card{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:10px 12px}
 .validated-sym{font-family:var(--font-mono);font-weight:700;color:var(--yellow);font-size:12px;margin-bottom:4px}
@@ -209,7 +209,7 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
 .plan-section h2{font-size:22px;font-weight:800;letter-spacing:-.4px;margin-bottom:6px;padding-bottom:12px;border-bottom:1px solid var(--border)}
 .plan-section h3{font-size:14px;font-weight:700;margin:18px 0 8px}
 .plan-section h3.sniper{color:var(--green)}.plan-section h3.fade{color:var(--accent)}.plan-section h3.magnet{color:var(--teal)}
-.plan-section p{color:#B0BAD4;font-size:13px;margin-bottom:10px}
+.plan-section p{color:#C8D0E0;font-size:13px;margin-bottom:10px}
 /* ── TF CARDS ── */
 .tf-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}
 .tf-card{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px;position:relative;overflow:hidden}
@@ -219,7 +219,7 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
 .tf-card.h1::after{background:var(--green)}.tf-card.m15::after{background:var(--teal)}
 .tf-label{font-family:var(--font-mono);font-size:20px;font-weight:700;color:var(--white);margin-bottom:2px}
 .tf-role{font-family:var(--font-mono);font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--gray);margin-bottom:8px}
-.tf-desc{font-size:12px;color:#9AAABB;line-height:1.5;margin-bottom:6px}
+.tf-desc{font-size:12px;color:#B8C5D6;line-height:1.5;margin-bottom:6px}
 .tf-lookback{display:inline-block;font-family:var(--font-mono);font-size:10px;padding:2px 7px;border-radius:3px;margin-top:4px}
 .tf-lookback.d1{background:rgba(255,215,0,.1);color:var(--yellow);border:1px solid rgba(255,215,0,.2)}
 .tf-lookback.h2{background:rgba(38,222,138,.1);color:var(--green);border:1px solid rgba(38,222,138,.2)}
@@ -243,7 +243,7 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
 .chk-box.checked.sniper{background:rgba(38,222,138,.15);border-color:var(--green);color:var(--green)}
 .chk-box.checked.fade{background:rgba(108,140,255,.15);border-color:var(--accent);color:var(--accent)}
 .chk-box.checked.magnet{background:rgba(38,166,154,.15);border-color:var(--teal);color:var(--teal)}
-.chk-text{color:#9AAABB;line-height:1.5;font-size:12.5px}
+.chk-text{color:#B8C5D6;line-height:1.5;font-size:12.5px}
 .chk-text strong{color:var(--white)}
 .chk-progress{display:flex;align-items:center;gap:10px;margin:6px 0 14px;font-family:var(--font-mono);font-size:11px;color:var(--gray)}
 .chk-progress-bar{flex:1;height:3px;background:var(--border);border-radius:2px;overflow:hidden}
@@ -260,7 +260,7 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
 .tl-item.warn::before{border-color:var(--yellow);background:var(--yellow)}
 .tl-time{font-family:var(--font-mono);font-size:10px;color:var(--gray);margin-bottom:3px}
 .tl-title{font-size:13px;font-weight:700;color:var(--white);margin-bottom:2px}
-.tl-desc{font-size:12px;color:#9AAABB;line-height:1.5}
+.tl-desc{font-size:12px;color:#B8C5D6;line-height:1.5}
 /* ── RISK TABLE ── */
 .risk-table{width:100%;border-collapse:collapse;margin:12px 0;font-size:12.5px}
 .risk-table th{text-align:left;padding:8px 12px;background:var(--surface2);color:var(--gray);font-size:10px;letter-spacing:1px;font-family:var(--font-mono);border-bottom:1px solid var(--border);font-weight:400}
@@ -1038,19 +1038,19 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
   <table class="sess-table">
     <thead><tr><th>Symbol</th><th>Class</th><th>Prime hours (UTC)</th><th>HKT equivalent</th><th>Notes</th></tr></thead>
     <tbody>
-      <tr><td class="sess-sym">XAUUSD</td><td style="color:var(--gray);font-size:11px">Metal</td><td class="sess-prime">07:00–17:00</td><td class="sess-hkt">15:00–01:00</td><td style="font-size:11px;color:#8090A8">London + NY overlap. High ATR filter.</td></tr>
-      <tr><td class="sess-sym">XAGUSD</td><td style="color:var(--gray);font-size:11px">Metal</td><td class="sess-prime">08:00–16:00</td><td class="sess-hkt">16:00–00:00</td><td style="font-size:11px;color:#8090A8">Less liquid than XAU. Edge EXH most reliable.</td></tr>
-      <tr><td class="sess-sym">BTCUSD</td><td style="color:var(--gray);font-size:11px">Crypto</td><td class="sess-prime">24h — no gate</td><td class="sess-hkt">All day</td><td style="font-size:11px;color:#8090A8">No session filter. All hours valid.</td></tr>
-      <tr><td class="sess-sym">XTIUSD</td><td style="color:var(--gray);font-size:11px">Energy</td><td class="sess-prime">12:00–20:00</td><td class="sess-hkt">20:00–04:00</td><td style="font-size:11px;color:#8090A8">WTI settlement ~14:30 UTC shifts POC.</td></tr>
-      <tr><td class="sess-sym">EURUSD</td><td style="color:var(--gray);font-size:11px">FX Major</td><td class="sess-prime">08:00–16:00</td><td class="sess-hkt">16:00–00:00</td><td style="font-size:11px;color:#8090A8">London + NY overlap. VA Trap primary.</td></tr>
-      <tr><td class="sess-sym">GBPUSD</td><td style="color:var(--gray);font-size:11px">FX Major</td><td class="sess-prime">08:00–15:00</td><td class="sess-hkt">16:00–23:00</td><td style="font-size:11px;color:#8090A8">GBP spikes at London open.</td></tr>
-      <tr><td class="sess-sym">AUDUSD</td><td style="color:var(--gray);font-size:11px">FX Major</td><td class="sess-prime">00:00–08:00</td><td class="sess-hkt">08:00–16:00</td><td style="font-size:11px;color:#8090A8">Asian session. Correlates with XAUUSD.</td></tr>
-      <tr><td class="sess-sym">USDCHF</td><td style="color:var(--gray);font-size:11px">FX Major</td><td class="sess-prime">08:00–16:00</td><td class="sess-hkt">16:00–00:00</td><td style="font-size:11px;color:#8090A8">Safe-haven. SNB intervention risk.</td></tr>
-      <tr><td class="sess-sym">USDCAD</td><td style="color:var(--gray);font-size:11px">FX Major</td><td class="sess-prime">13:00–20:00</td><td class="sess-hkt">21:00–04:00</td><td style="font-size:11px;color:#8090A8">Oil-linked. BoC events cluster at POC.</td></tr>
-      <tr><td class="sess-sym">USDJPY</td><td style="color:var(--gray);font-size:11px">FX Yen</td><td class="sess-prime">00:00–08:00 + 13:00–16:00</td><td class="sess-hkt">08:00–16:00 + 21:00–00:00</td><td style="font-size:11px;color:#8090A8">BOJ intervention risk.</td></tr>
-      <tr><td class="sess-sym">AUDJPY</td><td style="color:var(--gray);font-size:11px">FX Yen</td><td class="sess-prime">00:00–08:00</td><td class="sess-hkt">08:00–16:00</td><td style="font-size:11px;color:#8090A8">Asian primary. Correlates with XAUUSD.</td></tr>
-      <tr><td class="sess-sym">CADJPY</td><td style="color:var(--gray);font-size:11px">FX Yen</td><td class="sess-prime">13:00–19:00</td><td class="sess-hkt">21:00–03:00</td><td style="font-size:11px;color:#8090A8">Oil + JPY. NY overlap cleanest.</td></tr>
-      <tr><td class="sess-sym">GBPJPY</td><td style="color:var(--gray);font-size:11px">FX Yen</td><td class="sess-prime">08:00–15:00</td><td class="sess-hkt">16:00–23:00</td><td style="font-size:11px;color:#8090A8">Most volatile Yen pair. 2 profiles max.</td></tr>
+      <tr><td class="sess-sym">XAUUSD</td><td style="color:var(--gray);font-size:11px">Metal</td><td class="sess-prime">07:00–17:00</td><td class="sess-hkt">15:00–01:00</td><td style="font-size:11px;color:#B8C5D6">London + NY overlap. High ATR filter.</td></tr>
+      <tr><td class="sess-sym">XAGUSD</td><td style="color:var(--gray);font-size:11px">Metal</td><td class="sess-prime">08:00–16:00</td><td class="sess-hkt">16:00–00:00</td><td style="font-size:11px;color:#B8C5D6">Less liquid than XAU. Edge EXH most reliable.</td></tr>
+      <tr><td class="sess-sym">BTCUSD</td><td style="color:var(--gray);font-size:11px">Crypto</td><td class="sess-prime">24h — no gate</td><td class="sess-hkt">All day</td><td style="font-size:11px;color:#B8C5D6">No session filter. All hours valid.</td></tr>
+      <tr><td class="sess-sym">XTIUSD</td><td style="color:var(--gray);font-size:11px">Energy</td><td class="sess-prime">12:00–20:00</td><td class="sess-hkt">20:00–04:00</td><td style="font-size:11px;color:#B8C5D6">WTI settlement ~14:30 UTC shifts POC.</td></tr>
+      <tr><td class="sess-sym">EURUSD</td><td style="color:var(--gray);font-size:11px">FX Major</td><td class="sess-prime">08:00–16:00</td><td class="sess-hkt">16:00–00:00</td><td style="font-size:11px;color:#B8C5D6">London + NY overlap. VA Trap primary.</td></tr>
+      <tr><td class="sess-sym">GBPUSD</td><td style="color:var(--gray);font-size:11px">FX Major</td><td class="sess-prime">08:00–15:00</td><td class="sess-hkt">16:00–23:00</td><td style="font-size:11px;color:#B8C5D6">GBP spikes at London open.</td></tr>
+      <tr><td class="sess-sym">AUDUSD</td><td style="color:var(--gray);font-size:11px">FX Major</td><td class="sess-prime">00:00–08:00</td><td class="sess-hkt">08:00–16:00</td><td style="font-size:11px;color:#B8C5D6">Asian session. Correlates with XAUUSD.</td></tr>
+      <tr><td class="sess-sym">USDCHF</td><td style="color:var(--gray);font-size:11px">FX Major</td><td class="sess-prime">08:00–16:00</td><td class="sess-hkt">16:00–00:00</td><td style="font-size:11px;color:#B8C5D6">Safe-haven. SNB intervention risk.</td></tr>
+      <tr><td class="sess-sym">USDCAD</td><td style="color:var(--gray);font-size:11px">FX Major</td><td class="sess-prime">13:00–20:00</td><td class="sess-hkt">21:00–04:00</td><td style="font-size:11px;color:#B8C5D6">Oil-linked. BoC events cluster at POC.</td></tr>
+      <tr><td class="sess-sym">USDJPY</td><td style="color:var(--gray);font-size:11px">FX Yen</td><td class="sess-prime">00:00–08:00 + 13:00–16:00</td><td class="sess-hkt">08:00–16:00 + 21:00–00:00</td><td style="font-size:11px;color:#B8C5D6">BOJ intervention risk.</td></tr>
+      <tr><td class="sess-sym">AUDJPY</td><td style="color:var(--gray);font-size:11px">FX Yen</td><td class="sess-prime">00:00–08:00</td><td class="sess-hkt">08:00–16:00</td><td style="font-size:11px;color:#B8C5D6">Asian primary. Correlates with XAUUSD.</td></tr>
+      <tr><td class="sess-sym">CADJPY</td><td style="color:var(--gray);font-size:11px">FX Yen</td><td class="sess-prime">13:00–19:00</td><td class="sess-hkt">21:00–03:00</td><td style="font-size:11px;color:#B8C5D6">Oil + JPY. NY overlap cleanest.</td></tr>
+      <tr><td class="sess-sym">GBPJPY</td><td style="color:var(--gray);font-size:11px">FX Yen</td><td class="sess-prime">08:00–15:00</td><td class="sess-hkt">16:00–23:00</td><td style="font-size:11px;color:#B8C5D6">Most volatile Yen pair. 2 profiles max.</td></tr>
     </tbody>
   </table>
 </section>
@@ -1373,11 +1373,11 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
       <table class="risk-table">
         <thead><tr><th>Level</th><th>Zone</th><th>Logic</th></tr></thead>
         <tbody>
-          <tr><td><span class="risk-sl">Stop Loss</span></td><td>Beyond manipulation wick</td><td style="color:#9AAABB;font-size:12px">Below swept low (long) or above swept high (short). Full H2 candle close beyond = real breakout, exit immediately.</td></tr>
-          <tr><td><span class="risk-tp1">TP1 (50–60%)</span></td><td>H2 POC</td><td style="color:#9AAABB;font-size:12px">Partial close. Move stop to <span class="kw kw-yellow">breakeven<span class="tooltip">Moving stop to entry price after TP1 hit. Cannot lose on trade from this point. Runner plays for free.</span></span> on remainder.</td></tr>
-          <tr><td><span class="risk-tp2">TP2 (runner)</span></td><td>H2 opposite VA boundary</td><td style="color:#9AAABB;font-size:12px">VAH if long, VAL if short. Trail stop if price stalls before reaching it.</td></tr>
-          <tr><td style="color:var(--gray);font-family:var(--font-mono);font-size:11px">Max 1/day</td><td>Hard rule</td><td style="color:#9AAABB;font-size:12px">If TP1 hit and runner active — that is the day's trade. No second position.</td></tr>
-          <tr><td style="color:var(--gray);font-family:var(--font-mono);font-size:11px">Hard Close</td><td>12:00 AM HKT</td><td style="color:#9AAABB;font-size:12px">London ends. Liquidity drops. Close everything regardless of P&L.</td></tr>
+          <tr><td><span class="risk-sl">Stop Loss</span></td><td>Beyond manipulation wick</td><td style="color:#B8C5D6;font-size:12px">Below swept low (long) or above swept high (short). Full H2 candle close beyond = real breakout, exit immediately.</td></tr>
+          <tr><td><span class="risk-tp1">TP1 (50–60%)</span></td><td>H2 POC</td><td style="color:#B8C5D6;font-size:12px">Partial close. Move stop to <span class="kw kw-yellow">breakeven<span class="tooltip">Moving stop to entry price after TP1 hit. Cannot lose on trade from this point. Runner plays for free.</span></span> on remainder.</td></tr>
+          <tr><td><span class="risk-tp2">TP2 (runner)</span></td><td>H2 opposite VA boundary</td><td style="color:#B8C5D6;font-size:12px">VAH if long, VAL if short. Trail stop if price stalls before reaching it.</td></tr>
+          <tr><td style="color:var(--gray);font-family:var(--font-mono);font-size:11px">Max 1/day</td><td>Hard rule</td><td style="color:#B8C5D6;font-size:12px">If TP1 hit and runner active — that is the day's trade. No second position.</td></tr>
+          <tr><td style="color:var(--gray);font-family:var(--font-mono);font-size:11px">Hard Close</td><td>12:00 AM HKT</td><td style="color:#B8C5D6;font-size:12px">London ends. Liquidity drops. Close everything regardless of P&L.</td></tr>
         </tbody>
       </table>
     </div>
@@ -1542,10 +1542,10 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
       <table class="risk-table">
         <thead><tr><th>Level</th><th>Zone</th><th>Logic</th></tr></thead>
         <tbody>
-          <tr><td><span class="risk-sl">Stop Loss</span></td><td>Beyond spike wick extreme</td><td style="color:#9AAABB;font-size:12px">Few pips beyond spike high/low. New candle closing beyond the extreme = breakout not fade. Exit.</td></tr>
-          <tr><td><span class="risk-tp1">TP1 (60%)</span></td><td>H1 POC</td><td style="color:#9AAABB;font-size:12px">Primary target. <span class="kw kw-accent">POC gravity<span class="tooltip">The magnetic pull of the POC — price returns to highest-volume level after being displaced. Most reliable in ranging markets with ADX below 25.</span></span> is strong. Close majority here.</td></tr>
-          <tr><td><span class="risk-tp2">TP2 (runner)</span></td><td>H1 opposite VA boundary</td><td style="color:#9AAABB;font-size:12px">If momentum carries past POC. Trail stop below/above POC once tagged.</td></tr>
-          <tr><td style="color:var(--gray);font-family:var(--font-mono);font-size:11px">Max 2/day</td><td>One per open</td><td style="color:#9AAABB;font-size:12px">London fade + NY fade = max 2 trades per day.</td></tr>
+          <tr><td><span class="risk-sl">Stop Loss</span></td><td>Beyond spike wick extreme</td><td style="color:#B8C5D6;font-size:12px">Few pips beyond spike high/low. New candle closing beyond the extreme = breakout not fade. Exit.</td></tr>
+          <tr><td><span class="risk-tp1">TP1 (60%)</span></td><td>H1 POC</td><td style="color:#B8C5D6;font-size:12px">Primary target. <span class="kw kw-accent">POC gravity<span class="tooltip">The magnetic pull of the POC — price returns to highest-volume level after being displaced. Most reliable in ranging markets with ADX below 25.</span></span> is strong. Close majority here.</td></tr>
+          <tr><td><span class="risk-tp2">TP2 (runner)</span></td><td>H1 opposite VA boundary</td><td style="color:#B8C5D6;font-size:12px">If momentum carries past POC. Trail stop below/above POC once tagged.</td></tr>
+          <tr><td style="color:var(--gray);font-family:var(--font-mono);font-size:11px">Max 2/day</td><td>One per open</td><td style="color:#B8C5D6;font-size:12px">London fade + NY fade = max 2 trades per day.</td></tr>
         </tbody>
       </table>
       <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>Breakout vs Fade</strong><p>Full H1 candle close beyond spike extreme with volume = real breakout. Exit the fade. Do not hold hoping for reversal.</p></div></div>
@@ -1678,10 +1678,10 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
       <table class="risk-table">
         <thead><tr><th>Instrument</th><th>Minimum</th><th>Strong Magnet</th><th>Very Strong</th></tr></thead>
         <tbody>
-          <tr><td style="color:var(--teal);font-family:var(--font-mono);font-size:11px">FX Majors</td><td style="color:#9AAABB">30 pips</td><td style="color:#9AAABB">50+ pips</td><td style="color:var(--green)">80+ pips</td></tr>
-          <tr><td style="color:var(--teal);font-family:var(--font-mono);font-size:11px">XAUUSD</td><td style="color:#9AAABB">$1.50</td><td style="color:#9AAABB">$3.00+</td><td style="color:var(--green)">$5.00+</td></tr>
-          <tr><td style="color:var(--teal);font-family:var(--font-mono);font-size:11px">GBPJPY / Exotics</td><td style="color:#9AAABB">40 pips</td><td style="color:#9AAABB">60+ pips</td><td style="color:var(--green)">100+ pips</td></tr>
-          <tr><td style="color:var(--teal);font-family:var(--font-mono);font-size:11px">Indices</td><td style="color:#9AAABB">1.5× D1 ATR</td><td style="color:#9AAABB">2× D1 ATR</td><td style="color:var(--green)">3× D1 ATR</td></tr>
+          <tr><td style="color:var(--teal);font-family:var(--font-mono);font-size:11px">FX Majors</td><td style="color:#B8C5D6">30 pips</td><td style="color:#B8C5D6">50+ pips</td><td style="color:var(--green)">80+ pips</td></tr>
+          <tr><td style="color:var(--teal);font-family:var(--font-mono);font-size:11px">XAUUSD</td><td style="color:#B8C5D6">$1.50</td><td style="color:#B8C5D6">$3.00+</td><td style="color:var(--green)">$5.00+</td></tr>
+          <tr><td style="color:var(--teal);font-family:var(--font-mono);font-size:11px">GBPJPY / Exotics</td><td style="color:#B8C5D6">40 pips</td><td style="color:#B8C5D6">60+ pips</td><td style="color:var(--green)">100+ pips</td></tr>
+          <tr><td style="color:var(--teal);font-family:var(--font-mono);font-size:11px">Indices</td><td style="color:#B8C5D6">1.5× D1 ATR</td><td style="color:#B8C5D6">2× D1 ATR</td><td style="color:var(--green)">3× D1 ATR</td></tr>
         </tbody>
       </table>
     </div>
@@ -1710,11 +1710,11 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
       <table class="risk-table">
         <thead><tr><th>Level</th><th>Zone</th><th>Logic</th></tr></thead>
         <tbody>
-          <tr><td><span class="risk-sl">Stop Loss</span></td><td>Beyond M30 entry level</td><td style="color:#9AAABB;font-size:12px">Just beyond the M30 signal. If this level fails, magnet path is invalidated — tight stop.</td></tr>
-          <tr><td><span class="risk-tp1">TP1 (40%)</span></td><td>H2 POC</td><td style="color:#9AAABB;font-size:12px">First milestone. Partial close. Move stop to <span class="kw kw-yellow">breakeven<span class="tooltip">Entry price becomes stop loss after TP1 hit. Runner plays for free — cannot lose.</span></span>.</td></tr>
-          <tr><td><span class="risk-tp1">TP2 (40%)</span></td><td>D1 POC</td><td style="color:#9AAABB;font-size:12px">The magnet target. Take most remaining here — this is why you entered.</td></tr>
-          <tr><td><span class="risk-tp2">TP3 (runner 20%)</span></td><td>D1 opposite VA boundary</td><td style="color:#9AAABB;font-size:12px">If price blasts through D1 POC with momentum. Trail stop at D1 POC.</td></tr>
-          <tr><td style="color:var(--gray);font-family:var(--font-mono);font-size:11px">Hard Close</td><td>12:00 AM HKT</td><td style="color:#9AAABB;font-size:12px">Even if D1 POC not reached — close all. The magnet still pulls tomorrow.</td></tr>
+          <tr><td><span class="risk-sl">Stop Loss</span></td><td>Beyond M30 entry level</td><td style="color:#B8C5D6;font-size:12px">Just beyond the M30 signal. If this level fails, magnet path is invalidated — tight stop.</td></tr>
+          <tr><td><span class="risk-tp1">TP1 (40%)</span></td><td>H2 POC</td><td style="color:#B8C5D6;font-size:12px">First milestone. Partial close. Move stop to <span class="kw kw-yellow">breakeven<span class="tooltip">Entry price becomes stop loss after TP1 hit. Runner plays for free — cannot lose.</span></span>.</td></tr>
+          <tr><td><span class="risk-tp1">TP2 (40%)</span></td><td>D1 POC</td><td style="color:#B8C5D6;font-size:12px">The magnet target. Take most remaining here — this is why you entered.</td></tr>
+          <tr><td><span class="risk-tp2">TP3 (runner 20%)</span></td><td>D1 opposite VA boundary</td><td style="color:#B8C5D6;font-size:12px">If price blasts through D1 POC with momentum. Trail stop at D1 POC.</td></tr>
+          <tr><td style="color:var(--gray);font-family:var(--font-mono);font-size:11px">Hard Close</td><td>12:00 AM HKT</td><td style="color:#B8C5D6;font-size:12px">Even if D1 POC not reached — close all. The magnet still pulls tomorrow.</td></tr>
         </tbody>
       </table>
     </div>
