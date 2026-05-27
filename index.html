@@ -354,6 +354,7 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
     <a class="nav-item" href="#sessions"><span class="nav-num">20</span>Symbol Session Matrix</a>
     <a class="nav-item" href="#settings"><span class="nav-num">21</span>Recommended Settings</a>
     <a class="nav-item" href="#workflow"><span class="nav-num">22</span>Trading Workflow</a>
+    <a class="nav-item new-section" href="#d1-dashboard"><span class="nav-num">25</span>D1 Dashboard ★</a>
   </div>
 </nav>
 
@@ -1239,7 +1240,70 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
   </div>
 
   <div style="border-top:1px solid var(--border);padding-top:24px;margin-top:32px;text-align:center">
-    <p style="font-family:var(--font-mono);font-size:11px;color:var(--gray)">VolumeEdge Pro v2.1 · Complete Guide · May 2026 · Based on FRVP Master Pro v3.2</p>
+    <p style="font-family:var(--font-mono);font-size:11px;color:var(--gray)">VolumeEdge Pro v2.2 · Complete Guide · May 2026 · Based on FRVP Master Pro v3.2</p>
+  </div>
+</section>
+
+<!-- D1 DIRECTION DASHBOARD -->
+<section id="d1-dashboard">
+  <div class="section-label new">Section 25 · New in v2.2</div>
+  <h2>D1 Direction Dashboard</h2>
+  <p>A dedicated overlay panel that renders <strong>only when your chart is on the D1 timeframe</strong>. It reads the current D1 FRVP profile in real time and displays a clean directional summary — your bias, key levels, and last fired signal at a glance.</p>
+
+  <div class="callout callout-new">
+    <div class="callout-icon">★</div>
+    <div class="callout-body"><strong>D1-only by design</strong><p>The panel is initialised only when <code>TimeFrame == TimeFrame.Daily</code>. Add the indicator to any other timeframe and this panel simply does not appear — no clutter on your H2 or M30 charts.</p></div>
+  </div>
+
+  <h3 class="new">What it shows</h3>
+  <table class="param-table">
+    <thead><tr><th>Row</th><th>Updates</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td class="param-name">BIAS</td><td class="param-default">Every tick</td><td class="param-desc"><span class="kw kw-green">⬆ LONG<span class="tooltip">Price is above D1 VAH — strong bullish institutional control. Bias long for the day. Only take long signals on lower timeframes.</span></span> / <span class="kw kw-red">⬇ SHORT<span class="tooltip">Price is below D1 VAL — strong bearish institutional control. Bias short for the day. Only take short signals on lower timeframes.</span></span> / <span class="kw kw-yellow">↗ LONG LEAN / ↘ SHORT LEAN<span class="tooltip">Price is inside the Value Area but clearly above or below POC. Directional lean but not confirmed. Reduce size or wait for a stronger signal.</span></span> / <span class="kw kw-white">→ NEUTRAL<span class="tooltip">Price is at or very near the D1 POC. No directional edge. Both sides fighting for control. Avoid trading directly at POC — wait for price to move clearly above VAH or below VAL.</span></span></td></tr>
+      <tr><td class="param-name">ZONE</td><td class="param-default">Every tick</td><td class="param-desc">Where price sits: ABOVE VAH / BELOW VAL / INSIDE VA / AT POC. Confirms the BIAS label with the structural context.</td></tr>
+      <tr><td class="param-name">Price</td><td class="param-default">Every tick</td><td class="param-desc">Current live price — updates on every market tick.</td></tr>
+      <tr><td class="param-name">POC</td><td class="param-default">Bar close</td><td class="param-desc">The <span class="kw kw-yellow">D1 Point of Control<span class="tooltip">Highest-volume price over the D1 lookback period (default 10 bars = ~2 weeks). The strongest institutional memory level on the chart. Price always returns to POC — use it as your magnet target and bias anchor.</span></span> — the highest-volume price over the D1 lookback. Stable during the day, shifts at each daily bar close.</td></tr>
+      <tr><td class="param-name">vs POC</td><td class="param-default">Every tick</td><td class="param-desc">Distance from current price to D1 POC in pips, with sign. Green = above, Red = below. Large distance = strong magnet pull back toward POC.</td></tr>
+      <tr><td class="param-name">VAH</td><td class="param-default">Bar close</td><td class="param-desc"><span class="kw kw-green">Value Area High<span class="tooltip">Upper boundary of the Value Area. Price above VAH = bullish breakout of institutional range. Used as resistance when price is inside VA, as support when price breaks above.</span></span> — upper boundary of the D1 Value Area.</td></tr>
+      <tr><td class="param-name">VAL</td><td class="param-default">Bar close</td><td class="param-desc"><span class="kw kw-red">Value Area Low<span class="tooltip">Lower boundary of the Value Area. Price below VAL = bearish breakdown of institutional range. Used as support when price is inside VA, as resistance when price breaks below.</span></span> — lower boundary of the D1 Value Area.</td></tr>
+      <tr><td class="param-name">VA Width</td><td class="param-default">Bar close</td><td class="param-desc">VAH minus VAL in pips. Narrow VA = compressed market, breakout likely. Wide VA = volatile market with large range.</td></tr>
+      <tr><td class="param-name">ADX</td><td class="param-default">Bar close</td><td class="param-desc">D1 ADX value and regime label. <span class="kw kw-green">TRENDING<span class="tooltip">ADX above 25 — a clear directional move is in progress. Bias signals are strong. Fade trades (Session Fade) are riskier. Follow the trend direction.</span></span> / <span class="kw kw-white">RANGING<span class="tooltip">ADX below 20 — market is consolidating. VA TRAP and POC signals are most reliable. Mean reversion (POC Magnet) works well in ranging conditions.</span></span> / <span class="kw kw-yellow">NEUTRAL<span class="tooltip">ADX between 20–25. Ambiguous regime. Reduce position size. Wait for ADX to resolve above 25 (trending) or below 20 (ranging) before committing full size.</span></span></td></tr>
+      <tr><td class="param-name">Signal</td><td class="param-default">Bar close</td><td class="param-desc">Last D1 signal fired by VolumeEdge Pro on the current D1 chart — e.g. VA TRAP BUY, EDGE EXH SELL. Green = bullish signal, Red = bearish. Dash (—) = no signal fired today.</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="new">Parameters</h3>
+  <table class="param-table">
+    <thead><tr><th>Parameter</th><th>Default</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td class="param-name">Show D1 Direction Dashboard</td><td class="param-default">true</td><td class="param-desc">Master toggle. When false, the panel is never created regardless of timeframe. When true, panel only appears on D1.</td></tr>
+      <tr><td class="param-name">D1 Dashboard Position</td><td class="param-default">Bottom</td><td class="param-desc">Vertical position on chart. Bottom keeps it away from the FRVP profiles which draw at the top of the chart.</td></tr>
+      <tr><td class="param-name">D1 Dashboard H Position</td><td class="param-default">Right</td><td class="param-desc">Horizontal position. Right aligns with the existing HUD dashboard.</td></tr>
+      <tr><td class="param-name">D1 Dashboard Font Size</td><td class="param-default">10</td><td class="param-desc">Range 7–16. Slightly larger than the HUD by default — this is a reference panel you read once at day start, not a continuous monitor.</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="new">Real-time behaviour</h3>
+  <p>The dashboard runs inside <code>Calculate()</code> which fires on every tick. Two types of updates happen at different rates:</p>
+  <div class="color-grid">
+    <div class="color-card">
+      <div class="color-name"><span class="color-swatch" style="background:var(--green)"></span>Tick updates (live)</div>
+      <div class="color-desc">Price, BIAS label, ZONE label, vs POC distance. These flip instantly as the market moves — you see the bias toggle in real time if price oscillates around D1 POC.</div>
+    </div>
+    <div class="color-card">
+      <div class="color-name"><span class="color-swatch" style="background:var(--yellow)"></span>Bar-close updates (daily)</div>
+      <div class="color-desc">POC, VAH, VAL, VA Width, ADX, Signal. The FRVP profile recalculates at each D1 bar close. During the trading day these values are stable — they are your fixed reference points.</div>
+    </div>
+  </div>
+
+  <div class="callout callout-tip">
+    <div class="callout-icon">💡</div>
+    <div class="callout-body"><strong>Practical workflow</strong><p>Open your D1 chart at 7:45 AM HKT. Read the D1 Direction Dashboard once — note the BIAS, POC price, and VA boundaries. Write them down or screenshot. Switch to H2 for the rest of the session. The D1 levels you recorded are your anchors for the day.</p></div>
+  </div>
+
+  <div class="callout callout-warn">
+    <div class="callout-icon">⚠️</div>
+    <div class="callout-body"><strong>One important note</strong><p>The dashboard uses the same FRVP profile lookback as the rest of the indicator — default 10 D1 bars (~2 weeks). If you change the lookback in Range Settings, the D1 dashboard levels change with it. Keep D1 lookback at 7–10 days for stable, meaningful POC and VA levels.</p></div>
   </div>
 </section>
 
@@ -1266,6 +1330,7 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
     <div class="plan-nav-label">Reference</div>
     <a class="plan-nav-item" href="#sn-quality">Setup Quality</a>
     <a class="plan-nav-item" href="#sn-skip">When to Skip</a>
+    <a class="plan-nav-item" href="#sn-d1dash">D1 Dashboard Use</a>
   </nav>
   <main class="plan-main">
     <div class="plan-hero">
@@ -1412,7 +1477,47 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
       <div class="callout callout-tip"><div class="callout-icon">🎯</div><div class="callout-body"><strong>Skip conditions</strong><p>Signal against D1 bias · ADX above 25 trending · Confluence below ★★★ · Major news within 1 hour · Already had a trade today · Past 9 PM with no entry · Stop would be 2× normal size</p></div></div>
       <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>The hardest discipline</strong><p>Most traders can find signals. Few can walk away from an imperfect one. The Sniper's edge is accumulated over hundreds of skipped B-grade setups.</p></div></div>
     </div>
-    <div class="plan-footer">VolumeEdge Pro v2.1 · The Sniper · 1 trade/day · Triple confluence only</div>
+
+    <div class="plan-section" id="sn-d1dash">
+      <div class="plan-section-label sniper">Section 11 · New in v2.2</div>
+      <h2>Using the D1 Direction Dashboard</h2>
+      <p>The D1 Direction Dashboard is the Sniper's <strong>pre-session intelligence tool</strong>. Open your D1 chart at 7:45 AM HKT, read the panel once, lock in your bias — then switch to H2 and never look back.</p>
+
+      <h3 class="sniper">Step-by-step at 7:45 AM</h3>
+      <div class="chk-list">
+        <div class="chk-item"><div class="chk-box sniper" onclick="toggleChk(this,'sniper')"></div><div class="chk-text"><strong>Open D1 chart</strong> — The D1 Direction Dashboard appears automatically. No setup needed.</div></div>
+        <div class="chk-item"><div class="chk-box sniper" onclick="toggleChk(this,'sniper')"></div><div class="chk-text"><strong>Read BIAS row</strong> — <span class="kw kw-green">⬆ LONG<span class="tooltip">Price above D1 VAH. Strong bullish institutional control. Today you only take LONG signals on H2/M30.</span></span> = long only today. <span class="kw kw-red">⬇ SHORT<span class="tooltip">Price below D1 VAL. Strong bearish institutional control. Today you only take SHORT signals on H2/M30.</span></span> = short only today. <span class="kw kw-yellow">→ NEUTRAL<span class="tooltip">Price at or near D1 POC. No clear edge. This is the hardest day to trade as a Sniper — consider sitting out or waiting for bias to resolve above VAH or below VAL before entering.</span></span> = no trade today.</div></div>
+        <div class="chk-item"><div class="chk-box sniper" onclick="toggleChk(this,'sniper')"></div><div class="chk-text"><strong>Record POC, VAH, VAL prices</strong> — Write them down or screenshot. These are today's absolute reference points. Every H2 signal you evaluate goes through these numbers.</div></div>
+        <div class="chk-item"><div class="chk-box sniper" onclick="toggleChk(this,'sniper')"></div><div class="chk-text"><strong>Check VA Width</strong> — Narrow VA (below 50% of D1 ATR) = <span class="kw kw-yellow">coiled market<span class="tooltip">VA COILED means buyers and sellers are in tight agreement over a small price range. This compressed energy releases violently when it breaks. The Sniper loves this — the first VA TRAP after a COILED day often catches a 100+ pip move. Size up slightly on the first qualified signal.</span></span> — expect a large move today. First qualified Sniper signal = size up. Wide VA = volatile day, normal sizing.</div></div>
+        <div class="chk-item"><div class="chk-box sniper" onclick="toggleChk(this,'sniper')"></div><div class="chk-text"><strong>Check ADX row</strong> — <span class="kw kw-green">TRENDING<span class="tooltip">ADX above 25. A directional move is in progress. VA TRAP signals are less reliable (price may not revert). EDGE EXH signals are strongest in this regime — ride the trend exhaustion.</span></span> means EDGE EXH is your primary signal today. <span class="kw kw-white">RANGING<span class="tooltip">ADX below 20. Market oscillating around equilibrium. VA TRAP and POC signals are most reliable — fades work better than momentum in this regime.</span></span> means VA TRAP is your primary signal.</div></div>
+        <div class="chk-item"><div class="chk-box sniper" onclick="toggleChk(this,'sniper')"></div><div class="chk-text"><strong>Note Signal row</strong> — If a D1 signal fired recently (VA TRAP BUY, EDGE EXH SELL etc.), that signal direction should match your BIAS. If it conflicts — be extra cautious, the market may be transitioning.</div></div>
+        <div class="chk-item"><div class="chk-box sniper" onclick="toggleChk(this,'sniper')"></div><div class="chk-text"><strong>Switch to H2</strong> — You now have everything you need. Do not reopen the D1 chart during the session — the bias is set. Trust it.</div></div>
+      </div>
+
+      <h3 class="sniper">Reading the BIAS in context</h3>
+      <table class="risk-table">
+        <thead><tr><th>Dashboard Shows</th><th>Sniper Action</th><th>Why</th></tr></thead>
+        <tbody>
+          <tr><td style="color:var(--green);font-family:var(--font-mono);font-size:11px">⬆ LONG</td><td style="color:#C0CCDB;font-size:12px">Long signals only on H2/M30</td><td style="color:#C0CCDB;font-size:12px">Price above D1 VAH — institutional demand in control. Only take entries in the direction institutions are positioned.</td></tr>
+          <tr><td style="color:var(--red);font-family:var(--font-mono);font-size:11px">⬇ SHORT</td><td style="color:#C0CCDB;font-size:12px">Short signals only on H2/M30</td><td style="color:#C0CCDB;font-size:12px">Price below D1 VAL — institutional supply in control. Mirror logic.</td></tr>
+          <tr><td style="color:var(--green);font-family:var(--font-mono);font-size:11px">↗ LONG LEAN</td><td style="color:#C0CCDB;font-size:12px">Long signals preferred, 75% size</td><td style="color:#C0CCDB;font-size:12px">Inside VA above POC. Bullish lean but not confirmed. Reduce size until price clears VAH.</td></tr>
+          <tr><td style="color:var(--red);font-family:var(--font-mono);font-size:11px">↘ SHORT LEAN</td><td style="color:#C0CCDB;font-size:12px">Short signals preferred, 75% size</td><td style="color:#C0CCDB;font-size:12px">Inside VA below POC. Bearish lean. Mirror logic.</td></tr>
+          <tr><td style="color:var(--yellow);font-family:var(--font-mono);font-size:11px">→ NEUTRAL</td><td style="color:#C0CCDB;font-size:12px">No trade today — wait</td><td style="color:#C0CCDB;font-size:12px">Price at D1 POC. Buyers and sellers equally matched. No institutional edge. The Sniper does not enter at equilibrium.</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout callout-tip">
+        <div class="callout-icon">🎯</div>
+        <div class="callout-body"><strong>The BIAS flip is your most powerful real-time signal</strong><p>If you're watching D1 and the BIAS row flips from SHORT to NEUTRAL or NEUTRAL to LONG during the London open — that flip in real time is telling you the manipulation sweep just happened and bias is resolving. If it flips back quickly (within 1–2 H2 candles), that's a confirmed VA TRAP on the D1 level. This is an A++ Sniper setup when it occurs.</p></div>
+      </div>
+
+      <div class="callout callout-note">
+        <div class="callout-icon">ℹ️</div>
+        <div class="callout-body"><strong>D1 Dashboard + Sniper checklist</strong><p>The BIAS row from the D1 Dashboard directly answers the first box on your Sniper checklist: "D1 bias confirmed." If the dashboard shows LONG, box 1 is checked. If it shows NEUTRAL, the trade is off — no further checklist needed.</p></div>
+      </div>
+    </div>
+
+    <div class="plan-footer">VolumeEdge Pro v2.2 · The Sniper · 1 trade/day · Triple confluence only</div>
   </main>
 </div>
 </div><!-- #tab-sniper -->
