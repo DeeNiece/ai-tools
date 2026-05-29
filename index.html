@@ -6,13 +6,13 @@
 <title>VolumeEdge Pro v2.1 — Parameter Guide & Trading Tips</title>
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="favicon.png">
-<meta name="description" content="VolumeEdge Pro v2.1 — Complete parameter guide, bin-based signal engine, Edge Exhaustion logic, Discord alerts, and trading workflow for cTrader.">
-<meta property="og:title" content="VolumeEdge Pro v2.1 — Parameter Guide">
+<meta name="description" content="VolumeEdge Pro v2.4 — Complete parameter guide, bin-based signal engine, Edge Exhaustion logic, Discord alerts, and trading workflow for cTrader.">
+<meta property="og:title" content="VolumeEdge Pro v2.4 — Parameter Guide">
 <meta property="og:description" content="Bin-based signal engine · Phase 1 gates · Discord alerts · 14 symbols · Complete trading workflow">
 <meta property="og:image" content="og-image.png">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="VolumeEdge Pro v2.1">
+<meta name="twitter:title" content="VolumeEdge Pro v2.4">
 <meta name="twitter:description" content="Complete parameter guide and trading workflow">
 <meta name="twitter:image" content="og-image.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -172,7 +172,6 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
 .tab-btn.t-sniper.active{color:var(--green);border-bottom-color:var(--green)}
 .tab-btn.t-fade.active{color:var(--accent);border-bottom-color:var(--accent)}
 .tab-btn.t-magnet.active{color:var(--teal);border-bottom-color:var(--teal)}
-.tab-btn.t-playbook.active{color:#FF9F43;border-bottom-color:#FF9F43}
 /* ── PAGE WRAPPER ── */
 .tab-page{display:none}
 .tab-page.active{display:block}
@@ -302,104 +301,11 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
 .tz-bar select:hover{border-color:var(--accent)}
 .tz-label-inline{font-family:var(--font-mono);font-size:10px;color:var(--accent);background:rgba(108,140,255,.1);border:1px solid rgba(108,140,255,.2);padding:1px 5px;border-radius:3px;margin-left:3px}
 /* Push plan tabs down for tz-bar */
-#tab-sniper,#tab-fade,#tab-magnet,#tab-playbook{padding-top:82px !important}
+#tab-sniper,#tab-fade,#tab-magnet{padding-top:82px !important}
 /* Scroll-to-top */
 #scroll-top{position:fixed;bottom:22px;right:18px;z-index:500;width:34px;height:34px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--gray);font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s,color .2s,border-color .2s}
 #scroll-top.vis{opacity:1;pointer-events:auto}
 #scroll-top:hover{color:var(--white);border-color:var(--accent);background:var(--bg)}
-
-/* ── PLAYBOOK ── */
---orange:#FF9F43;
-.pb-nav-label{font-size:9px;letter-spacing:2px;color:var(--gray);text-transform:uppercase;padding:8px 14px 4px;font-family:var(--font-mono);margin-top:4px}
-.pb-nav-item{display:block;padding:6px 14px;color:var(--gray);text-decoration:none;font-size:12px;font-weight:600;transition:all .15s;border-left:2px solid transparent;margin-bottom:1px}
-.pb-nav-item:hover{color:var(--white);background:var(--surface2)}
-.pb-nav-item.active-pb{color:#FF9F43;border-left-color:#FF9F43;background:rgba(255,159,67,.06)}
-.pb-strategy-btn{display:flex;align-items:center;gap:8px;width:100%;padding:10px 14px;border:none;background:none;color:var(--gray);font-family:var(--font-display);font-size:12px;font-weight:700;cursor:pointer;border-left:2px solid transparent;transition:all .15s;text-align:left;margin-bottom:2px}
-.pb-strategy-btn:hover{color:var(--white);background:var(--surface2)}
-.pb-strategy-icon{font-size:13px}
-.pb-count{margin-left:auto;font-family:var(--font-mono);font-size:10px;padding:1px 6px;border-radius:10px;background:var(--surface2);color:var(--gray)}
-.pb-active-sniper{color:var(--green) !important;border-left-color:var(--green) !important;background:rgba(38,222,138,.06) !important}
-.pb-active-sniper .pb-count{background:rgba(38,222,138,.15);color:var(--green)}
-.pb-active-fade{color:var(--accent) !important;border-left-color:var(--accent) !important;background:rgba(108,140,255,.06) !important}
-.pb-active-fade .pb-count{background:rgba(108,140,255,.15);color:var(--accent)}
-.pb-active-magnet{color:var(--teal) !important;border-left-color:var(--teal) !important;background:rgba(43,191,178,.06) !important}
-.pb-active-magnet .pb-count{background:rgba(43,191,178,.15);color:var(--teal)}
-.pb-inactive-sniper,.pb-inactive-fade,.pb-inactive-magnet{color:var(--gray)}
-.pb-setup-link{display:block;padding:5px 14px 5px 26px;color:var(--gray);text-decoration:none;font-size:11px;font-weight:600;transition:all .15s;border-left:2px solid transparent;margin-bottom:1px}
-.pb-setup-link:hover{color:var(--white);background:var(--surface2)}
-.pb-setup-link.active-pb{color:#FF9F43;border-left-color:#FF9F43;background:rgba(255,159,67,.06)}
-.pb-hero{margin-bottom:36px;padding-bottom:24px;border-bottom:1px solid var(--border)}
-.pb-hero-badge{display:inline-block;font-family:var(--font-mono);font-size:10px;color:#FF9F43;background:rgba(255,159,67,.1);border:1px solid rgba(255,159,67,.25);padding:3px 10px;border-radius:4px;letter-spacing:1px;margin-bottom:12px}
-.pb-hero h1{font-size:32px;font-weight:800;letter-spacing:-1px;line-height:1.05;margin-bottom:8px}
-.pb-hero-sub{font-size:12px;color:var(--gray);font-family:var(--font-mono)}
-/* Setup card */
-.setup-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:48px;overflow:hidden;scroll-margin-top:90px}
-.setup-card-header{padding:20px 24px 16px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
-.setup-card-header.sniper{background:linear-gradient(135deg,rgba(38,222,138,.06) 0%,transparent 60%);border-top:3px solid var(--green)}
-.setup-card-header.fade{background:linear-gradient(135deg,rgba(108,140,255,.06) 0%,transparent 60%);border-top:3px solid var(--accent)}
-.setup-card-header.magnet{background:linear-gradient(135deg,rgba(43,191,178,.06) 0%,transparent 60%);border-top:3px solid var(--teal)}
-.setup-title-row{display:flex;align-items:center;gap:10px;margin-bottom:6px;flex-wrap:wrap}
-.setup-strategy-badge{font-family:var(--font-mono);font-size:9px;padding:2px 8px;border-radius:3px;letter-spacing:1px;font-weight:700}
-.ssb-sniper{background:rgba(38,222,138,.12);color:var(--green);border:1px solid rgba(38,222,138,.3)}
-.ssb-fade{background:rgba(108,140,255,.12);color:var(--accent);border:1px solid rgba(108,140,255,.3)}
-.ssb-magnet{background:rgba(43,191,178,.12);color:var(--teal);border:1px solid rgba(43,191,178,.3)}
-.setup-name{font-size:20px;font-weight:800;letter-spacing:-.4px}
-.setup-name.sniper{color:var(--green)}.setup-name.fade{color:var(--accent)}.setup-name.magnet{color:var(--teal)}
-.star-rating{display:flex;align-items:center;gap:4px;flex-shrink:0}
-.star{font-size:18px;line-height:1}
-.star.lit{color:#FFD700;text-shadow:0 0 8px rgba(255,215,0,.5)}
-.star.dim{color:var(--border)}
-.setup-tagline{font-size:12px;color:var(--gray);font-family:var(--font-mono);margin-bottom:10px}
-.setup-pills{display:flex;flex-wrap:wrap;gap:6px}
-.setup-pill{font-family:var(--font-mono);font-size:10px;padding:2px 8px;border-radius:3px;border:1px solid var(--border);color:var(--gray)}
-.setup-pill strong{color:var(--white)}
-.setup-body{padding:24px}
-.setup-section{margin-bottom:28px}
-.setup-section-title{font-family:var(--font-mono);font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gray);margin-bottom:10px;display:flex;align-items:center;gap:8px}
-.setup-section-title::after{content:'';flex:1;height:1px;background:var(--border)}
-.setup-section p{font-size:13px;color:#C8D0E0;line-height:1.7;margin-bottom:8px}
-/* AMD flow */
-.amd-flow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
-.amd-block{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px}
-.amd-label{font-family:var(--font-mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
-.amd-a .amd-label{color:var(--yellow)}.amd-m .amd-label{color:var(--red)}.amd-d .amd-label{color:var(--green)}
-.amd-block h4{font-size:12px;font-weight:700;color:var(--white);margin-bottom:4px}
-.amd-block p{font-size:11px;color:var(--gray);margin:0;line-height:1.5}
-/* Step checklist */
-.step-phase{margin-bottom:16px}
-.step-phase-label{font-family:var(--font-mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:6px 12px;border-radius:4px;margin-bottom:8px;display:inline-block}
-.spl-pre{background:rgba(255,215,0,.08);color:var(--yellow);border:1px solid rgba(255,215,0,.2)}
-.spl-manip{background:rgba(255,78,106,.08);color:var(--red);border:1px solid rgba(255,78,106,.2)}
-.spl-confirm{background:rgba(38,222,138,.08);color:var(--green);border:1px solid rgba(38,222,138,.2)}
-.spl-entry{background:rgba(108,140,255,.08);color:var(--accent);border:1px solid rgba(108,140,255,.2)}
-.spl-skip{background:rgba(139,155,191,.08);color:var(--gray);border:1px solid rgba(139,155,191,.2)}
-.step-list{display:flex;flex-direction:column;gap:6px}
-.step-item{display:flex;align-items:flex-start;gap:10px;padding:9px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;font-size:12.5px}
-.step-icon{font-size:13px;flex-shrink:0;margin-top:1px}
-.step-text{color:#B8C5D6;line-height:1.5}
-.step-text strong{color:var(--white)}
-.step-text .mono{font-family:var(--font-mono);font-size:11px;color:#FF9F43}
-.step-text .green{color:var(--green)}.step-text .red{color:var(--red)}.step-text .yellow{color:var(--yellow)}
-/* Disqualifier box */
-.disqualifier{background:rgba(255,78,106,.04);border:1px solid rgba(255,78,106,.2);border-radius:8px;padding:14px 16px;margin:12px 0}
-.disqualifier-title{font-family:var(--font-mono);font-size:10px;letter-spacing:1px;color:var(--red);margin-bottom:8px;text-transform:uppercase}
-.disqualifier ul{list-style:none;display:flex;flex-direction:column;gap:5px}
-.disqualifier li{font-size:12.5px;color:#C8D0E0;display:flex;align-items:flex-start;gap:8px}
-.disqualifier li::before{content:'✗';color:var(--red);font-family:var(--font-mono);flex-shrink:0;font-size:11px;margin-top:2px}
-/* Trade params */
-.trade-params{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:12px 0}
-.tp-block{background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:12px 14px}
-.tp-label{font-family:var(--font-mono);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gray);margin-bottom:4px}
-.tp-value{font-size:13px;font-weight:700;color:var(--white);line-height:1.4}
-.tp-value.green{color:var(--green)}.tp-value.red{color:var(--red)}.tp-value.yellow{color:var(--yellow)}.tp-value.accent{color:var(--accent)}
-/* Dashboard snapshot */
-.dash-snap{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin:12px 0;font-family:var(--font-mono);font-size:11px}
-.dash-snap-title{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-bottom:10px}
-.dash-row{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid rgba(28,32,64,.8)}
-.dash-row:last-child{border-bottom:none}
-.dash-key{color:var(--gray)}.dash-val{font-weight:700}
-.dv-green{color:var(--green)}.dv-red{color:var(--red)}.dv-yellow{color:var(--yellow)}.dv-accent{color:var(--accent)}.dv-white{color:var(--white)}
-
 </style>
 </head>
 <body>
@@ -423,13 +329,12 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
 <!-- TAB BAR -->
 <div class="tab-bar">
   <div class="tab-bar-brand">
-    <div><div class="b-name">VolumeEdge Pro</div><div class="b-ver">v2.1 · cTrader · May 2026</div></div>
+    <div><div class="b-name">VolumeEdge Pro</div><div class="b-ver">v2.4 · cTrader · May 2026</div></div>
   </div>
   <button class="tab-btn active" onclick="switchTab('guide',this)">📖 Parameter Guide</button>
   <button class="tab-btn t-sniper" onclick="switchTab('sniper',this)">🎯 The Sniper</button>
   <button class="tab-btn t-fade" onclick="switchTab('fade',this)">📉 Session Fade</button>
   <button class="tab-btn t-magnet" onclick="switchTab('magnet',this)">🧲 POC Magnet</button>
-  <button class="tab-btn t-playbook" onclick="switchTab('playbook',this)">📚 Playbook</button>
 </div>
 
 <!-- ═══ TAB 1: PARAMETER GUIDE (original content) ═══ -->
@@ -440,11 +345,11 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
 <nav class="sidebar" id="sidebar">
   <div class="sidebar-logo">
     <div class="name">VolumeEdge Pro</div>
-    <div class="ver">v2.1 · COMPLETE GUIDE · MAY 2026</div>
+    <div class="ver">v2.4 · COMPLETE GUIDE · MAY 2026</div>
   </div>
   <div class="nav-group">
     <div class="nav-group-label">Overview</div>
-    <a class="nav-item active" href="#changelog"><span class="nav-num">00</span>What's New in v2.1</a>
+    <a class="nav-item active" href="#changelog"><span class="nav-num">00</span>What's New in v2.4</a>
     <a class="nav-item" href="#intro"><span class="nav-num">01</span>What is VolumeEdge Pro</a>
     <a class="nav-item" href="#colors"><span class="nav-num">02</span>Color System</a>
   </div>
@@ -482,6 +387,7 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
     <a class="nav-item" href="#settings"><span class="nav-num">21</span>Recommended Settings</a>
     <a class="nav-item" href="#workflow"><span class="nav-num">22</span>Trading Workflow</a>
     <a class="nav-item new-section" href="#d1-dashboard"><span class="nav-num">25</span>D1 Dashboard ★</a>
+    <a class="nav-item new-section" href="#pdc-line"><span class="nav-num">26</span>PDC Line &amp; PEP Row ★</a>
   </div>
 </nav>
 
@@ -490,8 +396,8 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
 
 <!-- HERO -->
 <div class="hero">
-  <div class="version-badge">VolumeEdge Pro v2.1 — May 2026</div>
-  <div class="hero-badge">FRVP MASTER PRO v3.2 → VOLUMEEDGE PRO v2.1</div>
+  <div class="version-badge">VolumeEdge Pro v2.4 — May 2026</div>
+  <div class="hero-badge">FRVP MASTER PRO v3.2 → VOLUMEEDGE PRO v2.4</div>
   <h1>VolumeEdge<br><span>Pro Guide</span></h1>
   <p class="hero-sub">Bin-Based Signal Engine · Phase 1 Gates · Discord Alerts · Trading Workflow</p>
   <div class="hero-pills">
@@ -501,6 +407,8 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
     <div class="pill"><strong>4 signal types</strong></div>
     <div class="pill"><strong>2H Discord</strong> alerts</div>
     <div class="pill new"><strong>★ Bin engine</strong> v2.1</div>
+    <div class="pill new"><strong>★ PEP row</strong> v2.3</div>
+    <div class="pill new"><strong>★ PDC line</strong> v2.4</div>
     <div class="pill new"><strong>★ Empty bin</strong> EDGE EXH</div>
     <div class="pill new"><strong>★ Blocked</strong> Discord alerts</div>
   </div>
@@ -523,6 +431,18 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
 <!-- SECTION 0: CHANGELOG -->
 <section id="changelog">
   <div class="section-label new">Section 00 · New</div>
+  <h2>What's New in v2.4</h2>
+  <div class="changelog">
+    <div class="changelog-item"><span class="changelog-tag tag-added">ADDED</span><span class="changelog-text"><strong>v2.4 — PDC Line:</strong> Previous Day Close drawn as a session-confined line (Wellington 05:00 HKT to NY close). Colour, width, style configurable via parameters. Label at right edge shows price + ABOVE/BELOW status. Previous PDC (day before) shown as faded dotted reference line.</span></div>
+    <div class="changelog-item"><span class="changelog-tag tag-added">ADDED</span><span class="changelog-text"><strong>v2.4 — PDC HUD Row:</strong> New PDC row in main dashboard showing current price level and ABOVE/BELOW in green/red.</span></div>
+    <div class="changelog-item"><span class="changelog-tag tag-added">ADDED</span><span class="changelog-text"><strong>v2.3 — PEP Row:</strong> Possible Entry Point row synthesises D1 bias + active zone + gate status into one actionable signal. Splits into two rows when PDC modifier exists to avoid clipping.</span></div>
+    <div class="changelog-item"><span class="changelog-tag tag-changed">CHANGED</span><span class="changelog-text"><strong>v2.3 — HTF Rows Merged:</strong> HTF ALERT and HTF status combined into single row e.g. <code>STR BULLISH — BULLISH BREAKOUT</code>.</span></div>
+    <div class="changelog-item"><span class="changelog-tag tag-changed">CHANGED</span><span class="changelog-text"><strong>v2.3 — ADX Inline:</strong> TREND POWER and TREND VALUE merged into one row e.g. <code>TRENDING (33.3)</code>. Standalone TREND VALUE row removed.</span></div>
+    <div class="changelog-item"><span class="changelog-tag tag-changed">CHANGED</span><span class="changelog-text"><strong>v2.3 — SYMBOL SESSION:</strong> Now appends session name e.g. <code>PRIME  10:09 HKT  (Asian)</code>. Redundant SESSION row removed.</span></div>
+    <div class="changelog-item"><span class="changelog-tag tag-fixed">FIXED</span><span class="changelog-text"><strong>v2.3 — D1 Bias Arrows:</strong> Restored Unicode arrows ⬆ ⬇ ↗ ↘ → in D1 Direction Dashboard BIAS row replacing garbled UP/DN/UR/DR/RT prefixes.</span></div>
+    <div class="changelog-item"><span class="changelog-tag tag-fixed">FIXED</span><span class="changelog-text"><strong>v2.3 — VolScore CS0649:</strong> Suppressed harmless compiler warning by initialising VolScore field to 0.</span></div>
+  </div>
+  <hr class="sec">
   <h2>What's New in v2.1</h2>
   <p>v2.1 is a complete rewrite of the signal detection engine. Every signal now reads the horizontal histogram bins directly — not just price bar position. The result is fewer, higher-quality signals that are directly grounded in institutional order flow.</p>
 
@@ -681,7 +601,7 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
   <table class="param-table">
     <thead><tr><th>Parameter</th><th>Default</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td class="param-name">Show Dashboard HUD</td><td class="param-default">Yes</td><td class="param-desc">Top-right HUD overlay. Shows ADX, ATR, POC, VA, confluence, session, gate status.</td></tr>
+      <tr><td class="param-name">Show Dashboard HUD</td><td class="param-default">Yes</td><td class="param-desc">Top-right HUD overlay. Shows PEP, ADX, ATR, PDC, POC, VA, confluence, session, gate status. v2.3+: PEP row, merged HTF, inline ADX number. v2.4+: PDC row.</td></tr>
       <tr><td class="param-name">Dash Font Size</td><td class="param-default">9</td><td class="param-desc">HUD text size. Range 6–14.</td></tr>
       <tr><td class="param-name">Dashboard Vertical Alignment</td><td class="param-default">Top</td><td class="param-desc">Top or Bottom.</td></tr>
       <tr><td class="param-name">Dashboard Horizontal Alignment</td><td class="param-default">Right</td><td class="param-desc">Left, Center, or Right.</td></tr>
@@ -762,6 +682,18 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
       <tr><td class="param-name">Show Volume Labels</td><td class="param-default">Yes</td><td class="param-desc">Buy/sell volume numbers on each bin. Format: 64471 / 7478(IMB). Green = buyers winning, Red = sellers.</td></tr>
       <tr><td class="param-name">Profile Opacity (0–255)</td><td class="param-default">120</td><td class="param-desc">Histogram transparency. 120 lets candles show through.</td></tr>
       <tr><td class="param-name">Alert Font Size</td><td class="param-default">9</td><td class="param-desc">Signal label font size on chart.</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="new">PDC Settings <span class="tag-new">NEW v2.4</span></h3>
+  <table class="param-table">
+    <thead><tr><th>Parameter</th><th>Default</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td class="param-name">Show PDC Line</td><td class="param-default">Yes</td><td class="param-desc">Toggle the Previous Day Close line on/off. PDC value is always calculated internally for PEP modifier even when hidden. Automatically hidden on D1, Weekly and Monthly timeframes.</td></tr>
+      <tr><td class="param-name">PDC Color</td><td class="param-default">DodgerBlue</td><td class="param-desc">Color of the PDC line and label. Choose a subtle tone that doesn't compete with profile bars — DodgerBlue or muted gray works well.</td></tr>
+      <tr><td class="param-name">PDC Line Width</td><td class="param-default">1</td><td class="param-desc">Width of the PDC line (1–4). Keep at 1 to avoid visual clutter.</td></tr>
+      <tr><td class="param-name">PDC Line Style</td><td class="param-default">Dots</td><td class="param-desc">Line style: Solid, Dashed, or Dots. Dots recommended to distinguish from POC/VAH/VAL lines.</td></tr>
+      <tr><td class="param-name">PDC Label Font Size</td><td class="param-default">8</td><td class="param-desc">Font size of the right-edge label showing PDC price and ABOVE/BELOW status.</td></tr>
     </tbody>
   </table>
 </section>
@@ -1113,7 +1045,7 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
       POC: 113.42000 VAH: 113.81000 VAL: 113.38000<br>
       ADX: 18.4 [RANGING] | Session: Asian PRIME | Conf: MED **<br>
       ATR: 8.2 pips | Time: 23/05 09:14 HKT<br>
-      <span class="discord-gray">VolumeEdge Pro v2.1 | 23/05/2026 09:14 HKT</span>
+      <span class="discord-gray">VolumeEdge Pro v2.4 | 23/05/2026 09:14 HKT</span>
     </div>
   </div>
 
@@ -1128,7 +1060,7 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
       POC: 1.16126 VAH: 1.16241 VAL: 1.16072<br>
       ADX: 15.2 [RANGING] | Session: DEAD ○ | Conf: HIGH ***<br>
       ATR: 8.8 pips | Time: 23/05 06:30 HKT<br>
-      <span class="discord-gray">VolumeEdge Pro v2.1 | 23/05/2026 06:30 HKT</span>
+      <span class="discord-gray">VolumeEdge Pro v2.4 | 23/05/2026 06:30 HKT</span>
     </div>
   </div>
 
@@ -1143,7 +1075,7 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
       POC: 78138 VAH: 79200 VAL: 76500<br>
       ADX: 28.4 [TRENDING] | Session: 24h PRIME | Conf: LOW *<br>
       ATR: 820 pips | Time: 23/05 21:00 HKT<br>
-      <span class="discord-gray">VolumeEdge Pro v2.1 | 23/05/2026 21:00 HKT</span>
+      <span class="discord-gray">VolumeEdge Pro v2.4 | 23/05/2026 21:00 HKT</span>
     </div>
   </div>
 
@@ -1372,6 +1304,33 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
 </section>
 
 <!-- D1 DIRECTION DASHBOARD -->
+<section id="pdc-line">
+  <div class="section-label new">Section 26 · New in v2.4</div>
+  <h2>PDC Line &amp; PEP Row</h2>
+
+  <div class="callout callout-new"><div class="callout-icon">⭐</div><div class="callout-body"><strong>Why PDC matters</strong><p>Banks and funds mark their books at the daily close. The Previous Day Close is a real institutional reference level — not a retail indicator. When price crosses the PDC, it signals a genuine repricing of the asset from the prior session's settled value. It adds directional momentum context that the volume profile bins alone cannot provide.</p></div></div>
+
+  <h3 class="new">PDC Line Behaviour</h3>
+  <p>The PDC line is strictly confined to the current trading session. It starts at <strong>Wellington open (21:00 UTC / 05:00 HKT)</strong> — the start of the new market day — and extends to the current bar only. It redraws on every tick and never bleeds into prior sessions.</p>
+  <p>A second faded dotted line shows the <strong>Previous PDC</strong> (day before yesterday's close) confined to yesterday's session window. This gives a quick visual reference for whether the current day is expanding or compressing relative to the prior session.</p>
+  <p>Both lines are hidden on D1, Weekly and Monthly timeframes where PDC context is not meaningful.</p>
+
+  <h3 class="new">PEP Row — Possible Entry Point</h3>
+  <p>The PEP row is the most actionable single line in the dashboard. It synthesises four inputs simultaneously:</p>
+  <div class="color-grid">
+    <div class="color-card"><div class="color-name"><span class="color-swatch" style="background:var(--green)"></span>LONG - TRENDING + PDC</div><div class="color-desc">Profile bullish (above VAH) + D1 bias LONG + ADX trending + price above PDC. Strongest possible long setup.</div></div>
+    <div class="color-card"><div class="color-name"><span class="color-swatch" style="background:var(--green)"></span>LONG - RANGE</div><div class="color-desc">Profile bullish + D1 bias LONG but ADX ranging. Valid setup, lower conviction. Tighter targets.</div></div>
+    <div class="color-card"><div class="color-name"><span class="color-swatch" style="background:var(--red)"></span>SHORT - TRENDING + PDC</div><div class="color-desc">Profile bearish (below VAL) + D1 bias SHORT + ADX trending + price below PDC. Strongest possible short setup.</div></div>
+    <div class="color-card"><div class="color-name"><span class="color-swatch" style="background:var(--yellow)"></span>LONG - TRENDING - PDC WARN</div><div class="color-desc">Profile bullish + D1 LONG + trending but price still below PDC. Signal fires but PDC is a caution flag — wait for PDC cross to confirm.</div></div>
+    <div class="color-card"><div class="color-name"><span class="color-swatch" style="background:var(--yellow)"></span>LEAN LONG - D1 NEUTRAL</div><div class="color-desc">Profile says buy zone but D1 bias is neutral — no directional conviction from D1. Reduce size or skip.</div></div>
+    <div class="color-card"><div class="color-name"><span class="color-swatch" style="background:var(--red)"></span>CONFLICT - SKIP</div><div class="color-desc">Profile and D1 bias are pointing in opposite directions. Do not trade — no edge.</div></div>
+    <div class="color-card"><div class="color-name"><span class="color-swatch" style="background:var(--gray)"></span>WAIT - GATE CLOSED</div><div class="color-desc">Confluence gate or session filter is blocking signals. No trade regardless of other conditions.</div></div>
+    <div class="color-card"><div class="color-name"><span class="color-swatch" style="background:var(--teal)"></span>NEUTRAL - INSIDE VA</div><div class="color-desc">Price is inside the value area near POC. No directional edge — avoid until price breaks out of the VA.</div></div>
+  </div>
+
+  <div class="callout callout-tip"><div class="callout-icon">💡</div><div class="callout-body"><strong>PDC and news events</strong><p>PDC is most powerful during news-driven moves. When a US economic release drives price aggressively, the PDC crossing is what separates a genuine repricing from a stop-hunt spike. A profile zone break that also crosses the PDC and flips D1 bias = high-conviction triple confirmation. This is exactly the kind of move where PEP shifts from CONFLICT - SKIP to LONG - TRENDING + PDC.</p></div></div>
+</section>
+
 <section id="d1-dashboard">
   <div class="section-label new">Section 25 · New in v2.2</div>
   <h2>D1 Direction Dashboard</h2>
@@ -1386,6 +1345,8 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
   <table class="param-table">
     <thead><tr><th>Row</th><th>Updates</th><th>Description</th></tr></thead>
     <tbody>
+      <tr><td class="param-name">PEP <span class="param-new">NEW v2.3</span></td><td class="param-default">Every tick</td><td class="param-desc">Possible Entry Point — synthesises D1 bias + active zone + gate. States: <code>LONG/SHORT - TRENDING/RANGE</code>, <code>LEAN LONG/SHORT - D1 NEUTRAL</code>, <code>CONFLICT - SKIP</code>, <code>WAIT - GATE CLOSED</code>, <code>NEUTRAL - INSIDE VA</code>. PDC modifier appended as sub-row when relevant. See Section 26 for full reference.</td></tr>
+      <tr><td class="param-name">PDC <span class="param-new">NEW v2.4</span></td><td class="param-default">Every tick</td><td class="param-desc">Previous Day Close price with ABOVE/BELOW indicator in green/red. Blank when PDC not yet calculated. Hidden on D1/Weekly/Monthly.</td></tr>
       <tr><td class="param-name">BIAS</td><td class="param-default">Every tick</td><td class="param-desc"><span class="kw kw-green">⬆ LONG<span class="tooltip">Price is above D1 VAH — strong bullish institutional control. Bias long for the day. Only take long signals on lower timeframes.</span></span> / <span class="kw kw-red">⬇ SHORT<span class="tooltip">Price is below D1 VAL — strong bearish institutional control. Bias short for the day. Only take short signals on lower timeframes.</span></span> / <span class="kw kw-yellow">↗ LONG LEAN / ↘ SHORT LEAN<span class="tooltip">Price is inside the Value Area but clearly above or below POC. Directional lean but not confirmed. Reduce size or wait for a stronger signal.</span></span> / <span class="kw kw-white">→ NEUTRAL<span class="tooltip">Price is at or very near the D1 POC. No directional edge. Both sides fighting for control. Avoid trading directly at POC — wait for price to move clearly above VAH or below VAL.</span></span></td></tr>
       <tr><td class="param-name">ZONE</td><td class="param-default">Every tick</td><td class="param-desc">Where price sits: ABOVE VAH / BELOW VAL / INSIDE VA / AT POC. Confirms the BIAS label with the structural context.</td></tr>
       <tr><td class="param-name">Price</td><td class="param-default">Every tick</td><td class="param-desc">Current live price — updates on every market tick.</td></tr>
@@ -1986,844 +1947,6 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
 </div>
 </div><!-- #tab-magnet -->
 
-
-<!-- ═══ TAB 5: PLAYBOOK ═══ -->
-<div class="tab-page" id="tab-playbook" style="padding-top:48px">
-<div class="plan-wrap">
-
-<!-- Sidebar -->
-<nav class="plan-sidebar">
-  <div class="pb-nav-label">Strategy</div>
-  <button class="pb-strategy-btn pb-active-sniper" onclick="pbFilter('sniper',this)" id="pbs-sniper">
-    <span class="pb-strategy-icon">🎯</span> The Sniper
-    <span class="pb-count" id="pbc-sniper">3</span>
-  </button>
-  <button class="pb-strategy-btn pb-inactive-fade" onclick="pbFilter('fade',this)" id="pbs-fade">
-    <span class="pb-strategy-icon">📉</span> Session Fade
-    <span class="pb-count" id="pbc-fade">3</span>
-  </button>
-  <button class="pb-strategy-btn pb-inactive-magnet" onclick="pbFilter('magnet',this)" id="pbs-magnet">
-    <span class="pb-strategy-icon">🧲</span> POC Magnet
-    <span class="pb-count" id="pbc-magnet">3</span>
-  </button>
-
-  <div class="pb-nav-label" style="margin-top:18px" id="pb-setup-nav-label">Setups</div>
-  <div id="pb-setup-links"></div>
-</nav>
-
-<!-- Main content -->
-<main class="plan-main" id="pb-main">
-
-  <!-- ════════════════════════════════
-       SNIPER SETUPS
-  ════════════════════════════════ -->
-
-  <!-- S1: D1 Bias Flip VA Trap -->
-  <div class="setup-card pb-card-sniper" id="pb-sniper-1">
-    <div class="setup-card-header sniper">
-      <div>
-        <div class="setup-title-row">
-          <span class="setup-strategy-badge ssb-sniper">THE SNIPER</span>
-          <span class="setup-name sniper">D1 Bias Flip VA Trap</span>
-        </div>
-        <div class="setup-tagline">Manipulation sweep detected via real-time dashboard bias reversal</div>
-        <div class="setup-pills">
-          <span class="setup-pill"><strong>Session</strong> London Open</span>
-          <span class="setup-pill"><strong>TF Entry</strong> H2</span>
-          <span class="setup-pill"><strong>ADX</strong> &lt; 25 Ranging</span>
-          <span class="setup-pill"><strong>Freq</strong> 2–4× / week</span>
-        </div>
-      </div>
-      <div class="star-rating"><span class="star lit">★</span><span class="star lit">★</span><span class="star lit">★</span></div>
-    </div>
-    <div class="setup-body">
-      <div class="setup-section">
-        <div class="setup-section-title">Why This Works</div>
-        <p>The D1 Dashboard BIAS row measures where price sits relative to institutional value built over 10 D1 bars. When London opens and drives price beyond VAH or VAL, the BIAS flips. If the move was purely manipulative — stop hunting, not genuine acceptance — price cannot sustain outside the value area and closes back inside within 1–2 H2 candles. The flip-back is the dashboard confirming the trap in real time. This is AMD made visible: Tokyo accumulates, London manipulates, and the D1 Dashboard tracks the bias state through each phase.</p>
-      </div>
-      <div class="setup-section">
-        <div class="setup-section-title">AMD Cycle</div>
-        <div class="amd-flow">
-          <div class="amd-block amd-a"><div class="amd-label">Accumulation</div><h4>Asian Session</h4><p>D1 BIAS: SHORT or NEUTRAL. Price ranges inside VA. POC forming. ADX flat below 20.</p></div>
-          <div class="amd-block amd-m"><div class="amd-label">Manipulation</div><h4>London Open</h4><p>Price swept beyond VAL or VAH. BIAS flips. Stops triggered. <strong style="color:var(--red)">Do not enter yet.</strong></p></div>
-          <div class="amd-block amd-d"><div class="amd-label">Distribution</div><h4>London 09:00–12:00</h4><p>Price closes back inside VA. BIAS flips back. Trend distributes through VA toward POC and beyond.</p></div>
-        </div>
-      </div>
-      <div class="setup-section">
-        <div class="setup-section-title">Dashboard Snapshots</div>
-        <div class="dash-snap"><div class="dash-snap-title">Pre-Setup — Asian Session</div>
-          <div class="dash-row"><span class="dash-key">BIAS</span><span class="dash-val dv-yellow">→ NEUTRAL</span></div>
-          <div class="dash-row"><span class="dash-key">D1 ADX</span><span class="dash-val dv-white">18.4 — RANGING 😴</span></div>
-          <div class="dash-row"><span class="dash-key">POC NODE</span><span class="dash-val dv-green">STRONG ★</span></div>
-          <div class="dash-row"><span class="dash-key">LAST FLIP</span><span class="dash-val dv-white">none yet</span></div>
-        </div>
-        <div class="dash-snap" style="margin-top:8px"><div class="dash-snap-title">Manipulation — London Open</div>
-          <div class="dash-row"><span class="dash-key">BIAS</span><span class="dash-val dv-red">⬇ SHORT ← FLIPPED</span></div>
-          <div class="dash-row"><span class="dash-key">ZONE</span><span class="dash-val dv-red">BELOW VAL</span></div>
-          <div class="dash-row"><span class="dash-key">LAST FLIP</span><span class="dash-val dv-red">NEUTRAL→SHORT @1.08210</span></div>
-        </div>
-        <div class="dash-snap" style="margin-top:8px"><div class="dash-snap-title">Confirmation — 1–2 H2 Candles Later</div>
-          <div class="dash-row"><span class="dash-key">BIAS</span><span class="dash-val dv-green">↗ LONG LEAN ← FLIP-BACK ✔</span></div>
-          <div class="dash-row"><span class="dash-key">ZONE</span><span class="dash-val dv-yellow">INSIDE VA</span></div>
-          <div class="dash-row"><span class="dash-key">LAST FLIP</span><span class="dash-val dv-green">SHORT→NEUTRAL @1.08350</span></div>
-        </div>
-      </div>
-      <div class="setup-section">
-        <div class="setup-section-title">Exact Setup Mechanics — Step by Step</div>
-        <div class="step-phase"><div class="step-phase-label spl-pre">Pre-Setup Conditions</div>
-          <div class="step-list">
-            <div class="step-item"><span class="step-icon">🕐</span><span class="step-text">Asian session — D1 BIAS reads <strong>SHORT, NEUTRAL, or SHORT LEAN</strong></span></div>
-            <div class="step-item"><span class="step-icon">📊</span><span class="step-text">D1 ADX <strong>below 25</strong> — ranging, no strong trend</span></div>
-            <div class="step-item"><span class="step-icon">⭐</span><span class="step-text">D1 POC NODE shows <strong class="green">STRONG ★</strong> — high-conviction value magnet</span></div>
-            <div class="step-item"><span class="step-icon">✅</span><span class="step-text">SIGNAL GATE <span class="mono">OPEN ✔</span> — confluence and vol filter passing</span></div>
-          </div>
-        </div>
-        <div class="step-phase" style="margin-top:14px"><div class="step-phase-label spl-manip">Manipulation — London Open</div>
-          <div class="step-list">
-            <div class="step-item"><span class="step-icon">📉</span><span class="step-text">Price <strong>breaks below VAL</strong> (long) or <strong>above VAH</strong> (short)</span></div>
-            <div class="step-item"><span class="step-icon">🔴</span><span class="step-text">D1 BIAS <strong class="red">flips to SHORT/LONG</strong> — LAST FLIP row updates with price</span></div>
-            <div class="step-item"><span class="step-icon">👁️</span><span class="step-text"><strong>Do not enter.</strong> Start your 1–2 H2 candle timer now.</span></div>
-          </div>
-        </div>
-        <div class="step-phase" style="margin-top:14px"><div class="step-phase-label spl-confirm">Confirmation — The Flip-Back</div>
-          <div class="step-list">
-            <div class="step-item"><span class="step-icon">🔄</span><span class="step-text">Within 1–2 H2 candles, price <strong>closes back inside VA</strong> — BIAS flips back</span></div>
-            <div class="step-item"><span class="step-icon">🟢</span><span class="step-text">Chart fires <strong class="green">VA TRAP (BUY)</strong> label — indicator and dashboard aligned</span></div>
-            <div class="step-item"><span class="step-icon">📊</span><span class="step-text">ADX still <strong>below 25</strong> — if it jumped above 25 during the sweep, skip</span></div>
-          </div>
-        </div>
-        <div class="step-phase" style="margin-top:14px"><div class="step-phase-label spl-entry">Entry</div>
-          <div class="step-list">
-            <div class="step-item"><span class="step-icon">🎬</span><span class="step-text"><strong>Enter at open of next H2 candle</strong> after confirmed flip-back closes</span></div>
-            <div class="step-item"><span class="step-icon">🛡️</span><span class="step-text"><strong class="red">PSL:</strong> 1.5× ATR below manipulation wick low</span></div>
-            <div class="step-item"><span class="step-icon">🎯</span><span class="step-text"><strong class="yellow">PTP 1:</strong> D1 POC — partial close, trail to BE</span></div>
-            <div class="step-item"><span class="step-icon">🎯</span><span class="step-text"><strong class="green">PTP 2:</strong> D1 VAH — full exit</span></div>
-          </div>
-        </div>
-      </div>
-      <div class="setup-section">
-        <div class="setup-section-title">Trade Parameters</div>
-        <div class="trade-params">
-          <div class="tp-block"><div class="tp-label">Entry</div><div class="tp-value">H2 open after flip-back</div></div>
-          <div class="tp-block"><div class="tp-label">Stop Loss</div><div class="tp-value red">1.5× ATR below wick</div></div>
-          <div class="tp-block"><div class="tp-label">Target 1</div><div class="tp-value yellow">D1 POC</div></div>
-          <div class="tp-block"><div class="tp-label">Target 2</div><div class="tp-value green">D1 VAH</div></div>
-          <div class="tp-block"><div class="tp-label">RR</div><div class="tp-value accent">2.5:1 → 4:1</div></div>
-          <div class="tp-block"><div class="tp-label">Max Hold</div><div class="tp-value">8 H2 candles</div></div>
-        </div>
-      </div>
-      <div class="setup-section">
-        <div class="setup-section-title">Disqualifiers</div>
-        <div class="disqualifier"><div class="disqualifier-title">Skip If Any Apply</div><ul>
-          <li>D1 ADX above 25 at time of flip — may be genuine breakout</li>
-          <li>Flip-back takes more than 2 H2 candles — manipulation absorbed</li>
-          <li>POC NODE shows WEAK — no dominant value magnet</li>
-          <li>SIGNAL GATE CLOSED — confluence or vol filter failing</li>
-          <li>News event within 30 min of London open</li>
-        </ul></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- S2: POC Confluence Sniper -->
-  <div class="setup-card pb-card-sniper" id="pb-sniper-2">
-    <div class="setup-card-header sniper">
-      <div>
-        <div class="setup-title-row">
-          <span class="setup-strategy-badge ssb-sniper">THE SNIPER</span>
-          <span class="setup-name sniper">Triple-Profile POC Confluence</span>
-        </div>
-        <div class="setup-tagline">Three profiles agreeing on the same price — institutional memory at its strongest</div>
-        <div class="setup-pills">
-          <span class="setup-pill"><strong>Session</strong> London / NY Open</span>
-          <span class="setup-pill"><strong>TF Entry</strong> H2</span>
-          <span class="setup-pill"><strong>ADX</strong> Any</span>
-          <span class="setup-pill"><strong>Freq</strong> 1–2× / week</span>
-        </div>
-      </div>
-      <div class="star-rating"><span class="star lit">★</span><span class="star lit">★</span><span class="star lit">★</span></div>
-    </div>
-    <div class="setup-body">
-      <div class="setup-section">
-        <div class="setup-section-title">Why This Works</div>
-        <p>When three consecutive volume profiles all place their POC within a 5-pip zone of each other, that price has absorbed institutional volume across multiple time windows. It is not coincidence — it is where the market keeps returning to agree on value. The Confluence Gate showing <strong>HIGH ★★★</strong> is your signal that all three profiles are aligned. A POC signal at this cluster carries the memory of weeks of institutional positioning. The bounce is not a retail support level — it is a price that institutions have defended repeatedly.</p>
-      </div>
-      <div class="setup-section">
-        <div class="setup-section-title">Dashboard Snapshots</div>
-        <div class="dash-snap"><div class="dash-snap-title">Setup State — Confluence Cluster</div>
-          <div class="dash-row"><span class="dash-key">CONFLUENCE</span><span class="dash-val dv-green">HIGH ★★★ (3/3)</span></div>
-          <div class="dash-row"><span class="dash-key">SIGNAL GATE</span><span class="dash-val dv-green">OPEN ✔</span></div>
-          <div class="dash-row"><span class="dash-key">POC NODE</span><span class="dash-val dv-green">STRONG ★</span></div>
-          <div class="dash-row"><span class="dash-key">ACTIVE ZONE</span><span class="dash-val dv-yellow">AVOID ZONE → transitioning</span></div>
-        </div>
-        <div class="dash-snap" style="margin-top:8px"><div class="dash-snap-title">D1 Dashboard — Supporting Bias</div>
-          <div class="dash-row"><span class="dash-key">BIAS</span><span class="dash-val dv-green">↗ LONG LEAN</span></div>
-          <div class="dash-row"><span class="dash-key">vs POC</span><span class="dash-val dv-white">-3.2 pips — price just below D1 POC</span></div>
-          <div class="dash-row"><span class="dash-key">LAST FLIP</span><span class="dash-val dv-yellow">LONG→NEUTRAL 2 days ago</span></div>
-        </div>
-      </div>
-      <div class="setup-section">
-        <div class="setup-section-title">Exact Setup Mechanics — Step by Step</div>
-        <div class="step-phase"><div class="step-phase-label spl-pre">Pre-Setup Conditions</div>
-          <div class="step-list">
-            <div class="step-item"><span class="step-icon">⭐</span><span class="step-text">Main HUD CONFLUENCE shows <strong class="green">HIGH ★★★ (3/3)</strong> — all three profiles clustered</span></div>
-            <div class="step-item"><span class="step-icon">🎯</span><span class="step-text">Price approaching the cluster zone — within 1× ATR of the POC stack</span></div>
-            <div class="step-item"><span class="step-icon">📊</span><span class="step-text">D1 BIAS is <strong>NEUTRAL, LONG LEAN, or LONG</strong> — not opposing the setup direction</span></div>
-            <div class="step-item"><span class="step-icon">✅</span><span class="step-text">SIGNAL GATE <span class="mono">OPEN ✔</span> and COOLDOWN <span class="mono">CLEAR ✔</span></span></div>
-          </div>
-        </div>
-        <div class="step-phase" style="margin-top:14px"><div class="step-phase-label spl-confirm">Trigger</div>
-          <div class="step-list">
-            <div class="step-item"><span class="step-icon">🟡</span><span class="step-text">Chart fires <strong>POC (BUY)</strong> label — price touched the cluster zone and closed above</span></div>
-            <div class="step-item"><span class="step-icon">📊</span><span class="step-text">Volume label at the POC bin shows <strong>[HVN]</strong> — confirms this is the dominant node</span></div>
-            <div class="step-item"><span class="step-icon">🕯️</span><span class="step-text">Trigger candle has a <strong>lower wick</strong> rejecting below the cluster — not a clean breakdown</span></div>
-          </div>
-        </div>
-        <div class="step-phase" style="margin-top:14px"><div class="step-phase-label spl-entry">Entry</div>
-          <div class="step-list">
-            <div class="step-item"><span class="step-icon">🎬</span><span class="step-text"><strong>Enter at open of next H2 candle</strong> after POC (BUY) signal</span></div>
-            <div class="step-item"><span class="step-icon">🛡️</span><span class="step-text"><strong class="red">PSL:</strong> Below the lowest POC of the three profiles — the cluster floor</span></div>
-            <div class="step-item"><span class="step-icon">🎯</span><span class="step-text"><strong class="yellow">PTP 1:</strong> D1 VAH — first structural resistance</span></div>
-            <div class="step-item"><span class="step-icon">🎯</span><span class="step-text"><strong class="green">PTP 2:</strong> D1 High — if BIAS flips LONG on approach, hold for the extension</span></div>
-          </div>
-        </div>
-      </div>
-      <div class="setup-section">
-        <div class="setup-section-title">Trade Parameters</div>
-        <div class="trade-params">
-          <div class="tp-block"><div class="tp-label">Entry</div><div class="tp-value">H2 open after POC signal</div></div>
-          <div class="tp-block"><div class="tp-label">Stop Loss</div><div class="tp-value red">Below cluster floor</div></div>
-          <div class="tp-block"><div class="tp-label">Target 1</div><div class="tp-value yellow">D1 VAH</div></div>
-          <div class="tp-block"><div class="tp-label">Target 2</div><div class="tp-value green">D1 High</div></div>
-          <div class="tp-block"><div class="tp-label">RR</div><div class="tp-value accent">3:1 → 5:1</div></div>
-          <div class="tp-block"><div class="tp-label">Max Hold</div><div class="tp-value">12 H2 candles</div></div>
-        </div>
-      </div>
-      <div class="setup-section">
-        <div class="setup-section-title">Disqualifiers</div>
-        <div class="disqualifier"><div class="disqualifier-title">Skip If Any Apply</div><ul>
-          <li>Confluence drops to MED ★★ or LOW ★ — cluster broke, profiles diverged</li>
-          <li>D1 BIAS is full SHORT — higher timeframe bias overwhelms the cluster</li>
-          <li>POC (BUY) fires but volume label shows [IMB] with heavy sell volume — informed sellers present</li>
-          <li>Price has already passed through the cluster zone — missed entry, do not chase</li>
-        </ul></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- S3: Edge Exhaustion Rejection at D1 High -->
-  <div class="setup-card pb-card-sniper" id="pb-sniper-3">
-    <div class="setup-card-header sniper">
-      <div>
-        <div class="setup-title-row">
-          <span class="setup-strategy-badge ssb-sniper">THE SNIPER</span>
-          <span class="setup-name sniper">Edge Exhaustion at D1 Boundary</span>
-        </div>
-        <div class="setup-tagline">Thin-volume wick at profile extreme — price has nothing left to give</div>
-        <div class="setup-pills">
-          <span class="setup-pill"><strong>Session</strong> Any active</span>
-          <span class="setup-pill"><strong>TF Entry</strong> H2</span>
-          <span class="setup-pill"><strong>ADX</strong> &lt; 30</span>
-          <span class="setup-pill"><strong>Freq</strong> 3–5× / week</span>
-        </div>
-      </div>
-      <div class="star-rating"><span class="star lit">★</span><span class="star lit">★</span><span class="star lit">★</span></div>
-    </div>
-    <div class="setup-body">
-      <div class="setup-section">
-        <div class="setup-section-title">Why This Works</div>
-        <p>The profile high and low mark where price explored but found no buyers or sellers willing to trade. When price returns to that boundary on exhausted volume — the EDGE EXH signal fires because the candle reached within 5 ticks of the boundary without a volume spike — the market is telegraphing that it has no conviction to break through. Combined with the D1 Dashboard showing LONG LEAN or NEUTRAL bias (not full SHORT) and the BIAS flip history showing the level was defended before, this becomes a very clean one-trade-per-day Sniper setup.</p>
-      </div>
-      <div class="setup-section">
-        <div class="setup-section-title">Dashboard Snapshots</div>
-        <div class="dash-snap"><div class="dash-snap-title">Setup State — Approaching D1 Boundary</div>
-          <div class="dash-row"><span class="dash-key">BIAS</span><span class="dash-val dv-green">↗ LONG LEAN</span></div>
-          <div class="dash-row"><span class="dash-key">ZONE</span><span class="dash-val dv-yellow">INSIDE VA</span></div>
-          <div class="dash-row"><span class="dash-key">MARKET MODE</span><span class="dash-val dv-white">EXHAUSTED 💤</span></div>
-          <div class="dash-row"><span class="dash-key">TREND POWER</span><span class="dash-val dv-yellow">WEAK ⚠️</span></div>
-        </div>
-        <div class="dash-snap" style="margin-top:8px"><div class="dash-snap-title">Signal Fire — H2 Candle at Boundary</div>
-          <div class="dash-row"><span class="dash-key">H2 Label</span><span class="dash-val dv-red">EDGE EXH (SELL) 🔴</span></div>
-          <div class="dash-row"><span class="dash-key">Vol bin tag</span><span class="dash-val dv-white">[EXH] at top boundary</span></div>
-          <div class="dash-row"><span class="dash-key">COOLDOWN</span><span class="dash-val dv-green">CLEAR ✔</span></div>
-        </div>
-      </div>
-      <div class="setup-section">
-        <div class="setup-section-title">Exact Setup Mechanics — Step by Step</div>
-        <div class="step-phase"><div class="step-phase-label spl-pre">Pre-Setup Conditions</div>
-          <div class="step-list">
-            <div class="step-item"><span class="step-icon">📊</span><span class="step-text">D1 BIAS is <strong>NEUTRAL, SHORT LEAN, or SHORT</strong> — bias agrees with sell from boundary</span></div>
-            <div class="step-item"><span class="step-icon">💤</span><span class="step-text">MARKET MODE shows <span class="mono">EXHAUSTED 💤</span> on approach to boundary — volume thinning</span></div>
-            <div class="step-item"><span class="step-icon">📏</span><span class="step-text">Price within <strong>1× ATR of D1 profile High</strong> — inside the boundary scan zone</span></div>
-          </div>
-        </div>
-        <div class="step-phase" style="margin-top:14px"><div class="step-phase-label spl-manip">Trigger</div>
-          <div class="step-list">
-            <div class="step-item"><span class="step-icon">🔴</span><span class="step-text">Chart fires <strong class="red">EDGE EXH (SELL)</strong> — candle reached boundary, no spike, closed below</span></div>
-            <div class="step-item"><span class="step-icon">🕯️</span><span class="step-text">Trigger candle shows an <strong>upper wick</strong> into the boundary — classic rejection structure</span></div>
-            <div class="step-item"><span class="step-icon">📊</span><span class="step-text">Volume bin at the boundary shows <strong>[EXH]</strong> tag — below 15% of profile max volume</span></div>
-          </div>
-        </div>
-        <div class="step-phase" style="margin-top:14px"><div class="step-phase-label spl-entry">Entry</div>
-          <div class="step-list">
-            <div class="step-item"><span class="step-icon">🎬</span><span class="step-text"><strong>Enter short at open of next H2 candle</strong> after EDGE EXH signal</span></div>
-            <div class="step-item"><span class="step-icon">🛡️</span><span class="step-text"><strong class="red">PSL:</strong> 1× ATR above the boundary wick high — tight stop, high-probability level</span></div>
-            <div class="step-item"><span class="step-icon">🎯</span><span class="step-text"><strong class="yellow">PTP 1:</strong> D1 POC — primary mean reversion target</span></div>
-            <div class="step-item"><span class="step-icon">🎯</span><span class="step-text"><strong class="green">PTP 2:</strong> D1 VAL — full target if BIAS flips SHORT on approach</span></div>
-          </div>
-        </div>
-      </div>
-      <div class="setup-section">
-        <div class="setup-section-title">Trade Parameters</div>
-        <div class="trade-params">
-          <div class="tp-block"><div class="tp-label">Entry</div><div class="tp-value">H2 open after EDGE EXH</div></div>
-          <div class="tp-block"><div class="tp-label">Stop Loss</div><div class="tp-value red">1× ATR above boundary</div></div>
-          <div class="tp-block"><div class="tp-label">Target 1</div><div class="tp-value yellow">D1 POC</div></div>
-          <div class="tp-block"><div class="tp-label">Target 2</div><div class="tp-value green">D1 VAL</div></div>
-          <div class="tp-block"><div class="tp-label">RR</div><div class="tp-value accent">2:1 → 3.5:1</div></div>
-          <div class="tp-block"><div class="tp-label">Max Hold</div><div class="tp-value">10 H2 candles</div></div>
-        </div>
-      </div>
-      <div class="setup-section">
-        <div class="setup-section-title">Disqualifiers</div>
-        <div class="disqualifier"><div class="disqualifier-title">Skip If Any Apply</div><ul>
-          <li>ADX above 30 and rising — boundary may break on continuation</li>
-          <li>D1 BIAS is full LONG — higher timeframe wants to break through, not reject</li>
-          <li>MARKET MODE shows AGGRESSIVE 🚀 on trigger candle — spike, not exhaustion</li>
-          <li>Volume bin at boundary shows [HVN] not [EXH] — contested zone, not thin</li>
-        </ul></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ════════════════════════════════
-       FADE SETUPS
-  ════════════════════════════════ -->
-
-  <!-- F1: VAH Fade at NY Open -->
-  <div class="setup-card pb-card-fade" id="pb-fade-1">
-    <div class="setup-card-header fade">
-      <div>
-        <div class="setup-title-row">
-          <span class="setup-strategy-badge ssb-fade">SESSION FADE</span>
-          <span class="setup-name fade">VAH Fade at NY Open</span>
-        </div>
-        <div class="setup-tagline">Fading exhausted London extension into NY overlap reversal</div>
-        <div class="setup-pills">
-          <span class="setup-pill"><strong>Session</strong> NY Open / London–NY</span>
-          <span class="setup-pill"><strong>TF Entry</strong> H1</span>
-          <span class="setup-pill"><strong>ADX</strong> 20–30 Weak</span>
-          <span class="setup-pill"><strong>Freq</strong> 3–5× / week</span>
-        </div>
-      </div>
-      <div class="star-rating"><span class="star lit">★</span><span class="star lit">★</span><span class="star lit">★</span></div>
-    </div>
-    <div class="setup-body">
-      <div class="setup-section">
-        <div class="setup-section-title">Why This Works</div>
-        <p>London sessions often create an impulsive move pushing price to the H4 VAH. By the time NY opens, London traders are taking profit and institutional order flow shifts. If price reached VAH on exhausted volume — EDGE EXH firing, low bin volume at boundary — the NY open liquidity event creates a reversal as price is rejected back into the value area. The key distinction from a random fade: volume exhaustion at the boundary confirms the move was hollow.</p>
-      </div>
-      <div class="setup-section">
-        <div class="setup-section-title">Dashboard Snapshots</div>
-        <div class="dash-snap"><div class="dash-snap-title">Extension Phase — Late London</div>
-          <div class="dash-row"><span class="dash-key">ACTIVE ZONE</span><span class="dash-val dv-green">STRONG BUY</span></div>
-          <div class="dash-row"><span class="dash-key">MARKET MODE</span><span class="dash-val dv-white">EXHAUSTED 💤</span></div>
-          <div class="dash-row"><span class="dash-key">TREND POWER</span><span class="dash-val dv-yellow">WEAK ⚠️</span></div>
-          <div class="dash-row"><span class="dash-key">SIGNAL GATE</span><span class="dash-val dv-green">OPEN ✔</span></div>
-        </div>
-        <div class="dash-snap" style="margin-top:8px"><div class="dash-snap-title">Signal Fire — NY Open Candle</div>
-          <div class="dash-row"><span class="dash-key">H1 Label</span><span class="dash-val dv-red">EDGE EXH (SELL) 🔴</span></div>
-          <div class="dash-row"><span class="dash-key">Vol bin</span><span class="dash-val dv-white">[EXH] at VAH boundary</span></div>
-          <div class="dash-row"><span class="dash-key">D1 BIAS</span><span class="dash-val dv-yellow">↗ LONG LEAN — not full LONG</span></div>
-        </div>
-      </div>
-      <div class="setup-section">
-        <div class="setup-section-title">Exact Setup Mechanics — Step by Step</div>
-        <div class="step-phase"><div class="step-phase-label spl-pre">Pre-Setup</div>
-          <div class="step-list">
-            <div class="step-item"><span class="step-icon">📈</span><span class="step-text">London drove price <strong>up toward H4 VAH</strong> on a bullish move</span></div>
-            <div class="step-item"><span class="step-icon">📊</span><span class="step-text">H4 ADX <strong>between 20–30</strong> — weakly trending</span></div>
-            <div class="step-item"><span class="step-icon">💤</span><span class="step-text">MARKET MODE shows <span class="mono">EXHAUSTED 💤</span> — volume thinning near VAH</span></div>
-            <div class="step-item"><span class="step-icon">🕐</span><span class="step-text">Time approaching <strong>NY open (13:00–14:00 HKT)</strong></span></div>
-          </div>
-        </div>
-        <div class="step-phase" style="margin-top:14px"><div class="step-phase-label spl-manip">Trigger</div>
-          <div class="step-list">
-            <div class="step-item"><span class="step-icon">🔴</span><span class="step-text">H1 fires <strong class="red">EDGE EXH (SELL)</strong> at or near H4 VAH</span></div>
-            <div class="step-item"><span class="step-icon">🕯️</span><span class="step-text">Trigger candle has visible <strong>upper wick rejecting VAH</strong> — closes below its open</span></div>
-            <div class="step-item"><span class="step-icon">📊</span><span class="step-text">Volume on trigger candle is <strong>below average</strong> — exhaustion confirmed</span></div>
-          </div>
-        </div>
-        <div class="step-phase" style="margin-top:14px"><div class="step-phase-label spl-confirm">Confirmation</div>
-          <div class="step-list">
-            <div class="step-item"><span class="step-icon">🔄</span><span class="step-text">Next H1 candle <strong>closes below trigger candle low</strong> — momentum confirmed down</span></div>
-            <div class="step-item"><span class="step-icon">📉</span><span class="step-text">ACTIVE ZONE shifts from <span class="mono">STRONG BUY</span> to <span class="mono">POTENTIAL SELL</span></span></div>
-          </div>
-        </div>
-        <div class="step-phase" style="margin-top:14px"><div class="step-phase-label spl-entry">Entry</div>
-          <div class="step-list">
-            <div class="step-item"><span class="step-icon">🎬</span><span class="step-text"><strong>Enter short after confirmation candle</strong> — or on retest of VAH from below</span></div>
-            <div class="step-item"><span class="step-icon">🛡️</span><span class="step-text"><strong class="red">PSL:</strong> 1.5× ATR above VAH wick high</span></div>
-            <div class="step-item"><span class="step-icon">🎯</span><span class="step-text"><strong class="yellow">PTP 1:</strong> H4 POC — partial profit, trail to BE</span></div>
-            <div class="step-item"><span class="step-icon">🎯</span><span class="step-text"><strong class="green">PTP 2:</strong> H4 VAL — full exit at session close</span></div>
-          </div>
-        </div>
-      </div>
-      <div class="setup-section">
-        <div class="setup-section-title">Trade Parameters</div>
-        <div class="trade-params">
-          <div class="tp-block"><div class="tp-label">Entry</div><div class="tp-value">Candle after EDGE EXH confirm</div></div>
-          <div class="tp-block"><div class="tp-label">Stop Loss</div><div class="tp-value red">1.5× ATR above VAH</div></div>
-          <div class="tp-block"><div class="tp-label">Target 1</div><div class="tp-value yellow">H4 POC</div></div>
-          <div class="tp-block"><div class="tp-label">Target 2</div><div class="tp-value green">H4 VAL</div></div>
-          <div class="tp-block"><div class="tp-label">RR</div><div class="tp-value accent">2:1 → 3:1</div></div>
-          <div class="tp-block"><div class="tp-label">Max Hold</div><div class="tp-value">NY session close 21:00 HKT</div></div>
-        </div>
-      </div>
-      <div class="setup-section">
-        <div class="setup-section-title">Disqualifiers</div>
-        <div class="disqualifier"><div class="disqualifier-title">Skip If Any Apply</div><ul>
-          <li>ADX above 30 — strong London trend, NY may continue not reverse</li>
-          <li>Volume at VAH shows [HVN] not [EXH] — contested, not exhausted</li>
-          <li>MARKET MODE shows AGGRESSIVE 🚀 — spike momentum, not fade</li>
-          <li>HTF status shows STR BULLISH — higher TF bias opposes the fade</li>
-          <li>Major US data release within 60 min — external catalyst overrides structure</li>
-        </ul></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- F2: Rejection Spike Fade at Session Open -->
-  <div class="setup-card pb-card-fade" id="pb-fade-2">
-    <div class="setup-card-header fade">
-      <div>
-        <div class="setup-title-row">
-          <span class="setup-strategy-badge ssb-fade">SESSION FADE</span>
-          <span class="setup-name fade">Rejection Spike at Profile High</span>
-        </div>
-        <div class="setup-tagline">High-volume rejection at profile extreme — smart money absorbing the breakout</div>
-        <div class="setup-pills">
-          <span class="setup-pill"><strong>Session</strong> Any session open</span>
-          <span class="setup-pill"><strong>TF Entry</strong> H1 / M15</span>
-          <span class="setup-pill"><strong>ADX</strong> Any</span>
-          <span class="setup-pill"><strong>Freq</strong> 2–3× / week</span>
-        </div>
-      </div>
-      <div class="star-rating"><span class="star lit">★</span><span class="star lit">★</span><span class="star lit">★</span></div>
-    </div>
-    <div class="setup-body">
-      <div class="setup-section">
-        <div class="setup-section-title">Why This Works</div>
-        <p>Unlike Edge Exhaustion which fires on thin volume, a Rejection signal fires on a <strong>volume spike</strong> at the profile boundary. This spike represents smart money aggressively absorbing the breakout attempt — selling into the buyers who chased the high. The [ABS] or [HVN] tag on the volume bin at the boundary confirms absorption is happening. The candle structure will show a long wick with a close well below the high — classic institutional selling disguised as a breakout.</p>
-      </div>
-      <div class="setup-section">
-        <div class="setup-section-title">Dashboard Snapshots</div>
-        <div class="dash-snap"><div class="dash-snap-title">Rejection Setup State</div>
-          <div class="dash-row"><span class="dash-key">H1 Label</span><span class="dash-val dv-red">REJECTION (SELL) 🚫</span></div>
-          <div class="dash-row"><span class="dash-key">MARKET MODE</span><span class="dash-val dv-yellow">AGGRESSIVE 🚀 → then drops</span></div>
-          <div class="dash-row"><span class="dash-key">Vol bin at high</span><span class="dash-val dv-white">[ABS] — absorption tag</span></div>
-          <div class="dash-row"><span class="dash-key">ACTIVE ZONE</span><span class="dash-val dv-green">STRONG BUY → fading</span></div>
-        </div>
-      </div>
-      <div class="setup-section">
-        <div class="setup-section-title">Exact Setup Mechanics — Step by Step</div>
-        <div class="step-phase"><div class="step-phase-label spl-pre">Pre-Setup</div>
-          <div class="step-list">
-            <div class="step-item"><span class="step-icon">📈</span><span class="step-text">Price approaching <strong>profile high</strong> on a push with rising volume</span></div>
-            <div class="step-item"><span class="step-icon">🔍</span><span class="step-text">Volume bin near the high shows <strong>[ABS]</strong> or <strong>[HVN]</strong> — absorption zone identified</span></div>
-            <div class="step-item"><span class="step-icon">📊</span><span class="step-text">D1 BIAS is <strong>not full LONG</strong> — at most LONG LEAN, preferably NEUTRAL or SHORT</span></div>
-          </div>
-        </div>
-        <div class="step-phase" style="margin-top:14px"><div class="step-phase-label spl-manip">Trigger</div>
-          <div class="step-list">
-            <div class="step-item"><span class="step-icon">🚫</span><span class="step-text">Chart fires <strong class="red">REJECTION (SELL)</strong> — price spiked to/above profile high, close well below</span></div>
-            <div class="step-item"><span class="step-icon">📊</span><span class="step-text">MARKET MODE reads <span class="mono">AGGRESSIVE 🚀</span> on the spike candle — confirms the volume spike</span></div>
-            <div class="step-item"><span class="step-icon">🕯️</span><span class="step-text">Candle structure: <strong>long upper wick &gt; 50% of candle body</strong> — body closed in lower half</span></div>
-          </div>
-        </div>
-        <div class="step-phase" style="margin-top:14px"><div class="step-phase-label spl-entry">Entry</div>
-          <div class="step-list">
-            <div class="step-item"><span class="step-icon">🎬</span><span class="step-text"><strong>Enter short at open of next candle</strong> after rejection — no confirmation candle needed, spike is enough</span></div>
-            <div class="step-item"><span class="step-icon">🛡️</span><span class="step-text"><strong class="red">PSL:</strong> Above the spike high — clean invalidation level</span></div>
-            <div class="step-item"><span class="step-icon">🎯</span><span class="step-text"><strong class="yellow">PTP 1:</strong> H4 POC — mean reversion target</span></div>
-            <div class="step-item"><span class="step-icon">🎯</span><span class="step-text"><strong class="green">PTP 2:</strong> H4 VAL — if ACTIVE ZONE shifts to STRONG SELL</span></div>
-          </div>
-        </div>
-      </div>
-      <div class="setup-section">
-        <div class="setup-section-title">Trade Parameters</div>
-        <div class="trade-params">
-          <div class="tp-block"><div class="tp-label">Entry</div><div class="tp-value">Candle after rejection spike</div></div>
-          <div class="tp-block"><div class="tp-label">Stop Loss</div><div class="tp-value red">Above spike high</div></div>
-          <div class="tp-block"><div class="tp-label">Target 1</div><div class="tp-value yellow">H4 POC</div></div>
-          <div class="tp-block"><div class="tp-label">Target 2</div><div class="tp-value green">H4 VAL</div></div>
-          <div class="tp-block"><div class="tp-label">RR</div><div class="tp-value accent">2:1 → 3:1</div></div>
-          <div class="tp-block"><div class="tp-label">Signal type</div><div class="tp-value">REJECTION (SELL)</div></div>
-        </div>
-      </div>
-      <div class="setup-section">
-        <div class="setup-section-title">Disqualifiers</div>
-        <div class="disqualifier"><div class="disqualifier-title">Skip If Any Apply</div><ul>
-          <li>Volume bin shows [IMB] with heavy buy dominance — buyers winning, not being absorbed</li>
-          <li>D1 BIAS is full LONG — trend will absorb the rejection and push through</li>
-          <li>Second candle after spike continues upward — the rejection failed, gap up scenario</li>
-          <li>ADX above 35 — strong trend rejections often get re-tested and broken</li>
-        </ul></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- F3: VAL Bounce Fade (Reverse Fade) -->
-  <div class="setup-card pb-card-fade" id="pb-fade-3">
-    <div class="setup-card-header fade">
-      <div>
-        <div class="setup-title-row">
-          <span class="setup-strategy-badge ssb-fade">SESSION FADE</span>
-          <span class="setup-name fade">VA Trap Buy — London Selloff Fade</span>
-        </div>
-        <div class="setup-tagline">Fading the London selloff when VAL holds — buying the panic</div>
-        <div class="setup-pills">
-          <span class="setup-pill"><strong>Session</strong> London / Asian close</span>
-          <span class="setup-pill"><strong>TF Entry</strong> H1</span>
-          <span class="setup-pill"><strong>ADX</strong> &lt; 25</span>
-          <span class="setup-pill"><strong>Freq</strong> 1–2× / week</span>
-        </div>
-      </div>
-      <div class="star-rating"><span class="star lit">★</span><span class="star lit">★</span><span class="star lit">★</span></div>
-    </div>
-    <div class="setup-body">
-      <div class="setup-section">
-        <div class="setup-section-title">Why This Works</div>
-        <p>The mirror image of the VAH fade. When London pushes price below the H4 VAL — often during a risk-off open or weak macro print — and the D1 BIAS shows the overall structure is still NEUTRAL or LONG LEAN, the selloff is overshooting fair value. The VA TRAP (BUY) signal fires when price closes back above VAL, confirming the breakdown was rejected. Retail shorts who chased the breakdown become the fuel for the rebound as their stops are triggered above their entries.</p>
-      </div>
-      <div class="setup-section">
-        <div class="setup-section-title">Dashboard Snapshots</div>
-        <div class="dash-snap"><div class="dash-snap-title">Trap Setup — London Selloff</div>
-          <div class="dash-row"><span class="dash-key">ACTIVE ZONE</span><span class="dash-val dv-red">STRONG SELL</span></div>
-          <div class="dash-row"><span class="dash-key">D1 BIAS</span><span class="dash-val dv-yellow">→ NEUTRAL — structure intact</span></div>
-          <div class="dash-row"><span class="dash-key">TREND POWER</span><span class="dash-val dv-yellow">WEAK ⚠️</span></div>
-          <div class="dash-row"><span class="dash-key">LAST FLIP</span><span class="dash-val dv-red">NEUTRAL→SHORT just occurred</span></div>
-        </div>
-        <div class="dash-snap" style="margin-top:8px"><div class="dash-snap-title">Confirmation — Close Back Above VAL</div>
-          <div class="dash-row"><span class="dash-key">H1 Label</span><span class="dash-val dv-green">VA TRAP (BUY) 🟢</span></div>
-          <div class="dash-row"><span class="dash-key">ACTIVE ZONE</span><span class="dash-val dv-accent">POTENTIAL BUY</span></div>
-          <div class="dash-row"><span class="dash-key">D1 BIAS</span><span class="dash-val dv-yellow">→ NEUTRAL — confirmed intact</span></div>
-        </div>
-      </div>
-      <div class="setup-section">
-        <div class="setup-section-title">Exact Setup Mechanics — Step by Step</div>
-        <div class="step-phase"><div class="step-phase-label spl-pre">Pre-Setup</div>
-          <div class="step-list">
-            <div class="step-item"><span class="step-icon">📉</span><span class="step-text">London session <strong>breaks below H4 VAL</strong> — ACTIVE ZONE flips to STRONG SELL</span></div>
-            <div class="step-item"><span class="step-icon">📊</span><span class="step-text">D1 BIAS remains <strong>NEUTRAL or LONG LEAN</strong> — higher TF not confirming the break</span></div>
-            <div class="step-item"><span class="step-icon">📊</span><span class="step-text">ADX <strong>below 25</strong> — not a trending breakdown, likely a sweep</span></div>
-          </div>
-        </div>
-        <div class="step-phase" style="margin-top:14px"><div class="step-phase-label spl-confirm">Trigger</div>
-          <div class="step-list">
-            <div class="step-item"><span class="step-icon">🟢</span><span class="step-text">H1 fires <strong class="green">VA TRAP (BUY)</strong> — price closed back above VAL</span></div>
-            <div class="step-item"><span class="step-icon">🔄</span><span class="step-text">D1 BIAS flip-back appears — LAST FLIP shows SHORT→NEUTRAL</span></div>
-            <div class="step-item"><span class="step-icon">✅</span><span class="step-text">SIGNAL GATE <span class="mono">OPEN ✔</span> — gate confirms the signal is valid</span></div>
-          </div>
-        </div>
-        <div class="step-phase" style="margin-top:14px"><div class="step-phase-label spl-entry">Entry</div>
-          <div class="step-list">
-            <div class="step-item"><span class="step-icon">🎬</span><span class="step-text"><strong>Enter long at open of next H1 candle</strong> after VA TRAP (BUY) fires</span></div>
-            <div class="step-item"><span class="step-icon">🛡️</span><span class="step-text"><strong class="red">PSL:</strong> Below the breakdown wick low — 1.5× ATR</span></div>
-            <div class="step-item"><span class="step-icon">🎯</span><span class="step-text"><strong class="yellow">PTP 1:</strong> H4 POC — halfway target</span></div>
-            <div class="step-item"><span class="step-icon">🎯</span><span class="step-text"><strong class="green">PTP 2:</strong> H4 VAH — full mean reversion</span></div>
-          </div>
-        </div>
-      </div>
-      <div class="setup-section">
-        <div class="setup-section-title">Trade Parameters</div>
-        <div class="trade-params">
-          <div class="tp-block"><div class="tp-label">Entry</div><div class="tp-value">H1 open after VA TRAP BUY</div></div>
-          <div class="tp-block"><div class="tp-label">Stop Loss</div><div class="tp-value red">1.5× ATR below wick low</div></div>
-          <div class="tp-block"><div class="tp-label">Target 1</div><div class="tp-value yellow">H4 POC</div></div>
-          <div class="tp-block"><div class="tp-label">Target 2</div><div class="tp-value green">H4 VAH</div></div>
-          <div class="tp-block"><div class="tp-label">RR</div><div class="tp-value accent">2:1 → 3.5:1</div></div>
-          <div class="tp-block"><div class="tp-label">Signal type</div><div class="tp-value">VA TRAP (BUY)</div></div>
-        </div>
-      </div>
-      <div class="setup-section">
-        <div class="setup-section-title">Disqualifiers</div>
-        <div class="disqualifier"><div class="disqualifier-title">Skip If Any Apply</div><ul>
-          <li>D1 BIAS flips to full SHORT — structural breakdown is genuine</li>
-          <li>POC NODE shows WEAK — no gravitational pull back to value</li>
-          <li>Price closes back below VAL within 2 candles — trap failed</li>
-          <li>ADX rising sharply above 25 — breakdown gaining trend momentum</li>
-        </ul></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ════════════════════════════════
-       MAGNET SETUPS
-  ════════════════════════════════ -->
-
-  <!-- M1: Dead Session POC Pull -->
-  <div class="setup-card pb-card-magnet" id="pb-magnet-1">
-    <div class="setup-card-header magnet">
-      <div>
-        <div class="setup-title-row">
-          <span class="setup-strategy-badge ssb-magnet">POC MAGNET</span>
-          <span class="setup-name magnet">Dead Session POC Pull</span>
-        </div>
-        <div class="setup-tagline">Mean reversion to POC during low-activity off-hours drift</div>
-        <div class="setup-pills">
-          <span class="setup-pill"><strong>Session</strong> Asian / Off-Hours</span>
-          <span class="setup-pill"><strong>TF Entry</strong> H2 / M30</span>
-          <span class="setup-pill"><strong>ADX</strong> &lt; 20 Ranging</span>
-          <span class="setup-pill"><strong>Freq</strong> 1–2× / day</span>
-        </div>
-      </div>
-      <div class="star-rating"><span class="star lit">★</span><span class="star lit">★</span><span class="star lit">★</span></div>
-    </div>
-    <div class="setup-body">
-      <div class="setup-section">
-        <div class="setup-section-title">Why This Works</div>
-        <p>During dead sessions, market makers fill the spread by pulling price back toward the POC — the price where the most institutional volume was transacted. With no directional catalyst, price behaves like a rubber band: the further it drifts from POC, the stronger the gravitational pull back. The STRONG POC NODE classification is critical — a strong POC (2× the second-busiest bin) has genuine institutional memory and will reliably pull price. A weak POC will not.</p>
-      </div>
-      <div class="setup-section">
-        <div class="setup-section-title">Dashboard Snapshots</div>
-        <div class="dash-snap"><div class="dash-snap-title">Ideal POC Magnet State</div>
-          <div class="dash-row"><span class="dash-key">ACTIVE ZONE</span><span class="dash-val dv-accent">AVOID ZONE</span></div>
-          <div class="dash-row"><span class="dash-key">TREND POWER</span><span class="dash-val dv-white">RANGING 😴</span></div>
-          <div class="dash-row"><span class="dash-key">MARKET MODE</span><span class="dash-val dv-white">STABLE ⚖️ or EXHAUSTED 💤</span></div>
-          <div class="dash-row"><span class="dash-key">SIGNAL GATE</span><span class="dash-val dv-green">OPEN ✔</span></div>
-        </div>
-        <div class="dash-snap" style="margin-top:8px"><div class="dash-snap-title">D1 Dashboard — Supporting</div>
-          <div class="dash-row"><span class="dash-key">BIAS</span><span class="dash-val dv-yellow">→ NEUTRAL</span></div>
-          <div class="dash-row"><span class="dash-key">POC NODE</span><span class="dash-val dv-green">STRONG ★ (2×+ ratio)</span></div>
-          <div class="dash-row"><span class="dash-key">D1 ADX</span><span class="dash-val dv-white">&lt; 20 — RANGING 😴</span></div>
-        </div>
-      </div>
-      <div class="setup-section">
-        <div class="setup-section-title">Exact Setup Mechanics — Step by Step</div>
-        <div class="step-phase"><div class="step-phase-label spl-pre">Pre-Setup</div>
-          <div class="step-list">
-            <div class="step-item"><span class="step-icon">😴</span><span class="step-text">Dead session confirmed — Asian session for majors</span></div>
-            <div class="step-item"><span class="step-icon">📊</span><span class="step-text">ADX <strong>below 20</strong> — RANGING 😴 — no directional conviction</span></div>
-            <div class="step-item"><span class="step-icon">⭐</span><span class="step-text">D1 POC NODE <strong class="green">STRONG ★ 2.0×+</strong></span></div>
-            <div class="step-item"><span class="step-icon">📏</span><span class="step-text">Price <strong>at least 0.5× ATR away</strong> from H2 POC — displacement exists</span></div>
-          </div>
-        </div>
-        <div class="step-phase" style="margin-top:14px"><div class="step-phase-label spl-manip">Trigger</div>
-          <div class="step-list">
-            <div class="step-item"><span class="step-icon">🟡</span><span class="step-text">Chart fires <strong>POC (BUY) or POC (SELL)</strong> — price touched POC and closed past it</span></div>
-            <div class="step-item"><span class="step-icon">📊</span><span class="step-text">Volume label at POC bin shows <strong>[HVN]</strong> — dominant node confirmed</span></div>
-            <div class="step-item"><span class="step-icon">📉</span><span class="step-text">Trigger candle is <strong>not a spike</strong> — average or below average volume</span></div>
-          </div>
-        </div>
-        <div class="step-phase" style="margin-top:14px"><div class="step-phase-label spl-entry">Entry</div>
-          <div class="step-list">
-            <div class="step-item"><span class="step-icon">🎬</span><span class="step-text"><strong>Enter at open of confirmation candle</strong></span></div>
-            <div class="step-item"><span class="step-icon">🛡️</span><span class="step-text"><strong class="red">PSL:</strong> 1× ATR other side of POC</span></div>
-            <div class="step-item"><span class="step-icon">🎯</span><span class="step-text"><strong class="yellow">PTP:</strong> VAH (long) or VAL (short) — exit before boundary</span></div>
-            <div class="step-item"><span class="step-icon">⏱️</span><span class="step-text"><strong>Time exit:</strong> 6 H2 candles max — stale if not moving</span></div>
-          </div>
-        </div>
-      </div>
-      <div class="setup-section">
-        <div class="setup-section-title">Trade Parameters</div>
-        <div class="trade-params">
-          <div class="tp-block"><div class="tp-label">Entry</div><div class="tp-value">Confirmation H2 open</div></div>
-          <div class="tp-block"><div class="tp-label">Stop Loss</div><div class="tp-value red">1× ATR other side of POC</div></div>
-          <div class="tp-block"><div class="tp-label">Target</div><div class="tp-value yellow">VAH or VAL</div></div>
-          <div class="tp-block"><div class="tp-label">Time Exit</div><div class="tp-value accent">6 H2 candles max</div></div>
-          <div class="tp-block"><div class="tp-label">RR</div><div class="tp-value accent">1.5:1 → 2.5:1</div></div>
-          <div class="tp-block"><div class="tp-label">Best session</div><div class="tp-value">Asian / Post-NY</div></div>
-        </div>
-      </div>
-      <div class="setup-section">
-        <div class="setup-section-title">Disqualifiers</div>
-        <div class="disqualifier"><div class="disqualifier-title">Skip If Any Apply</div><ul>
-          <li>ADX climbing above 20 and rising — trend forming, POC will not hold</li>
-          <li>D1 BIAS flipped to full LONG or SHORT — directional bias overrides</li>
-          <li>POC NODE shows WEAK — no dominant level, no magnet</li>
-          <li>London/NY within 90 min of opening — directional catalyst approaching</li>
-          <li>MARKET MODE shows AGGRESSIVE 🚀 — unusual volume driving new move</li>
-        </ul></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- M2: Inside VA Oscillation -->
-  <div class="setup-card pb-card-magnet" id="pb-magnet-2">
-    <div class="setup-card-header magnet">
-      <div>
-        <div class="setup-title-row">
-          <span class="setup-strategy-badge ssb-magnet">POC MAGNET</span>
-          <span class="setup-name magnet">Inside VA Oscillation</span>
-        </div>
-        <div class="setup-tagline">Riding the pendulum between VAH and VAL in a tight consolidation range</div>
-        <div class="setup-pills">
-          <span class="setup-pill"><strong>Session</strong> Asian / Early London</span>
-          <span class="setup-pill"><strong>TF Entry</strong> M30</span>
-          <span class="setup-pill"><strong>ADX</strong> &lt; 20</span>
-          <span class="setup-pill"><strong>Freq</strong> 2–3× / week</span>
-        </div>
-      </div>
-      <div class="star-rating"><span class="star lit">★</span><span class="star lit">★</span><span class="star lit">★</span></div>
-    </div>
-    <div class="setup-body">
-      <div class="setup-section">
-        <div class="setup-section-title">Why This Works</div>
-        <p>When price is inside the value area and ADX is flat below 20, the market is in a pure equilibrium state. Price will oscillate between VAH and VAL as buyers and sellers take turns. The POC acts as the pivot. Trading this oscillation means entering near one boundary and targeting the other — with POC as a mandatory partial exit. The AVOID ZONE on the dashboard is actually telling you the setup is live: you are inside the value area, meaning the oscillation mechanics apply.</p>
-      </div>
-      <div class="setup-section">
-        <div class="setup-section-title">Dashboard Snapshots</div>
-        <div class="dash-snap"><div class="dash-snap-title">Oscillation Setup State</div>
-          <div class="dash-row"><span class="dash-key">ACTIVE ZONE</span><span class="dash-val dv-accent">AVOID ZONE — price inside VA</span></div>
-          <div class="dash-row"><span class="dash-key">TREND POWER</span><span class="dash-val dv-white">RANGING 😴 ADX &lt; 20</span></div>
-          <div class="dash-row"><span class="dash-key">D1 BIAS</span><span class="dash-val dv-yellow">→ NEUTRAL</span></div>
-          <div class="dash-row"><span class="dash-key">VA WIDTH</span><span class="dash-val dv-white">15–30 pips — tradeable range</span></div>
-        </div>
-      </div>
-      <div class="setup-section">
-        <div class="setup-section-title">Exact Setup Mechanics — Step by Step</div>
-        <div class="step-phase"><div class="step-phase-label spl-pre">Pre-Setup</div>
-          <div class="step-list">
-            <div class="step-item"><span class="step-icon">📊</span><span class="step-text">ADX <strong>below 20</strong> and flat for at least 3 H2 candles — confirmed ranging</span></div>
-            <div class="step-item"><span class="step-icon">📏</span><span class="step-text">VA Width (D1 Dashboard) is <strong>15 pips or wider</strong> — enough range to be worth trading</span></div>
-            <div class="step-item"><span class="step-icon">🔄</span><span class="step-text">Price has already completed <strong>at least one full oscillation</strong> — touched VAH and returned, or VAL and returned</span></div>
-          </div>
-        </div>
-        <div class="step-phase" style="margin-top:14px"><div class="step-phase-label spl-manip">Trigger — Near VAL (Long)</div>
-          <div class="step-list">
-            <div class="step-item"><span class="step-icon">🟡</span><span class="step-text">Price reaches within <strong>2–3 pips of VAL</strong> on M30</span></div>
-            <div class="step-item"><span class="step-icon">📊</span><span class="step-text">Volume bin near VAL shows <strong>[EXH]</strong> — no sellers left at this level</span></div>
-            <div class="step-item"><span class="step-icon">🔴</span><span class="step-text"><strong>No</strong> EDGE EXH or REJECTION signal on the current M30 bar — clean approach</span></div>
-          </div>
-        </div>
-        <div class="step-phase" style="margin-top:14px"><div class="step-phase-label spl-entry">Entry</div>
-          <div class="step-list">
-            <div class="step-item"><span class="step-icon">🎬</span><span class="step-text"><strong>Enter long on the M30 candle that touches VAL and shows a lower wick</strong></span></div>
-            <div class="step-item"><span class="step-icon">🛡️</span><span class="step-text"><strong class="red">PSL:</strong> 0.5× ATR below VAL — tight, this is a range trade</span></div>
-            <div class="step-item"><span class="step-icon">🎯</span><span class="step-text"><strong class="yellow">Mandatory partial exit at POC</strong> — take 50% off, move stop to entry</span></div>
-            <div class="step-item"><span class="step-icon">🎯</span><span class="step-text"><strong class="green">Full exit at VAH</strong> — or when ACTIVE ZONE changes from POTENTIAL BUY</span></div>
-          </div>
-        </div>
-      </div>
-      <div class="setup-section">
-        <div class="setup-section-title">Trade Parameters</div>
-        <div class="trade-params">
-          <div class="tp-block"><div class="tp-label">Entry</div><div class="tp-value">M30 wick at VAL/VAH</div></div>
-          <div class="tp-block"><div class="tp-label">Stop Loss</div><div class="tp-value red">0.5× ATR beyond VA boundary</div></div>
-          <div class="tp-block"><div class="tp-label">Partial exit</div><div class="tp-value yellow">50% at POC</div></div>
-          <div class="tp-block"><div class="tp-label">Full exit</div><div class="tp-value green">Opposite VA boundary</div></div>
-          <div class="tp-block"><div class="tp-label">RR</div><div class="tp-value accent">1.5:1 → 2:1</div></div>
-          <div class="tp-block"><div class="tp-label">Max oscillations</div><div class="tp-value">2 per session</div></div>
-        </div>
-      </div>
-      <div class="setup-section">
-        <div class="setup-section-title">Disqualifiers</div>
-        <div class="disqualifier"><div class="disqualifier-title">Skip If Any Apply</div><ul>
-          <li>ADX starts rising above 20 — range is breaking, oscillation will fail</li>
-          <li>VA Width less than 12 pips — spread and slippage eat the profit</li>
-          <li>D1 BIAS flips — higher TF bias will end the oscillation and push through a boundary</li>
-          <li>London open within 60 minutes — directional flow will override the range</li>
-        </ul></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- M3: POC Magnet After Bias Flip -->
-  <div class="setup-card pb-card-magnet" id="pb-magnet-3">
-    <div class="setup-card-header magnet">
-      <div>
-        <div class="setup-title-row">
-          <span class="setup-strategy-badge ssb-magnet">POC MAGNET</span>
-          <span class="setup-name magnet">Post-Flip POC Return</span>
-        </div>
-        <div class="setup-tagline">After a D1 bias flip, price retraces to POC before continuing — the magnet pull within a new trend</div>
-        <div class="setup-pills">
-          <span class="setup-pill"><strong>Session</strong> Any</span>
-          <span class="setup-pill"><strong>TF Entry</strong> H2</span>
-          <span class="setup-pill"><strong>ADX</strong> 20–30 Emerging</span>
-          <span class="setup-pill"><strong>Freq</strong> 1× / 2–3 days</span>
-        </div>
-      </div>
-      <div class="star-rating"><span class="star lit">★</span><span class="star lit">★</span><span class="star lit">★</span></div>
-    </div>
-    <div class="setup-body">
-      <div class="setup-section">
-        <div class="setup-section-title">Why This Works</div>
-        <p>After a confirmed D1 BIAS flip — particularly NEUTRAL→LONG — price rarely goes straight to the new target. It typically retraces back toward the POC first before the distribution phase begins in earnest. This retracement is predictable because institutions that missed the initial move will buy the dip back to POC, and the POC's gravitational pull is strongest in the early bars after a flip when the volume cluster is fresh. The LAST FLIP row in the D1 Dashboard gives you the exact price of the flip — use that as your reference level for the retracement depth.</p>
-      </div>
-      <div class="setup-section">
-        <div class="setup-section-title">Dashboard Snapshots</div>
-        <div class="dash-snap"><div class="dash-snap-title">Post-Flip Retracement State</div>
-          <div class="dash-row"><span class="dash-key">D1 BIAS</span><span class="dash-val dv-green">⬆ LONG — just flipped</span></div>
-          <div class="dash-row"><span class="dash-key">LAST FLIP</span><span class="dash-val dv-green">NEUTRAL→LONG @1.08450</span></div>
-          <div class="dash-row"><span class="dash-key">ACTIVE ZONE</span><span class="dash-val dv-yellow">POTENTIAL BUY — retracing</span></div>
-          <div class="dash-row"><span class="dash-key">TREND POWER</span><span class="dash-val dv-yellow">WEAK ⚠️ — emerging</span></div>
-        </div>
-        <div class="dash-snap" style="margin-top:8px"><div class="dash-snap-title">Entry Trigger — POC Touch</div>
-          <div class="dash-row"><span class="dash-key">H2 Label</span><span class="dash-val dv-green">POC (BUY) 🟡</span></div>
-          <div class="dash-row"><span class="dash-key">vs POC</span><span class="dash-val dv-white">-1.2 pips — touching</span></div>
-          <div class="dash-row"><span class="dash-key">COOLDOWN</span><span class="dash-val dv-green">CLEAR ✔</span></div>
-        </div>
-      </div>
-      <div class="setup-section">
-        <div class="setup-section-title">Exact Setup Mechanics — Step by Step</div>
-        <div class="step-phase"><div class="step-phase-label spl-pre">Pre-Setup</div>
-          <div class="step-list">
-            <div class="step-item"><span class="step-icon">🔄</span><span class="step-text">D1 BIAS flipped in the <strong>last 2–6 H2 candles</strong> — LAST FLIP row populated</span></div>
-            <div class="step-item"><span class="step-icon">📉</span><span class="step-text">Price is now <strong>retracing toward POC</strong> from above (long setup) — ACTIVE ZONE shows POTENTIAL BUY</span></div>
-            <div class="step-item"><span class="step-icon">📊</span><span class="step-text">ADX <strong>20–30</strong> — trend emerging but not yet strong</span></div>
-            <div class="step-item"><span class="step-icon">⭐</span><span class="step-text">POC NODE <strong class="green">STRONG ★</strong> — the retracement magnet has genuine institutional backing</span></div>
-          </div>
-        </div>
-        <div class="step-phase" style="margin-top:14px"><div class="step-phase-label spl-confirm">Trigger</div>
-          <div class="step-list">
-            <div class="step-item"><span class="step-icon">🟡</span><span class="step-text">Chart fires <strong>POC (BUY)</strong> — price touched POC and H2 closed above it</span></div>
-            <div class="step-item"><span class="step-icon">🔄</span><span class="step-text">D1 BIAS has <strong>not flipped back</strong> — still reads LONG after the retracement</span></div>
-            <div class="step-item"><span class="step-icon">📊</span><span class="step-text">MARKET MODE on the trigger candle is <span class="mono">STABLE ⚖️</span> — controlled, not panicking</span></div>
-          </div>
-        </div>
-        <div class="step-phase" style="margin-top:14px"><div class="step-phase-label spl-entry">Entry</div>
-          <div class="step-list">
-            <div class="step-item"><span class="step-icon">🎬</span><span class="step-text"><strong>Enter long at open of next H2 candle</strong> after POC (BUY) confirms</span></div>
-            <div class="step-item"><span class="step-icon">🛡️</span><span class="step-text"><strong class="red">PSL:</strong> Below POC — if the flip is valid, POC must hold</span></div>
-            <div class="step-item"><span class="step-icon">🎯</span><span class="step-text"><strong class="yellow">PTP 1:</strong> The flip price from LAST FLIP row — first institutional reference</span></div>
-            <div class="step-item"><span class="step-icon">🎯</span><span class="step-text"><strong class="green">PTP 2:</strong> D1 VAH — full target if trend confirms above flip level</span></div>
-          </div>
-        </div>
-      </div>
-      <div class="setup-section">
-        <div class="setup-section-title">Trade Parameters</div>
-        <div class="trade-params">
-          <div class="tp-block"><div class="tp-label">Entry</div><div class="tp-value">H2 open after POC (BUY)</div></div>
-          <div class="tp-block"><div class="tp-label">Stop Loss</div><div class="tp-value red">Below POC level</div></div>
-          <div class="tp-block"><div class="tp-label">Target 1</div><div class="tp-value yellow">LAST FLIP price</div></div>
-          <div class="tp-block"><div class="tp-label">Target 2</div><div class="tp-value green">D1 VAH</div></div>
-          <div class="tp-block"><div class="tp-label">RR</div><div class="tp-value accent">2:1 → 4:1</div></div>
-          <div class="tp-block"><div class="tp-label">Signal type</div><div class="tp-value">POC (BUY) post-flip</div></div>
-        </div>
-      </div>
-      <div class="setup-section">
-        <div class="setup-section-title">Disqualifiers</div>
-        <div class="disqualifier"><div class="disqualifier-title">Skip If Any Apply</div><ul>
-          <li>D1 BIAS flips back to NEUTRAL before POC touch — flip was false, structure unstable</li>
-          <li>Retracement takes more than 8 H2 candles to reach POC — momentum lost</li>
-          <li>POC NODE shows WEAK — retracement won't find institutional support</li>
-          <li>ADX drops below 18 — emerging trend stalled, may range instead of continuing</li>
-        </ul></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="plan-footer" style="color:var(--gray);font-family:var(--font-mono);font-size:11px;padding-top:20px;border-top:1px solid var(--border);margin-top:12px">
-    VolumeEdge Pro · Playbook v1.0 · All setups rated ★★★ · Never trade without gate confirmation
-  </div>
-
-</main>
-</div>
-</div><!-- #tab-playbook -->
-
-
 <script>
 // ── Tab switching ──────────────────────────────────────────────────────────
 function switchTab(id, btn) {
@@ -2972,63 +2095,6 @@ function planScrollSpy(tabId, activeClass) {
 planScrollSpy('tab-sniper','active-sniper');
 planScrollSpy('tab-fade','active-fade');
 planScrollSpy('tab-magnet','active-magnet');
-planScrollSpy('tab-playbook','active-pb');
-
-// ── Playbook strategy filter ───────────────────────────────────────────────
-function pbFilter(strategy, btn) {
-  // Update button states
-  var btns = document.querySelectorAll('.pb-strategy-btn');
-  btns.forEach(function(b) {
-    b.className = b.className.replace(/pb-active-\w+/g,'').replace(/pb-inactive-\w+/g,'').trim();
-  });
-  // Set active
-  var colorMap = {sniper:'sniper', fade:'fade', magnet:'magnet'};
-  btn.classList.add('pb-active-' + colorMap[strategy]);
-  // Set others inactive
-  btns.forEach(function(b) {
-    if (b !== btn) b.classList.add('pb-inactive-' + colorMap[strategy]);
-  });
-  // Show/hide cards
-  document.querySelectorAll('.setup-card').forEach(function(card) {
-    card.style.display = card.classList.contains('pb-card-' + strategy) ? '' : 'none';
-  });
-  // Rebuild setup links in sidebar
-  var linksDiv = document.getElementById('pb-setup-links');
-  linksDiv.innerHTML = '';
-  document.querySelectorAll('.pb-card-' + strategy).forEach(function(card) {
-    var titleEl = card.querySelector('.setup-name');
-    if (!titleEl) return;
-    var a = document.createElement('a');
-    a.className = 'pb-setup-link';
-    a.href = '#' + card.id;
-    a.textContent = titleEl.textContent;
-    a.onclick = function() {
-      document.querySelectorAll('.pb-setup-link').forEach(function(l) { l.classList.remove('active-pb'); });
-      a.classList.add('active-pb');
-    };
-    linksDiv.appendChild(a);
-  });
-  // Scroll to top of pb-main
-  var main = document.getElementById('pb-main');
-  if (main) main.scrollTop = 0;
-  window.scrollTo(0,0);
-}
-
-// Init playbook on first load — show sniper by default
-(function() {
-  var tab = document.getElementById('tab-playbook');
-  if (!tab) return;
-  var observer = new MutationObserver(function(mutations) {
-    mutations.forEach(function(m) {
-      if (m.target.classList.contains('active') && !m.target.dataset.pbInit) {
-        m.target.dataset.pbInit = '1';
-        var btn = document.getElementById('pbs-sniper');
-        if (btn) pbFilter('sniper', btn);
-      }
-    });
-  });
-  observer.observe(tab, {attributes: true, attributeFilter: ['class']});
-})();
 
 // ── Smooth scroll plan nav ─────────────────────────────────────────────────
 document.querySelectorAll('.plan-nav-item').forEach(function(a) {
