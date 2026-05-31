@@ -400,6 +400,29 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
 .dash-key{color:var(--gray)}.dash-val{font-weight:700}
 .dv-green{color:var(--green)}.dv-red{color:var(--red)}.dv-yellow{color:var(--yellow)}.dv-accent{color:var(--accent)}.dv-white{color:var(--white)}
 
+
+.pb-view-toggle{display:flex;gap:8px;margin:0 16px 16px}
+.pb-toggle-btn{padding:6px 18px;border-radius:20px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:rgba(255,255,255,.45);font-size:12px;cursor:pointer;transition:all .2s}
+.pb-toggle-btn.active{background:rgba(38,166,154,.12);border-color:#26a69a;color:#26a69a}
+.pb-quick{display:none;padding:0 20px 20px}
+.pb-quick.visible{display:block}
+.pb-study.hidden{display:none}
+.dt-wrap{background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:16px 18px;margin-bottom:14px}
+.dt-title{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#90a4ae;margin-bottom:12px;font-family:monospace}
+.dt-node{display:flex;align-items:flex-start;gap:10px;margin-bottom:4px}
+.dt-icon.num{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;margin-top:2px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.55)}
+.dt-text{font-size:12px;line-height:1.55;color:rgba(255,255,255,.82)}
+.dt-arrow{color:rgba(255,255,255,.18);font-size:10px;margin-left:30px;margin-bottom:4px}
+.dt-fail{font-size:10px;color:rgba(255,90,110,.65);margin-left:30px;margin-bottom:8px;font-style:italic}
+.dt-result{display:flex;align-items:center;gap:10px;margin-top:12px;padding:10px 14px;border-radius:8px;font-size:12px;font-weight:600;background:rgba(38,222,138,.09);border:1px solid rgba(38,222,138,.25);color:#26de8a}
+.upload-slot{border:2px dashed rgba(255,255,255,.1);border-radius:8px;padding:18px;text-align:center;background:rgba(255,255,255,.02);margin-bottom:10px;cursor:pointer;transition:all .2s;position:relative}
+.upload-slot:hover{border-color:rgba(38,166,154,.35);background:rgba(38,166,154,.04)}
+.upload-slot-icon{font-size:20px;margin-bottom:6px;opacity:.35}
+.upload-slot-label{font-size:12px;color:rgba(255,255,255,.35);margin-bottom:3px}
+.upload-slot-caption{font-size:10px;color:rgba(255,255,255,.2);font-family:monospace}
+.upload-slot input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.upload-slot img{max-width:100%;border-radius:6px;margin-top:8px;display:block}
+.upload-section-title{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#90a4ae;margin:12px 0 8px;font-family:monospace}
 </style>
 </head>
 <body>
@@ -2084,10 +2107,18 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
       </div>
       <div class="star-rating"><span class="star lit">★</span><span class="star lit">★</span><span class="star lit">★</span></div>
     </div>
-    <div class="setup-body">
+    <div class="pb-view-toggle">
+      <button class="pb-toggle-btn active" data-mode="study" onclick="pbToggle('pb-sniper-1','study')">📖 Study Mode</button>
+      <button class="pb-toggle-btn" data-mode="quick" onclick="pbToggle('pb-sniper-1','quick')">⚡ Quick-Check</button>
+    </div>
+    <div class="pb-study setup-body">
       <div class="setup-section">
         <div class="setup-section-title">Why This Works</div>
         <p>The D1 Dashboard BIAS row measures where price sits relative to institutional value built over 10 D1 bars. When London opens and drives price beyond VAH or VAL, the BIAS flips. If the move was purely manipulative — stop hunting, not genuine acceptance — price cannot sustain outside the value area and closes back inside within 1–2 H2 candles. The flip-back is the dashboard confirming the trap in real time. This is AMD made visible: Tokyo accumulates, London manipulates, and the D1 Dashboard tracks the bias state through each phase.</p>
+      </div>
+      <div class="setup-section">
+        <div class="setup-section-title">Setup Anatomy</div>
+        <svg viewBox="0 0 560 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;border-radius:8px;background:#0d1117;display:block"><text x="10" y="14" font-size="9" fill="rgba(255,215,0,.85)" font-family="monospace" font-weight="bold">D1 Bias Flip VA Trap — XAUUSD H2</text><text x="10" y="26" font-size="8" fill="rgba(255,255,255,.35)" font-family="monospace">Asian ranges · London sweeps VAL · BIAS flip · entry</text><rect x="10" y="38" width="22" height="9" fill="rgba(178,34,34,.45)" rx="1"/><rect x="10" y="47" width="40" height="9" fill="rgba(178,34,34,.45)" rx="1"/><rect x="10" y="56" width="58" height="9" fill="rgba(46,139,87,.5)" rx="1"/><rect x="10" y="65" width="72" height="9" fill="rgba(46,139,87,.55)" rx="1"/><rect x="10" y="74" width="60" height="9" fill="rgba(46,139,87,.5)" rx="1"/><rect x="10" y="83" width="42" height="9" fill="rgba(178,34,34,.4)" rx="1"/><rect x="10" y="92" width="20" height="9" fill="rgba(105,105,105,.35)" rx="1"/><line x1="10" y1="56" x2="520" y2="56" stroke="rgba(2,248,56,.5)" stroke-width="1" stroke-dasharray="4,3"/><text x="523" y="60" font-size="8" fill="rgba(2,248,56,.7)" font-family="monospace">VAH</text><line x1="10" y1="92" x2="520" y2="92" stroke="rgba(255,6,6,.5)" stroke-width="1" stroke-dasharray="4,3"/><text x="523" y="96" font-size="8" fill="rgba(255,6,6,.7)" font-family="monospace">VAL</text><line x1="10" y1="69" x2="520" y2="69" stroke="rgba(255,235,59,.85)" stroke-width="2"/><text x="523" y="73" font-size="8" fill="rgba(255,235,59,.9)" font-family="monospace">POC</text><line x1="10" y1="83" x2="520" y2="83" stroke="rgba(30,144,255,.45)" stroke-width="1" stroke-dasharray="3,3"/><text x="523" y="87" font-size="8" fill="rgba(30,144,255,.6)" font-family="monospace">PDC</text><line x1="100" y1="72" x2="100" y2="95" stroke="rgba(255,255,255,.3)" stroke-width="1"/><rect x="96" y="75" width="8" height="12" fill="rgba(46,139,87,.7)" rx="1"/><line x1="116" y1="70" x2="116" y2="93" stroke="rgba(255,255,255,.3)" stroke-width="1"/><rect x="112" y="73" width="8" height="12" fill="rgba(178,34,34,.7)" rx="1"/><line x1="183" y1="48" x2="183" y2="130" stroke="rgba(255,255,255,.5)" stroke-width="1"/><rect x="179" y="107" width="8" height="20" fill="rgba(178,34,34,.9)" rx="1"/><text x="183" y="143" font-size="8" fill="rgba(255,78,106,.85)" font-family="monospace" text-anchor="middle">SWEEP VAL</text><line x1="199" y1="78" x2="199" y2="130" stroke="rgba(255,255,255,.5)" stroke-width="1"/><rect x="195" y="81" width="9" height="44" fill="rgba(46,139,87,.95)" rx="1"/><text x="199" y="143" font-size="8" fill="rgba(38,222,138,.85)" font-family="monospace" text-anchor="middle">FLIP LONG</text><polygon points="209,76 214,68 219,76" fill="rgba(38,222,138,.9)"/><text x="223" y="66" font-size="8" fill="rgba(38,222,138,.9)" font-family="monospace">ENTRY</text><line x1="221" y1="56" x2="221" y2="82" stroke="rgba(255,255,255,.4)" stroke-width="1"/><rect x="217" y="59" width="8" height="19" fill="rgba(46,139,87,.9)" rx="1"/><rect x="211" y="36" width="56" height="11" fill="rgba(38,222,138,.08)" rx="3"/><text x="239" y="44" font-size="8" fill="rgba(38,222,138,.65)" font-family="monospace" text-anchor="middle">TP ZONE</text><line x1="191" y1="133" x2="272" y2="133" stroke="rgba(255,78,106,.4)" stroke-width="1" stroke-dasharray="3,2"/><text x="276" y="137" font-size="8" fill="rgba(255,78,106,.6)" font-family="monospace">SL</text></svg>
       </div>
       <div class="setup-section">
         <div class="setup-section-title">AMD Cycle</div>
@@ -2171,11 +2202,21 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
           <li>News event within 30 min of London open</li>
         </ul></div>
       </div>
-    </div>
-  </div>
 
-  <!-- S2: POC Confluence Sniper -->
-  <div class="setup-card pb-card-sniper" id="pb-sniper-2">
+      <div class="setup-section">
+        <div class="upload-section-title">📸 Real Chart Examples</div>
+        <div class="upload-slot"><input type="file" accept="image/*"><div class="upload-slot-icon">📸</div><div class="upload-slot-label">Click to upload your chart screenshot</div><div class="upload-slot-caption">XAUUSD H2 · London Open · VA Trap Buy</div><img style="display:none"></div>
+        <div class="upload-slot"><input type="file" accept="image/*"><div class="upload-slot-icon">📸</div><div class="upload-slot-label">Click to upload your chart screenshot</div><div class="upload-slot-caption">XAUUSD H2 · London Open · VA Trap Sell</div><img style="display:none"></div>
+      </div>
+    </div>
+    <div class="pb-quick">
+      <div class="dt-wrap"><div class="dt-title">Quick-Check: D1 Bias Flip VA Trap</div><div class="dt-node"><div class="dt-icon num">1</div><div class="dt-text">London Open? (07:00-10:00 UTC / 15:00-18:00 HKT)</div></div><div class="dt-fail">No: Wrong session — skip</div><div class="dt-arrow">Yes ↓</div><div class="dt-node"><div class="dt-icon num">2</div><div class="dt-text">D1 BIAS shows LONG or LONG LEAN?</div></div><div class="dt-fail">No: No D1 edge — skip</div><div class="dt-arrow">Yes ↓</div><div class="dt-node"><div class="dt-icon num">3</div><div class="dt-text">PEP row shows LONG - TRENDING or LONG - RANGE?</div></div><div class="dt-fail">No: Gate closed or conflict — skip</div><div class="dt-arrow">Yes ↓</div><div class="dt-node"><div class="dt-icon num">4</div><div class="dt-text">Price swept below VAL and H2 closed back above?</div></div><div class="dt-fail">No: Not confirmed — wait</div><div class="dt-arrow">Yes ↓</div><div class="dt-node"><div class="dt-icon num">5</div><div class="dt-text">D1 BIAS flipped back to LONG this candle?</div></div><div class="dt-fail">No: Flip not confirmed — wait</div><div class="dt-arrow">Yes ↓</div><div class="dt-node"><div class="dt-icon num">6</div><div class="dt-text">GATE OPEN and COOLDOWN clear?</div></div><div class="dt-fail">No: Gates blocking — skip</div><div class="dt-arrow">Yes ↓</div><div class="dt-result go">✅ &nbsp;ENTER LONG · SL below sweep low · TP at VAH</div></div>
+      <div class="setup-section">
+        <div class="upload-section-title">📸 Your Screenshot Reference</div>
+        <div class="upload-slot"><input type="file" accept="image/*"><div class="upload-slot-icon">📸</div><div class="upload-slot-label">Click to upload your chart screenshot</div><div class="upload-slot-caption">XAUUSD H2 · London Open · VA Trap Buy</div><img style="display:none"></div>
+      </div>
+    </div>
+  </div><div class="setup-card pb-card-sniper" id="pb-sniper-2">
     <div class="setup-card-header sniper">
       <div>
         <div class="setup-title-row">
@@ -2192,12 +2233,20 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
       </div>
       <div class="star-rating"><span class="star lit">★</span><span class="star lit">★</span><span class="star lit">★</span></div>
     </div>
-    <div class="setup-body">
+    <div class="pb-view-toggle">
+      <button class="pb-toggle-btn active" data-mode="study" onclick="pbToggle('pb-sniper-2','study')">📖 Study Mode</button>
+      <button class="pb-toggle-btn" data-mode="quick" onclick="pbToggle('pb-sniper-2','quick')">⚡ Quick-Check</button>
+    </div>
+    <div class="pb-study setup-body">
       <div class="setup-section">
         <div class="setup-section-title">Why This Works</div>
         <p>When three consecutive volume profiles all place their POC within a 5-pip zone of each other, that price has absorbed institutional volume across multiple time windows. It is not coincidence — it is where the market keeps returning to agree on value. The Confluence Gate showing <strong>HIGH ★★★</strong> is your signal that all three profiles are aligned. A POC signal at this cluster carries the memory of weeks of institutional positioning. The bounce is not a retail support level — it is a price that institutions have defended repeatedly.</p>
       </div>
           <div class="dash-row"><span class="dash-key">PDC</span><span class="dash-val dv-green">159.245  ABOVE ✅</span></div>
+      <div class="setup-section">
+        <div class="setup-section-title">Setup Anatomy</div>
+        <svg viewBox="0 0 560 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;border-radius:8px;background:#0d1117;display:block"><text x="10" y="14" font-size="9" fill="rgba(255,215,0,.85)" font-family="monospace" font-weight="bold">Triple-Profile POC Confluence — USDJPY H2</text><text x="10" y="26" font-size="8" fill="rgba(255,255,255,.35)" font-family="monospace">3 profiles stack same POC · institutional memory · bounce</text><rect x="10" y="55" width="18" height="8" fill="rgba(46,139,87,.22)" rx="1"/><rect x="10" y="63" width="32" height="8" fill="rgba(46,139,87,.22)" rx="1"/><rect x="10" y="71" width="48" height="8" fill="rgba(46,139,87,.22)" rx="1"/><line x1="10" y1="75" x2="68" y2="75" stroke="rgba(255,235,59,.3)" stroke-width="1.5"/><text x="70" y="79" font-size="7" fill="rgba(255,235,59,.4)" font-family="monospace">P1</text><rect x="85" y="57" width="22" height="8" fill="rgba(46,139,87,.35)" rx="1"/><rect x="85" y="65" width="42" height="8" fill="rgba(46,139,87,.35)" rx="1"/><rect x="85" y="73" width="56" height="8" fill="rgba(46,139,87,.35)" rx="1"/><line x1="85" y1="77" x2="148" y2="77" stroke="rgba(255,235,59,.45)" stroke-width="1.5"/><text x="150" y="81" font-size="7" fill="rgba(255,235,59,.55)" font-family="monospace">P2</text><rect x="165" y="53" width="25" height="8" fill="rgba(46,139,87,.5)" rx="1"/><rect x="165" y="61" width="48" height="8" fill="rgba(46,139,87,.5)" rx="1"/><rect x="165" y="69" width="65" height="8" fill="rgba(46,139,87,.5)" rx="1"/><line x1="165" y1="73" x2="242" y2="73" stroke="rgba(255,235,59,.9)" stroke-width="2.5"/><text x="245" y="77" font-size="7" fill="rgba(255,235,59,.9)" font-family="monospace">P3</text><rect x="8" y="67" width="244" height="12" fill="rgba(255,235,59,.05)" rx="2"/><text x="125" y="65" font-size="8" fill="rgba(255,235,59,.65)" font-family="monospace" text-anchor="middle">CONFLUENCE ZONE — HIGH ★★★</text><rect x="10" y="30" width="145" height="18" fill="rgba(38,222,138,.07)" rx="4" stroke="rgba(38,222,138,.2)" stroke-width="1"/><text x="82" y="42" font-size="8" fill="rgba(38,222,138,.85)" font-family="monospace" text-anchor="middle">GATE OPEN ✔  HIGH ★★★</text><line x1="10" y1="62" x2="520" y2="62" stroke="rgba(2,248,56,.45)" stroke-width="1" stroke-dasharray="4,3"/><text x="523" y="66" font-size="7" fill="rgba(2,248,56,.55)" font-family="monospace">VAH</text><line x1="10" y1="95" x2="520" y2="95" stroke="rgba(255,6,6,.45)" stroke-width="1" stroke-dasharray="4,3"/><text x="523" y="99" font-size="7" fill="rgba(255,6,6,.55)" font-family="monospace">VAL</text><line x1="295" y1="83" x2="295" y2="104" stroke="rgba(255,255,255,.4)" stroke-width="1"/><rect x="291" y="86" width="8" height="13" fill="rgba(178,34,34,.75)" rx="1"/><line x1="327" y1="73" x2="327" y2="95" stroke="rgba(255,255,255,.5)" stroke-width="1"/><rect x="323" y="76" width="9" height="18" fill="rgba(46,139,87,.95)" rx="1"/><polygon points="331,71 336,63 341,71" fill="rgba(38,222,138,.9)"/><text x="346" y="61" font-size="8" fill="rgba(38,222,138,.9)" font-family="monospace">ENTRY</text><rect x="333" y="40" width="65" height="11" fill="rgba(38,222,138,.07)" rx="3"/><text x="365" y="48" font-size="8" fill="rgba(38,222,138,.6)" font-family="monospace" text-anchor="middle">TP ZONE</text><line x1="315" y1="102" x2="395" y2="102" stroke="rgba(255,78,106,.4)" stroke-width="1" stroke-dasharray="3,2"/><text x="399" y="106" font-size="8" fill="rgba(255,78,106,.6)" font-family="monospace">SL</text></svg>
+      </div>
       <div class="setup-section">
         <div class="setup-section-title">Dashboard Snapshots</div>
         <div class="dash-snap"><div class="dash-snap-title">Setup State — Confluence Cluster</div>
@@ -2258,11 +2307,21 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
           <li>Price has already passed through the cluster zone — missed entry, do not chase</li>
         </ul></div>
       </div>
-    </div>
-  </div>
 
-  <!-- S3: Edge Exhaustion Rejection at D1 High -->
-  <div class="setup-card pb-card-sniper" id="pb-sniper-3">
+      <div class="setup-section">
+        <div class="upload-section-title">📸 Real Chart Examples</div>
+        <div class="upload-slot"><input type="file" accept="image/*"><div class="upload-slot-icon">📸</div><div class="upload-slot-label">Click to upload your chart screenshot</div><div class="upload-slot-caption">USDJPY H2 · Confluence POC bounce buy</div><img style="display:none"></div>
+        <div class="upload-slot"><input type="file" accept="image/*"><div class="upload-slot-icon">📸</div><div class="upload-slot-label">Click to upload your chart screenshot</div><div class="upload-slot-caption">USDJPY H2 · Confluence POC bounce sell</div><img style="display:none"></div>
+      </div>
+    </div>
+    <div class="pb-quick">
+      <div class="dt-wrap"><div class="dt-title">Quick-Check: Triple-Profile POC Confluence</div><div class="dt-node"><div class="dt-icon num">1</div><div class="dt-text">CONFLUENCE shows HIGH (3/3 profiles agree)?</div></div><div class="dt-fail">No: Not enough agreement — skip</div><div class="dt-arrow">Yes ↓</div><div class="dt-node"><div class="dt-icon num">2</div><div class="dt-text">POC NODE shows STRONG?</div></div><div class="dt-fail">No: Weak POC — skip</div><div class="dt-arrow">Yes ↓</div><div class="dt-node"><div class="dt-icon num">3</div><div class="dt-text">D1 BIAS is LONG LEAN or LONG?</div></div><div class="dt-fail">No: D1 not supporting — reduce size</div><div class="dt-arrow">Yes ↓</div><div class="dt-node"><div class="dt-icon num">4</div><div class="dt-text">PEP row not showing CONFLICT or WAIT?</div></div><div class="dt-fail">No: Conflict — skip</div><div class="dt-arrow">Yes ↓</div><div class="dt-node"><div class="dt-icon num">5</div><div class="dt-text">Price at or just below the confluence POC cluster?</div></div><div class="dt-fail">No: Not at level — wait</div><div class="dt-arrow">Yes ↓</div><div class="dt-node"><div class="dt-icon num">6</div><div class="dt-text">GATE OPEN and COOLDOWN clear?</div></div><div class="dt-fail">No: Gates blocking — skip</div><div class="dt-arrow">Yes ↓</div><div class="dt-result go">✅ &nbsp;ENTER at POC cluster · SL below cluster · TP at VAH</div></div>
+      <div class="setup-section">
+        <div class="upload-section-title">📸 Your Screenshot Reference</div>
+        <div class="upload-slot"><input type="file" accept="image/*"><div class="upload-slot-icon">📸</div><div class="upload-slot-label">Click to upload your chart screenshot</div><div class="upload-slot-caption">USDJPY H2 · Confluence POC bounce buy</div><img style="display:none"></div>
+      </div>
+    </div>
+  </div><div class="setup-card pb-card-sniper" id="pb-sniper-3">
     <div class="setup-card-header sniper">
       <div>
         <div class="setup-title-row">
@@ -2279,10 +2338,18 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
       </div>
       <div class="star-rating"><span class="star lit">★</span><span class="star lit">★</span><span class="star lit">★</span></div>
     </div>
-    <div class="setup-body">
+    <div class="pb-view-toggle">
+      <button class="pb-toggle-btn active" data-mode="study" onclick="pbToggle('pb-sniper-3','study')">📖 Study Mode</button>
+      <button class="pb-toggle-btn" data-mode="quick" onclick="pbToggle('pb-sniper-3','quick')">⚡ Quick-Check</button>
+    </div>
+    <div class="pb-study setup-body">
       <div class="setup-section">
         <div class="setup-section-title">Why This Works</div>
         <p>The profile high and low mark where price explored but found no buyers or sellers willing to trade. When price returns to that boundary on exhausted volume — the EDGE EXH signal fires because the candle reached within 5 ticks of the boundary without a volume spike — the market is telegraphing that it has no conviction to break through. Combined with the D1 Dashboard showing LONG LEAN or NEUTRAL bias (not full SHORT) and the BIAS flip history showing the level was defended before, this becomes a very clean one-trade-per-day Sniper setup.</p>
+      </div>
+      <div class="setup-section">
+        <div class="setup-section-title">Setup Anatomy</div>
+        <svg viewBox="0 0 560 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;border-radius:8px;background:#0d1117;display:block"><text x="10" y="14" font-size="9" fill="rgba(255,215,0,.85)" font-family="monospace" font-weight="bold">Edge Exhaustion at D1 Boundary — AUDUSD H2</text><text x="10" y="26" font-size="8" fill="rgba(255,255,255,.35)" font-family="monospace">Low-vol spike into empty boundary bins · no defence · fade</text><rect x="10" y="36" width="12" height="8" fill="rgba(105,105,105,.3)" rx="1"/><rect x="10" y="44" width="25" height="8" fill="rgba(178,34,34,.4)" rx="1"/><rect x="10" y="52" width="44" height="8" fill="rgba(178,34,34,.45)" rx="1"/><rect x="10" y="60" width="60" height="8" fill="rgba(46,139,87,.5)" rx="1"/><rect x="10" y="68" width="72" height="8" fill="rgba(46,139,87,.55)" rx="1"/><rect x="10" y="76" width="58" height="8" fill="rgba(46,139,87,.5)" rx="1"/><rect x="10" y="84" width="40" height="8" fill="rgba(178,34,34,.4)" rx="1"/><rect x="10" y="92" width="16" height="8" fill="rgba(105,105,105,.3)" rx="1"/><line x1="10" y1="36" x2="520" y2="36" stroke="rgba(144,164,174,.55)" stroke-width="1" stroke-dasharray="3,3"/><text x="523" y="40" font-size="7" fill="rgba(144,164,174,.6)" font-family="monospace">HIGH</text><line x1="10" y1="52" x2="520" y2="52" stroke="rgba(2,248,56,.45)" stroke-width="1" stroke-dasharray="4,3"/><text x="523" y="56" font-size="7" fill="rgba(2,248,56,.55)" font-family="monospace">VAH</text><line x1="10" y1="92" x2="520" y2="92" stroke="rgba(255,6,6,.45)" stroke-width="1" stroke-dasharray="4,3"/><text x="523" y="96" font-size="7" fill="rgba(255,6,6,.55)" font-family="monospace">VAL</text><line x1="10" y1="72" x2="520" y2="72" stroke="rgba(255,235,59,.85)" stroke-width="2"/><text x="523" y="76" font-size="7" fill="rgba(255,235,59,.9)" font-family="monospace">POC</text><rect x="10" y="36" width="14" height="8" fill="rgba(0,0,0,0)" stroke="rgba(255,215,0,.45)" stroke-width="1" stroke-dasharray="2,2" rx="1"/><text x="28" y="43" font-size="7" fill="rgba(255,215,0,.7)" font-family="monospace">EMPTY BINS</text><line x1="155" y1="56" x2="155" y2="79" stroke="rgba(255,255,255,.35)" stroke-width="1"/><rect x="151" y="59" width="8" height="15" fill="rgba(46,139,87,.75)" rx="1"/><line x1="171" y1="49" x2="171" y2="72" stroke="rgba(255,255,255,.35)" stroke-width="1"/><rect x="167" y="52" width="8" height="16" fill="rgba(46,139,87,.78)" rx="1"/><line x1="205" y1="26" x2="205" y2="63" stroke="rgba(255,255,255,.6)" stroke-width="1.5"/><rect x="201" y="42" width="8" height="14" fill="rgba(46,139,87,.65)" rx="1"/><text x="205" y="22" font-size="8" fill="rgba(255,78,106,.9)" font-family="monospace" text-anchor="middle">EDGE EXH</text><line x1="223" y1="40" x2="223" y2="70" stroke="rgba(255,255,255,.5)" stroke-width="1"/><rect x="219" y="43" width="8" height="21" fill="rgba(178,34,34,.9)" rx="1"/><line x1="239" y1="46" x2="239" y2="76" stroke="rgba(255,255,255,.4)" stroke-width="1"/><rect x="235" y="49" width="8" height="21" fill="rgba(178,34,34,.85)" rx="1"/><rect x="211" y="66" width="58" height="11" fill="rgba(255,78,106,.07)" rx="3"/><text x="240" y="74" font-size="8" fill="rgba(255,78,106,.6)" font-family="monospace" text-anchor="middle">TP ZONE</text><line x1="195" y1="31" x2="270" y2="31" stroke="rgba(255,78,106,.4)" stroke-width="1" stroke-dasharray="3,2"/><text x="274" y="35" font-size="8" fill="rgba(255,78,106,.6)" font-family="monospace">SL</text></svg>
       </div>
       <div class="setup-section">
         <div class="setup-section-title">Dashboard Snapshots</div>
@@ -2343,15 +2410,21 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
           <li>Volume bin at boundary shows [HVN] not [EXH] — contested zone, not thin</li>
         </ul></div>
       </div>
+
+      <div class="setup-section">
+        <div class="upload-section-title">📸 Real Chart Examples</div>
+        <div class="upload-slot"><input type="file" accept="image/*"><div class="upload-slot-icon">📸</div><div class="upload-slot-label">Click to upload your chart screenshot</div><div class="upload-slot-caption">AUDUSD H2 · Edge Exhaustion SELL</div><img style="display:none"></div>
+        <div class="upload-slot"><input type="file" accept="image/*"><div class="upload-slot-icon">📸</div><div class="upload-slot-label">Click to upload your chart screenshot</div><div class="upload-slot-caption">GBPUSD H2 · Edge Exhaustion BUY</div><img style="display:none"></div>
+      </div>
     </div>
-  </div>
-
-  <!-- ════════════════════════════════
-       FADE SETUPS
-  ════════════════════════════════ -->
-
-  <!-- F1: VAH Fade at NY Open -->
-  <div class="setup-card pb-card-fade" id="pb-fade-1">
+    <div class="pb-quick">
+      <div class="dt-wrap"><div class="dt-title">Quick-Check: Edge Exhaustion at D1 Boundary</div><div class="dt-node"><div class="dt-icon num">1</div><div class="dt-text">Price touched the profile HIGH or LOW boundary?</div></div><div class="dt-fail">No: Not at edge — wait</div><div class="dt-arrow">Yes ↓</div><div class="dt-node"><div class="dt-icon num">2</div><div class="dt-text">Spike: small body, long wick, LOW volume?</div></div><div class="dt-fail">No: High volume = breakout risk — skip</div><div class="dt-arrow">Yes ↓</div><div class="dt-node"><div class="dt-icon num">3</div><div class="dt-text">Top/bottom bins show EMPTY or EXH tags?</div></div><div class="dt-fail">No: Bins defended — skip</div><div class="dt-arrow">Yes ↓</div><div class="dt-node"><div class="dt-icon num">4</div><div class="dt-text">D1 BIAS supports the fade direction?</div></div><div class="dt-fail">No: Lower conviction — halve size</div><div class="dt-arrow">Yes ↓</div><div class="dt-node"><div class="dt-icon num">5</div><div class="dt-text">PEP row aligns with trade direction?</div></div><div class="dt-fail">No: D1 conflict — reduce size</div><div class="dt-arrow">Yes ↓</div><div class="dt-node"><div class="dt-icon num">6</div><div class="dt-text">GATE OPEN and COOLDOWN clear?</div></div><div class="dt-fail">No: Gates blocking — skip</div><div class="dt-arrow">Yes ↓</div><div class="dt-result go">✅ &nbsp;ENTER counter-trend · SL above boundary wick · TP at POC</div></div>
+      <div class="setup-section">
+        <div class="upload-section-title">📸 Your Screenshot Reference</div>
+        <div class="upload-slot"><input type="file" accept="image/*"><div class="upload-slot-icon">📸</div><div class="upload-slot-label">Click to upload your chart screenshot</div><div class="upload-slot-caption">AUDUSD H2 · Edge Exhaustion SELL</div><img style="display:none"></div>
+      </div>
+    </div>
+  </div><div class="setup-card pb-card-fade" id="pb-fade-1">
     <div class="setup-card-header fade">
       <div>
         <div class="setup-title-row">
@@ -3117,6 +3190,9 @@ window.addEventListener('DOMContentLoaded', function() {
   applyTimezone();
   updateClock();
 });
+
+function pbToggle(id,mode){var c=document.getElementById(id);if(!c)return;c.querySelector('.pb-study').classList.toggle('hidden',mode==='quick');c.querySelector('.pb-quick').classList.toggle('visible',mode==='quick');c.querySelectorAll('.pb-toggle-btn').forEach(function(b){b.classList.toggle('active',b.dataset.mode===mode);});}
+document.addEventListener('DOMContentLoaded',function(){document.querySelectorAll('.upload-slot input[type=file]').forEach(function(inp){inp.addEventListener('change',function(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(ev){var slot=inp.closest('.upload-slot');var img=slot.querySelector('img')||document.createElement('img');img.src=ev.target.result;img.style.display='block';slot.querySelector('.upload-slot-icon').style.display='none';slot.querySelector('.upload-slot-label').style.display='none';if(!slot.querySelector('img'))slot.appendChild(img);};r.readAsDataURL(f);});});});
 </script>
 </body>
 </html>
