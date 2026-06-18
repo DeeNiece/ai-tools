@@ -345,7 +345,7 @@
       <h1>Hot threads to join</h1>
       <p id="last-refresh">Showing cached results — click Refresh to fetch live threads</p>
     </div>
-    <button class="btn-primary" onclick="loadAllThreads()" id="refresh-btn">↻ Refresh threads</button>
+    <button class="btn-primary" onclick="handleRefresh()" id="refresh-btn">↻ Refresh threads</button>
   </div>
 
   <div class="filters" id="filters"></div>
@@ -381,14 +381,49 @@
 
 <script>
 const SUBREDDITS = [
-  { sub: 'Accounting', niche: 'Accounting', color: '#2d6a4f' },
-  { sub: 'Architecture', niche: 'Architecture', color: '#1e40af' },
-  { sub: 'marketing', niche: 'Marketing', color: '#7c3aed' },
-  { sub: 'freelanceWriters', niche: 'Writing', color: '#b45309' },
-  { sub: 'sales', niche: 'Sales', color: '#b91c1c' },
-  { sub: 'humanresources', niche: 'HR', color: '#0e7490' },
-  { sub: 'interior_design', niche: 'Interior Design', color: '#6b7280' },
-  { sub: 'languagelearning', niche: 'Language', color: '#059669' },
+  // Language courses
+  { sub: 'LearnJapanese',      niche: 'Language — Japanese',       course: 'Learn Japanese with AI',        color: '#e11d48' },
+  { sub: 'LearnKorean',        niche: 'Language — Korean',         course: 'Learn Korean with AI',          color: '#e11d48' },
+  { sub: 'LearnChinese',       niche: 'Language — Mandarin',       course: 'Learn Mandarin with AI',        color: '#e11d48' },
+  { sub: 'Spanish',            niche: 'Language — Spanish',        course: 'Learn Spanish with AI',         color: '#e11d48' },
+  { sub: 'learnfrench',        niche: 'Language — French',         course: 'Learn French with AI',          color: '#e11d48' },
+  // AI Skills
+  { sub: 'artificial',         niche: 'AI Skills',                 course: '28-Day AI Skills Challenge',    color: '#7c3aed' },
+  { sub: 'MachineLearning',    niche: 'AI Skills',                 course: '28-Day AI Skills Challenge',    color: '#7c3aed' },
+  // Accounting
+  { sub: 'Accounting',         niche: 'Accounting',                course: 'Mastering Accounting with AI',  color: '#2d6a4f' },
+  { sub: 'taxpros',            niche: 'Accounting',                course: 'Mastering Accounting with AI',  color: '#2d6a4f' },
+  // Business Strategy
+  { sub: 'business',           niche: 'Business Strategy',         course: 'AI Strategy for Business Leaders', color: '#0e7490' },
+  { sub: 'Entrepreneur',       niche: 'Business Strategy',         course: 'AI Strategy for Business Leaders', color: '#0e7490' },
+  // Agentic AI
+  { sub: 'LangChain',          niche: 'Agentic AI',                course: 'Mastering Agentic & Multi-Agent AI', color: '#6d28d9' },
+  { sub: 'AutoGPT',            niche: 'Agentic AI',                course: 'Mastering Agentic & Multi-Agent AI', color: '#6d28d9' },
+  // Architecture & Interior Design
+  { sub: 'architecture',       niche: 'Architecture & Design',     course: 'AI in Architecture & Interior Design', color: '#1e40af' },
+  { sub: 'interior_design',    niche: 'Architecture & Design',     course: 'AI in Architecture & Interior Design', color: '#1e40af' },
+  { sub: 'interiordecorating', niche: 'Architecture & Design',     course: 'AI in Architecture & Interior Design', color: '#1e40af' },
+  // Coding
+  { sub: 'learnprogramming',   niche: 'Coding & Dev',              course: 'AI+ Vibe Coding & IDP',         color: '#b45309' },
+  { sub: 'webdev',             niche: 'Coding & Dev',              course: 'AI+ Vibe Coding & IDP',         color: '#b45309' },
+  // Writing
+  { sub: 'writing',            niche: 'Writing',                   course: 'Mastering AI for Writers',      color: '#b45309' },
+  { sub: 'freelanceWriters',   niche: 'Writing',                   course: 'Mastering AI for Writers',      color: '#b45309' },
+  // GIS & Spatial
+  { sub: 'gis',                niche: 'GIS & Spatial',             course: 'Mastering AI for GIS and Spatial', color: '#059669' },
+  { sub: 'geography',          niche: 'GIS & Spatial',             course: 'Mastering AI for GIS and Spatial', color: '#059669' },
+  // Cybersecurity
+  { sub: 'cybersecurity',      niche: 'Cybersecurity',             course: 'Mastering AI for Cybersecurity', color: '#dc2626' },
+  { sub: 'netsec',             niche: 'Cybersecurity',             course: 'Mastering AI for Cybersecurity', color: '#dc2626' },
+  // Product Marketing
+  { sub: 'marketing',          niche: 'Product Marketing',         course: 'Mastering AI for Product Marketing', color: '#7c3aed' },
+  { sub: 'productmanagement',  niche: 'Product Marketing',         course: 'Mastering AI for Product Marketing', color: '#7c3aed' },
+  // Sales
+  { sub: 'sales',              niche: 'Sales',                     course: 'AI for Sales & Business Dev',   color: '#b91c1c' },
+  { sub: 'salestechniques',    niche: 'Sales',                     course: 'AI for Sales & Business Dev',   color: '#b91c1c' },
+  // HR & People Ops
+  { sub: 'humanresources',     niche: 'HR & People Ops',           course: 'Mastering AI for HR & People Ops', color: '#0e7490' },
+  { sub: 'recruiting',         niche: 'HR & People Ops',           course: 'Mastering AI for HR & People Ops', color: '#0e7490' },
 ];
 
 let allThreads = [];
@@ -439,19 +474,128 @@ function scoreThread(post) {
 }
 
 async function generateDraft(post, niche) {
+  // Uses AS proxy — provider selected in the AS bar above
   // Proxy handles auth — no local key check needed
   const siteUrl = config.url || 'https://aisprint.app';
-  const prompt = `You are a helpful professional in the ${niche} field who also runs AISprint (${siteUrl}), a platform with 28-day AI courses for professionals.
+  const courseName = post.course || niche;
+  const prompt = `You are a helpful professional in the ${niche} field who also created AISprint (${siteUrl}), a platform with 28-day AI courses built specifically for working professionals.
 
 A Reddit post in r/${post.subreddit} says:
 Title: "${post.title}"
 Body: "${(post.selftext || '').slice(0, 400)}"
 
-Write a genuine, helpful Reddit reply (3-5 sentences). Give real value first. Only mention AISprint naturally IF it's directly relevant — and only once, with no hard sell. Write as a knowledgeable peer, not a marketer. No bullet points. Conversational tone.`;
+Write a genuine, helpful Reddit reply (3-5 sentences). Give real practical value first — specific advice, not generic tips. Only mention AISprint and the course "${courseName}" naturally at the end IF it's directly relevant to what they asked. One mention only, no hard sell, no links. Write as a knowledgeable peer. No bullet points. Conversational tone.`;
 
   try {
     return await window.AS_callAI([{role:'user',content:prompt}], 300);
   } catch(e) { return null; }
+}
+
+// ── Perplexity live scan (alternative to Reddit API) ─────────────
+async function scanWithPerplexity() {
+  setStatus('loading', 'Scanning Reddit via Perplexity AI...');
+  document.getElementById('refresh-btn').disabled = true;
+  document.getElementById('thread-list').innerHTML = renderSkeletons();
+  allThreads = [];
+
+  const niches = [
+    { name: 'Accounting',             course: 'Mastering Accounting with AI',        subs: 'r/Accounting, r/taxpros' },
+    { name: 'Business Strategy',      course: 'AI Strategy for Business Leaders',    subs: 'r/business, r/Entrepreneur' },
+    { name: 'Architecture & Design',  course: 'AI in Architecture & Interior Design',subs: 'r/architecture, r/interior_design' },
+    { name: 'Coding & Dev',           course: 'AI+ Vibe Coding & IDP',               subs: 'r/learnprogramming, r/webdev' },
+    { name: 'Writing',                course: 'Mastering AI for Writers',            subs: 'r/writing, r/freelanceWriters' },
+    { name: 'Cybersecurity',          course: 'Mastering AI for Cybersecurity',      subs: 'r/cybersecurity, r/netsec' },
+    { name: 'Product Marketing',      course: 'Mastering AI for Product Marketing',  subs: 'r/marketing, r/productmanagement' },
+    { name: 'Sales',                  course: 'AI for Sales & Business Dev',         subs: 'r/sales, r/salestechniques' },
+    { name: 'HR & People Ops',        course: 'Mastering AI for HR & People Ops',    subs: 'r/humanresources, r/recruiting' },
+    { name: 'GIS & Spatial',          course: 'Mastering AI for GIS and Spatial',    subs: 'r/gis, r/geography' },
+    { name: 'AI Skills',              course: '28-Day AI Skills Challenge',           subs: 'r/artificial, r/MachineLearning' },
+    { name: 'Language Learning',      course: 'AI Language Courses',                 subs: 'r/LearnJapanese, r/LearnChinese, r/Spanish, r/learnfrench, r/LearnKorean' },
+  ];
+
+  const prompt = `Search Reddit right now across these communities and niches. For each niche below, find the 2 most active posts from the last 7 days where people are asking about AI tools, automation, workflow improvement, or learning new skills.
+
+Niches and subreddits to search:
+${niches.map(n => `- ${n.name}: ${n.subs}`).join('\n')}
+
+For each post return EXACTLY this format:
+NICHE: [niche name]
+TITLE: [post title]
+SUBREDDIT: [subreddit name without r/]
+URL: [direct reddit.com URL]
+SUMMARY: [one sentence — what are they asking or discussing]
+OPPORTUNITY: [high/medium/low — high means they are asking for AI tool recommendations or struggling with a workflow]
+---`;
+
+  try {
+    const result = await window.AS_callAI(
+      [{ role: 'user', content: prompt }],
+      2000,
+      'You are a Reddit research assistant. Search for real, current Reddit posts and return them in the exact format requested. Only return real posts with real URLs.'
+    );
+
+    // Parse the result
+    const blocks = result.split('---').filter(b => b.trim());
+    blocks.forEach(block => {
+      const get = (key) => {
+        const m = block.match(new RegExp(key + ':\\s*(.+)'));
+        return m ? m[1].trim() : '';
+      };
+      const title = get('TITLE');
+      const sub   = get('SUBREDDIT');
+      const url   = get('URL');
+      const niche = get('NICHE');
+      const course = niches.find(n => n.name === niche)?.course || niche;
+      const opp   = get('OPPORTUNITY').toLowerCase();
+      const summary = get('SUMMARY');
+
+      if (!title || !sub) return;
+
+      // Extract Reddit permalink from URL
+      const permalink = url.replace('https://www.reddit.com','').replace('https://reddit.com','') || '/r/' + sub;
+
+      allThreads.push({
+        title,
+        subreddit: sub,
+        permalink,
+        selftext: summary,
+        score: 0,
+        num_comments: 0,
+        niche,
+        course,
+        opportunity: opp.includes('high') ? 'high' : opp.includes('medium') ? 'medium' : 'reply',
+        draft: null,
+        generating: false,
+        fromPerplexity: true
+      });
+    });
+
+    if (!allThreads.length) {
+      setStatus('error', 'No threads found — try again or switch provider');
+    } else {
+      allThreads.sort((a,b) => { const o={high:0,medium:1,reply:2}; return o[a.opportunity]-o[b.opportunity]; });
+      setStatus('live', allThreads.length + ' threads found via Perplexity — ' + allThreads.filter(t=>t.opportunity==='high').length + ' high opportunity');
+      document.getElementById('last-refresh').textContent = 'Last refreshed: ' + new Date().toLocaleTimeString();
+    }
+  } catch(err) {
+    setStatus('error', 'Scan failed: ' + err.message);
+  }
+
+  document.getElementById('refresh-btn').disabled = false;
+  buildFilters();
+  renderThreads();
+  if (allThreads.length) generateDraftsInBackground();
+}
+
+function handleRefresh() {
+  // Use Perplexity scan if selected provider is perplexity, otherwise try Reddit API
+  const provSel = document.getElementById('as-prov-sel');
+  const provider = provSel ? provSel.value : 'claude';
+  if (provider === 'perplexity') {
+    scanWithPerplexity();
+  } else {
+    loadAllThreads();
+  }
 }
 
 async function loadAllThreads() {
@@ -467,7 +611,7 @@ async function loadAllThreads() {
       const posts = await fetchSubreddit(sub);
       const top = posts.filter(p => !p.stickied && p.score > 5).slice(0, 3);
       top.forEach(p => {
-        allThreads.push({ ...p, niche, opportunity: scoreThread(p), draft: null, generating: false });
+        allThreads.push({ ...p, niche, course: SUBREDDITS.find(s=>s.sub===sub)?.course||niche, opportunity: scoreThread(p), draft: null, generating: false });
       });
     } catch(e) { console.warn('Skip', sub, e.message); }
     await new Promise(r => setTimeout(r, 600));
