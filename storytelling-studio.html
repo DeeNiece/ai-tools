@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI StoryTelling Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#faf8f5;--surface:#fff;--border:#e2dbcf;--gold:#b57c1c;--text:#2c2824;--muted:#6b6258;--green:#4c8b6e;--red:#c95a4a;--accent:#c84b31;}
+body.dark{--bg:#121212;--surface:#1e1e1e;--border:#3a3a3a;--gold:#d4a853;--text:#e8e4dc;--muted:#a8a29e;--green:#7ab896;--red:#d47a6a;--accent:#e06b52;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);padding:20px 18px 80px;}
+.wrap{max-width:960px;margin:0 auto;}
+/* header */
+.hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px;}
+.hdr h1{font-size:21px;font-weight:600;}.hdr h1 span{color:var(--gold);}
+.hdr-btns{display:flex;gap:8px;flex-wrap:wrap;}
+/* cards */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin-bottom:14px;}
+.card-title{font-size:12px;font-weight:600;color:var(--gold);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px;}
+/* buttons */
+.btn{background:var(--surface);border:1px solid var(--border);border-radius:40px;padding:6px 14px;cursor:pointer;font-size:12px;font-family:inherit;color:var(--text);white-space:nowrap;transition:.15s;}
+.btn:hover{border-color:var(--gold);color:var(--gold);}
+.btn.g{background:var(--green);color:#fff;border-color:var(--green);}
+.btn.g:hover{opacity:.9;}
+.btn.r{border-color:var(--red);color:var(--red);}
+.btn.r:hover{background:var(--red);color:#fff;}
+/* form */
+label.lbl{display:block;font-size:11px;font-weight:500;color:var(--muted);margin-bottom:4px;letter-spacing:.04em;text-transform:uppercase;}
+input,select,textarea{width:100%;padding:8px 11px;background:var(--surface);border:1px solid var(--border);border-radius:9px;margin-bottom:11px;color:var(--text);font-family:inherit;font-size:13px;outline:none;transition:border-color .2s;}
+input:focus,select:focus,textarea:focus{border-color:var(--gold);}
+input[type=checkbox]{width:auto;margin-bottom:0;cursor:pointer;}
+input[type=password]{font-family:monospace;}
+textarea{resize:vertical;line-height:1.6;}
+select{appearance:none;background-image:url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");background-repeat:no-repeat;background-position:right 10px center;background-size:13px;background-color:var(--surface);}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px;}
+.row input{flex:1;min-width:160px;margin-bottom:0;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:11px;}
+.g4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:11px;}
+/* provider pills */
+.prov-grp{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px;}
+.prov{padding:5px 13px;background:var(--surface);border:1px solid var(--border);border-radius:40px;font-size:12px;cursor:pointer;color:var(--text);transition:.15s;}
+.prov:hover{border-color:var(--gold);}
+.prov.sel{border-color:var(--gold);background:rgba(181,124,28,.1);color:var(--gold);font-weight:600;}
+/* platform pills */
+.pill-grp{display:flex;flex-wrap:wrap;gap:7px;}
+.pill{display:inline-flex;align-items:center;gap:4px;background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:11px;cursor:pointer;user-select:none;font-weight:500;transition:.15s;}
+.pill.on{background:var(--gold);color:#fff;border-color:var(--gold);}
+/* key status */
+.key-st{font-size:11px;color:var(--muted);margin-top:3px;}
+.smsg{font-size:12px;margin-top:7px;padding:7px 11px;border-radius:9px;background:var(--bg);border-left:3px solid var(--gold);display:none;word-break:break-word;}
+.smsg.ok{border-left-color:var(--green);}
+.smsg.err{border-left-color:var(--red);}
+/* big button */
+.gen-btn{width:100%;background:var(--gold);color:#fff;border:none;border-radius:40px;padding:13px;font-size:16px;font-weight:600;cursor:pointer;margin:4px 0 14px;font-family:inherit;transition:.2s;}
+.gen-btn:hover{opacity:.9;}.gen-btn:disabled{opacity:.5;cursor:not-allowed;}
+/* progress */
+.progress-wrap{background:var(--border);border-radius:20px;height:5px;margin:8px 0;overflow:hidden;display:none;}
+.progress-fill{height:5px;background:var(--gold);border-radius:20px;transition:width .3s ease;}
+.step-txt{font-size:11px;color:var(--muted);font-style:italic;display:none;margin-bottom:4px;}
+/* notice */
+.notice{font-size:12px;padding:8px 13px;border-radius:9px;background:var(--bg);border-left:3px solid var(--gold);margin-bottom:10px;display:none;}
+.notice.ok{border-left-color:var(--green);}
+.notice.warn{border-left-color:#e8a838;}
+.notice.err{border-left-color:var(--red);}
+/* output */
+.out-area{display:none;animation:fi .35s ease;}
+@keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+/* script card */
+.sc-card{background:var(--bg);border:1px solid var(--border);border-radius:11px;margin-bottom:14px;overflow:hidden;}
+.sc-head{background:var(--accent);color:#fff;padding:9px 14px;display:flex;justify-content:space-between;align-items:center;}
+.sc-head h3{font-size:13px;font-weight:600;}
+.sc-body{padding:13px 15px;}
+.fld-lbl{font-size:10px;font-weight:600;color:var(--gold);text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px;}
+.fld-val{font-size:13px;line-height:1.7;color:var(--text);white-space:pre-wrap;}
+.divider{border:none;border-top:1px solid var(--border);margin:11px 0;}
+/* social boxes */
+.soc-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:4px;}
+.soc-box{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:9px 11px;}
+.soc-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;}
+.soc-name{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;}
+.soc-txt{font-size:12px;line-height:1.6;color:var(--text);white-space:pre-wrap;}
+/* copy btn */
+.cp-btn{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:2px 9px;font-size:10px;cursor:pointer;color:var(--text);}
+.cp-btn:hover{background:var(--gold);color:#fff;border-color:var(--gold);}
+/* table */
+.tbl-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:11px;}
+th{background:var(--gold);color:#fff;padding:6px 9px;text-align:left;white-space:nowrap;font-size:10px;}
+td{padding:6px 9px;border-bottom:1px solid var(--border);vertical-align:top;color:var(--text);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+tr:nth-child(even) td{background:var(--bg);}
+.act-row{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px;}
+/* code block */
+.code-blk{background:var(--bg);padding:11px;border-radius:9px;font-family:monospace;font-size:11px;overflow-x:auto;white-space:pre-wrap;color:var(--text);border:1px solid var(--border);margin-top:7px;max-height:190px;overflow-y:auto;}
+/* log */
+.log-box{font-size:11px;font-family:monospace;background:var(--bg);border-radius:10px;padding:9px;max-height:140px;overflow-y:auto;margin-top:7px;color:var(--muted);display:none;border:1px solid var(--border);}
+/* toast */
+.toast{position:fixed;bottom:22px;right:22px;padding:9px 18px;border-radius:7px;font-size:12px;color:#fff;display:none;z-index:9999;}
+/* status bar */
+.sbar{position:fixed;bottom:0;left:0;right:0;background:var(--text);color:var(--bg);font-size:10px;padding:5px 18px;display:flex;gap:14px;flex-wrap:wrap;font-family:monospace;opacity:.9;z-index:100;}
+.sbar strong{color:var(--gold);}
+.hint{font-size:11px;color:var(--muted);line-height:1.6;}.hint a{color:var(--gold);}
+@media(max-width:600px){.g3,.g4{grid-template-columns:1fr 1fr;}.g2{grid-template-columns:1fr;}.soc-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hdr">
+  <h1>AI StoryTelling <span>Studio</span></h1>
+  <div class="hdr-btns">
+    <a href="https://docs.google.com/spreadsheets/d/1Yxs9EjJq8336iTsPFJ_n3WUhtTUxOhwAUAQIyiEKF2g/edit" target="_blank" class="btn g">↗ Google Sheet</a>
+    <button class="btn" id="themeBtn">🌙 Dark</button>
+  </div>
+</div>
+
+<!-- GOOGLE SHEETS -->
+<div class="card">
+  <div class="card-title">📎 Google Sheets</div>
+  <div class="row">
+    <input type="url" id="gasUrl" placeholder="https://script.google.com/macros/s/.../exec">
+    <button class="btn g" id="saveUrlBtn">💾 Save</button>
+    <button class="btn" id="testSheetBtn">🔌 Test</button>
+    <button class="btn g" id="openSheetBtn">🌐 Open</button>
+    <button class="btn r" id="delUrlBtn">🗑️</button>
+  </div>
+  <div id="urlSt" class="key-st"></div>
+  <div id="sheetTestRes" class="smsg"></div>
+  <details style="margin-top:10px;">
+    <summary style="cursor:pointer;font-size:12px;color:var(--gold);font-weight:600;">📋 Apps Script Setup — click to expand</summary>
+    <div style="margin-top:9px;">
+      <p class="hint" style="margin-bottom:7px;"><strong>One-time setup:</strong> Open your <a href="https://docs.google.com/spreadsheets/d/1Yxs9EjJq8336iTsPFJ_n3WUhtTUxOhwAUAQIyiEKF2g/edit" target="_blank">AI StoryTelling Sheet</a> → Extensions → Apps Script → paste code → Save → Deploy → New deployment → Web App → Execute as Me → Anyone → Copy URL above.</p>
+      <div style="position:relative;">
+        <button class="btn" id="copyGasBtn" style="position:absolute;top:6px;right:6px;z-index:2;">📄 Copy</button>
+        <div class="code-blk" id="gasCode">function doPost(e) {
+  try {
+    var data = e.parameter;
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var sheetName = data.sheet_name || "Sheet1";
+    var sheet = ss.getSheetByName(sheetName);
+    if (!sheet) {
+      sheet = ss.insertSheet(sheetName);
+      var headers = ["Timestamp","Genre","Tone","Duration","Seed","Ending","Hook",
+        "Full_Script","Thumbnail_Text","Platforms",
+        "Facebook_Post","Instagram_Post","TikTok_Post",
+        "YouTube_Title","YouTube_Description","YouTube_Tags"];
+      sheet.getRange(1,1,1,headers.length).setValues([headers]);
+    }
+    var row = [
+      data.Timestamp||"", data.Genre||"", data.Tone||"",
+      data.Duration||"", data.Seed||"", data.Ending||"", data.Hook||"",
+      data.Full_Script||"", data.Thumbnail_Text||"", data.Platforms||"",
+      data.Facebook_Post||"", data.Instagram_Post||"", data.TikTok_Post||"",
+      data.YouTube_Title||"", data.YouTube_Description||"", data.YouTube_Tags||""
+    ];
+    sheet.appendRow(row);
+    return ContentService.createTextOutput(JSON.stringify({result:"success"})).setMimeType(ContentService.MimeType.JSON);
+  } catch(err) {
+    return ContentService.createTextOutput(JSON.stringify({result:"error",error:err.toString()})).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+function doGet() {
+  return ContentService.createTextOutput("AI StoryTelling Studio connected!").setMimeType(ContentService.MimeType.TEXT);
+}</div>
+      </div>
+    </div>
+  </details>
+</div>
+
+<!-- AI ENGINE -->
+<div class="card">
+  <div class="card-title">🧠 AI Engine</div>
+  <div class="prov-grp" id="provGrp">
+    <div class="prov" data-p="anthropic">Claude (Anthropic)</div>
+    <div class="prov" data-p="deepseek">DeepSeek</div>
+    <div class="prov" data-p="gemini">Gemini</div>
+    <div class="prov" data-p="openai">OpenAI</div>
+    <div class="prov" data-p="custom">Custom</div>
+  </div>
+  <div style="display:flex;gap:8px;align-items:center;margin-bottom:11px;flex-wrap:wrap;">
+    <label class="lbl" style="margin:0;white-space:nowrap;">Model:</label>
+    <select id="modelSel" style="flex:1;min-width:180px;margin-bottom:0;"></select>
+  </div>
+  <div class="row">
+    <input type="password" id="apiKey" placeholder="Paste API key here">
+    <button class="btn g" id="saveKeyBtn">💾 Save</button>
+    <button class="btn r" id="delKeyBtn">🗑️ Delete</button>
+    <button class="btn" id="healthBtn">🔍 Health Check</button>
+  </div>
+  <div id="epGroup" style="display:none;"><input type="text" id="customEp" placeholder="Custom endpoint URL" style="margin-bottom:0;"></div>
+  <div id="keySt" class="key-st"></div>
+  <div id="testRes" class="smsg"></div>
+  <div class="hint" style="margin-top:9px;">
+    Get keys: Claude → <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a> &nbsp;|&nbsp;
+    DeepSeek → <a href="https://platform.deepseek.com" target="_blank">platform.deepseek.com</a> (cheap) &nbsp;|&nbsp;
+    Gemini → <a href="https://aistudio.google.com/app/apikey" target="_blank">aistudio.google.com</a> (free!) &nbsp;|&nbsp;
+    OpenAI → <a href="https://platform.openai.com/api-keys" target="_blank">platform.openai.com</a>
+  </div>
+</div>
+
+<!-- STORY SETUP -->
+<div class="card">
+  <div class="card-title">🎬 Story Setup</div>
+  <div class="g4" style="margin-bottom:4px;">
+    <div>
+      <label class="lbl">Genre</label>
+      <select id="genre">
+        <option value="urban legend">Urban Legends</option>
+        <option value="historical mystery">Historical Mysteries</option>
+        <option value="moral tale">Moral Tales</option>
+        <option value="true crime inspired">True Crime Inspired</option>
+        <option value="supernatural thriller">Supernatural Thriller</option>
+        <option value="suspense">Suspense</option>
+        <option value="horror">Horror</option>
+        <option value="motivational fable">Motivational Fables</option>
+        <option value="sci-fi short">Sci-Fi Shorts</option>
+        <option value="romance with a twist">Romance with a Twist</option>
+      </select>
+    </div>
+    <div>
+      <label class="lbl">Tone</label>
+      <select id="tone">
+        <option value="suspenseful and gripping">Suspenseful</option>
+        <option value="dark and eerie">Dark & Eerie</option>
+        <option value="heartwarming and emotional">Heartwarming</option>
+        <option value="funny and ironic">Funny & Ironic</option>
+        <option value="inspirational">Inspirational</option>
+        <option value="shocking and dramatic">Shocking & Dramatic</option>
+        <option value="creepy and unsettling">Creepy & Unsettling</option>
+      </select>
+    </div>
+    <div>
+      <label class="lbl">Video Length</label>
+      <select id="duration">
+        <option value="60 seconds">60 sec — TikTok</option>
+        <option value="90 seconds">90 sec — Reels</option>
+        <option value="3 minutes">3 min — YouTube</option>
+        <option value="5 minutes">5 min — YouTube Long</option>
+      </select>
+    </div>
+    <div>
+      <label class="lbl">No. of Episodes</label>
+      <input type="number" id="qty" min="1" max="10" value="3">
+    </div>
+  </div>
+  <div class="g2">
+    <div>
+      <label class="lbl">Avatar Narrator Name</label>
+      <input type="text" id="narrator" value="Zara" placeholder="e.g. Zara, Marcus, Maya...">
+    </div>
+    <div>
+      <label class="lbl">Series Story Seed (optional)</label>
+      <input type="text" id="seed" placeholder="e.g. A woman finds a diary predicting her future...">
+    </div>
+  </div>
+  <div>
+    <label class="lbl">Series Finale / Ending Direction (optional)</label>
+    <textarea id="ending" rows="2" placeholder="e.g. The final episode reveals she was the ghost all along, and the diary was written by her daughter trying to warn her..."></textarea>
+  </div>
+  <div style="display:flex;align-items:center;gap:9px;margin-bottom:4px;">
+    <input type="checkbox" id="useExpr" checked>
+    <label for="useExpr" style="font-size:13px;cursor:pointer;">🎭 Add HeyGen expression tags ([[smile]], [[pause]], [[excited]], etc.)</label>
+  </div>
+</div>
+
+<!-- PLATFORMS -->
+<div class="card">
+  <div class="card-title">📱 Target Platforms</div>
+  <div class="pill-grp" id="pillGrp">
+    <div class="pill on" data-p="TikTok">▶ TikTok</div>
+    <div class="pill on" data-p="YouTube Shorts">▶ YouTube Shorts</div>
+    <div class="pill" data-p="Instagram Reels">▶ Instagram Reels</div>
+    <div class="pill" data-p="Facebook">▶ Facebook</div>
+  </div>
+</div>
+
+<div id="noticeArea"></div>
+<div class="step-txt" id="stepTxt">Preparing...</div>
+<div class="progress-wrap" id="progWrap"><div class="progress-fill" id="progFill" style="width:0%"></div></div>
+<div class="log-box" id="logBox"></div>
+
+<button class="gen-btn" id="genBtn">✨ Generate Episode Series + Social Posts + YouTube Meta → Save to Sheet</button>
+
+<!-- OUTPUT -->
+<div class="out-area" id="outArea">
+
+  <div class="card">
+    <div class="card-title">📝 Generated Episodes <span id="scLabel" style="font-weight:400;text-transform:none;color:var(--muted);font-size:12px;"></span></div>
+    <div id="scOut"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📊 Spreadsheet Preview</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th><th>Genre</th><th>Tone</th><th>Hook</th><th>Script</th><th>Thumbnail</th>
+            <th>Facebook Post</th><th>Instagram Post</th><th>TikTok Post</th>
+            <th>YT Title</th><th>YT Description</th><th>YT Tags</th><th>Duration</th>
+          </tr>
+        </thead>
+        <tbody id="tblBody"></tbody>
+      </table>
+    </div>
+    <div class="act-row">
+      <button class="btn g" id="sheetBtn" onclick="pushAll()">↑ Push to Google Sheets</button>
+      <button class="btn" onclick="copyCSV()">⬇ Copy CSV</button>
+      <button class="btn" onclick="copyAllContent()">⬇ Copy All</button>
+      <button class="btn" onclick="downloadCSV()">↓ Download CSV</button>
+    </div>
+  </div>
+
+</div>
+
+</div><!-- /wrap -->
+
+<div class="sbar">
+  <span>SCRIPTS: <strong id="stScripts">0</strong></span>
+  <span>SAVED: <strong id="stSaved">0</strong></span>
+  <span>AI: <strong id="stProv">—</strong></span>
+  <span>SHEET: <strong>AI StoryTelling</strong></span>
+  <span>PLATFORMS: <strong id="stPlat">TikTok, YouTube Shorts</strong></span>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ── MODELS ────────────────────────────────────────────────
+var MODELS = {
+  anthropic:[
+    {id:'claude-sonnet-4-20250514',label:'Claude Sonnet 4 (recommended)'},
+    {id:'claude-opus-4-5-20251101',label:'Claude Opus 4.5 (most capable)'},
+    {id:'claude-haiku-4-5-20251001',label:'Claude Haiku 4.5 (fastest/cheapest)'}
+  ],
+  deepseek:[
+    {id:'deepseek-v4-flash',label:'DeepSeek V4 Flash (recommended)'},
+    {id:'deepseek-v4-pro',label:'DeepSeek V4 Pro (most capable)'}
+  ],
+  gemini:[
+    {id:'gemini-2.5-flash',label:'Gemini 2.5 Flash (recommended)'},
+    {id:'gemini-3.5-flash',label:'Gemini 3.5 Flash (newest)'},
+    {id:'gemini-2.5-flash-lite',label:'Gemini 2.5 Flash Lite (cheapest)'},
+    {id:'gemini-2.5-pro',label:'Gemini 2.5 Pro (most capable)'}
+  ],
+  openai:[
+    {id:'gpt-4o',label:'GPT-4o (recommended)'},
+    {id:'gpt-4-turbo',label:'GPT-4 Turbo'},
+    {id:'gpt-3.5-turbo',label:'GPT-3.5 Turbo (cheapest)'}
+  ],
+  custom:[{id:'custom',label:'Custom model'}]
+};
+
+// ── STATE ─────────────────────────────────────────────────
+var currentProvider = localStorage.getItem('storytelling_provider') || 'anthropic';
+var generatedData   = [];
+var lastSettings    = {};
+var totalSaved      = 0;
+var apiHealthy      = false;
+
+// ── INIT ──────────────────────────────────────────────────
+window.addEventListener('load', function() {
+  if (localStorage.getItem('darkMode') === 'true') document.body.classList.add('dark');
+  document.getElementById('themeBtn').textContent = document.body.classList.contains('dark') ? '☀️ Light' : '🌙 Dark';
+  var savedUrl = localStorage.getItem('storytelling_google_url') || localStorage.getItem('archprompt_google_url');
+  if (savedUrl) { document.getElementById('gasUrl').value = savedUrl; document.getElementById('urlSt').textContent = '✅ URL saved'; }
+  var savedEp = localStorage.getItem('archprompt_custom_endpoint');
+  if (savedEp) document.getElementById('customEp').value = savedEp;
+  setProvider(currentProvider);
+  updateKeyUI();
+  document.querySelectorAll('.pill').forEach(function(p) {
+    p.addEventListener('click', function() { p.classList.toggle('on'); updateSBar(); });
+  });
+  updateSBar();
+});
+
+// ── THEME ─────────────────────────────────────────────────
+document.getElementById('themeBtn').addEventListener('click', function() {
+  document.body.classList.toggle('dark');
+  localStorage.setItem('darkMode', document.body.classList.contains('dark'));
+  document.getElementById('themeBtn').textContent = document.body.classList.contains('dark') ? '☀️ Light' : '🌙 Dark';
+});
+
+// ── PROVIDER ──────────────────────────────────────────────
+function setProvider(p) {
+  currentProvider = p;
+  document.querySelectorAll('.prov').forEach(function(b) { b.classList.toggle('sel', b.dataset.p === p); });
+  document.getElementById('epGroup').style.display = p === 'custom' ? 'block' : 'none';
+  localStorage.setItem('storytelling_provider', p);
+  var sel = document.getElementById('modelSel');
+  sel.innerHTML = '';
+  (MODELS[p] || MODELS.custom).forEach(function(m) {
+    var o = document.createElement('option'); o.value = m.id; o.textContent = m.label; sel.appendChild(o);
+  });
+  var saved = localStorage.getItem('storytelling_model_' + p);
+  if (saved) sel.value = saved;
+  document.getElementById('stProv').textContent = p.charAt(0).toUpperCase() + p.slice(1);
+  apiHealthy = false; updateKeyUI();
+}
+document.querySelectorAll('.prov').forEach(function(b) { b.addEventListener('click', function() { setProvider(b.dataset.p); }); });
+document.getElementById('modelSel').addEventListener('change', function(e) { localStorage.setItem('storytelling_model_' + currentProvider, e.target.value); });
+
+// ── API KEY ───────────────────────────────────────────────
+function getKey() {
+  return localStorage.getItem('storytelling_key_' + currentProvider) || localStorage.getItem('archprompt_apikey') || '';
+}
+function updateKeyUI() {
+  var k = getKey();
+  document.getElementById('keySt').textContent = k ? ('🔑 Key: ' + k.substring(0, 10) + '... ' + (apiHealthy ? '✅ Verified' : '⚠️ Not verified')) : '🔑 No API key saved for ' + currentProvider;
+}
+document.getElementById('saveKeyBtn').addEventListener('click', function() {
+  var k = document.getElementById('apiKey').value.trim();
+  if (!k) { alert('Enter your API key first'); return; }
+  localStorage.setItem('storytelling_key_' + currentProvider, k);
+  localStorage.setItem('archprompt_apikey', k);
+  if (currentProvider === 'custom') {
+    var ep = document.getElementById('customEp').value.trim();
+    if (ep) localStorage.setItem('archprompt_custom_endpoint', ep);
+  }
+  apiHealthy = false; updateKeyUI();
+  document.getElementById('apiKey').value = '';
+  showToast('✅ API key saved!');
+});
+document.getElementById('delKeyBtn').addEventListener('click', function() {
+  if (!confirm('Delete saved API key?')) return;
+  localStorage.removeItem('storytelling_key_' + currentProvider);
+  apiHealthy = false; updateKeyUI(); showToast('🗑️ Key deleted');
+});
+document.getElementById('healthBtn').addEventListener('click', healthCheck);
+
+async function healthCheck() {
+  var k = getKey(); if (!k) { showTestRes('No API key saved', true); return false; }
+  try {
+    var ok = false;
+    var model = document.getElementById('modelSel').value;
+    if (currentProvider === 'anthropic') {
+      var r = await fetch('https://api.anthropic.com/v1/messages', {method:'POST',headers:{'x-api-key':k,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true','Content-Type':'application/json'},body:JSON.stringify({model:model,max_tokens:1,messages:[{role:'user',content:'hi'}]})});
+      ok = r.status === 200 || r.status === 400;
+    } else if (currentProvider === 'deepseek') {
+      var r = await fetch('https://api.deepseek.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+k},body:JSON.stringify({model:model,messages:[{role:'user',content:'hi'}],max_tokens:1})});
+      ok = r.ok;
+    } else if (currentProvider === 'gemini') {
+      var r = await fetch('https://generativelanguage.googleapis.com/v1beta/models/'+model+':generateContent?key='+k,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:'hi'}]}],generationConfig:{maxOutputTokens:1}})});
+      ok = r.ok || r.status === 400;
+    } else if (currentProvider === 'openai') {
+      var r = await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+k},body:JSON.stringify({model:model,messages:[{role:'user',content:'hi'}],max_tokens:1})});
+      ok = r.ok || r.status === 400;
+    } else {
+      var ep = document.getElementById('customEp').value.trim() || localStorage.getItem('archprompt_custom_endpoint') || '';
+      var r = await fetch(ep,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+k},body:JSON.stringify({model:model,max_tokens:1,messages:[{role:'user',content:'hi'}]})});
+      ok = r.ok;
+    }
+    apiHealthy = ok; updateKeyUI(); showTestRes(ok ? '✅ API key is valid!' : '❌ Invalid key — re-save', !ok); return ok;
+  } catch(e) { showTestRes('❌ Error: ' + e.message, true); return false; }
+}
+function showTestRes(msg, isErr) {
+  var el = document.getElementById('testRes');
+  el.style.display = 'block'; el.className = 'smsg ' + (isErr ? 'err' : 'ok'); el.innerHTML = msg;
+  setTimeout(function() { el.style.display = 'none'; }, 5000);
+}
+
+// ── GOOGLE SHEETS ─────────────────────────────────────────
+document.getElementById('saveUrlBtn').addEventListener('click', function() {
+  var url = document.getElementById('gasUrl').value.trim(); if (!url) return alert('Enter URL');
+  localStorage.setItem('storytelling_google_url', url); localStorage.setItem('archprompt_google_url', url);
+  document.getElementById('urlSt').textContent = '✅ URL saved'; showToast('✅ URL saved!');
+});
+document.getElementById('delUrlBtn').addEventListener('click', function() {
+  localStorage.removeItem('storytelling_google_url');
+  document.getElementById('gasUrl').value = ''; document.getElementById('urlSt').textContent = 'No URL saved';
+});
+document.getElementById('openSheetBtn').addEventListener('click', function() {
+  var url = document.getElementById('gasUrl').value.trim(); if (url) window.open(url, '_blank'); else alert('No URL saved');
+});
+document.getElementById('testSheetBtn').addEventListener('click', async function() {
+  var url = document.getElementById('gasUrl').value.trim(); if (!url) { alert('Save URL first'); return; }
+  var res = document.getElementById('sheetTestRes');
+  res.style.display = 'block'; res.className = 'smsg'; res.innerHTML = '⏳ Testing...';
+  try {
+    await postToSheet(url, {sheet_name:'Sheet1',Timestamp:new Date().toLocaleString(),Genre:'TEST',Tone:'TEST',Duration:'TEST',Seed:'',Ending:'',Hook:'Test connection',Full_Script:'This is a test row.',Thumbnail_Text:'Test',Platforms:'Test',Facebook_Post:'',Instagram_Post:'',TikTok_Post:'',YouTube_Title:'',YouTube_Description:'',YouTube_Tags:''});
+    res.className = 'smsg ok'; res.innerHTML = '✅ Test row sent! Check your Google Sheet.';
+  } catch(e) { res.className = 'smsg err'; res.innerHTML = '❌ Failed: ' + e.message; }
+  setTimeout(function() { res.style.display = 'none'; }, 8000);
+});
+document.getElementById('copyGasBtn').addEventListener('click', function() {
+  navigator.clipboard.writeText(document.getElementById('gasCode').innerText); showToast('✅ Apps Script copied!');
+});
+
+// ── postToSheet — same as AIVideoFactory (iframe, works from local HTML) ──
+function postToSheet(googleUrl, payload) {
+  return new Promise(function(resolve, reject) {
+    var iframeName = 'gas_' + Date.now();
+    var iframe = document.createElement('iframe');
+    iframe.name = iframeName; iframe.style.display = 'none';
+    document.body.appendChild(iframe);
+    var form = document.createElement('form');
+    form.method = 'POST'; form.action = googleUrl; form.target = iframeName; form.style.display = 'none';
+    Object.keys(payload).forEach(function(k) {
+      var inp = document.createElement('input'); inp.type = 'hidden'; inp.name = k;
+      inp.value = payload[k] == null ? '' : String(payload[k]); form.appendChild(inp);
+    });
+    document.body.appendChild(form);
+    var done = false;
+    iframe.onload = function() {
+      if (done) return; done = true;
+      setTimeout(function() {
+        try { document.body.removeChild(form); document.body.removeChild(iframe); } catch(e) {}
+      }, 800);
+      resolve(true);
+    };
+    // Timeout fallback — same as AIVideoFactory
+    setTimeout(function() { if (!done) { done = true; resolve(true); } }, 7000);
+    form.submit();
+  });
+}
+
+// ── callAI ────────────────────────────────────────────────
+async function callAI(prompt, maxTokens) {
+  var k = getKey(); if (!k) throw new Error('No API key saved');
+  var mt = maxTokens || 2000;
+  var model = document.getElementById('modelSel').value;
+  if (currentProvider === 'anthropic') {
+    var r = await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'x-api-key':k,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true','Content-Type':'application/json'},body:JSON.stringify({model:model,max_tokens:mt,messages:[{role:'user',content:prompt}]})});
+    var d = await r.json(); if (!r.ok) throw new Error((d.error && d.error.message) || 'Anthropic error'); return d.content[0].text;
+  } else if (currentProvider === 'deepseek') {
+    var r = await fetch('https://api.deepseek.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+k},body:JSON.stringify({model:model,messages:[{role:'user',content:prompt}],max_tokens:mt})});
+    var d = await r.json(); if (!r.ok) throw new Error((d.error && d.error.message) || 'DeepSeek error'); return d.choices[0].message.content;
+  } else if (currentProvider === 'gemini') {
+    var r = await fetch('https://generativelanguage.googleapis.com/v1beta/models/'+model+':generateContent?key='+k,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{maxOutputTokens:mt}})});
+    var d = await r.json(); if (!r.ok) throw new Error((d.error && d.error.message) || 'Gemini error'); return d.candidates[0].content.parts[0].text;
+  } else if (currentProvider === 'openai') {
+    var r = await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+k},body:JSON.stringify({model:model,messages:[{role:'user',content:prompt}],max_tokens:mt})});
+    var d = await r.json(); if (!r.ok) throw new Error((d.error && d.error.message) || 'OpenAI error'); return d.choices[0].message.content;
+  } else {
+    var ep = document.getElementById('customEp').value.trim() || localStorage.getItem('archprompt_custom_endpoint') || '';
+    if (!ep) throw new Error('Set custom endpoint URL');
+    var r = await fetch(ep,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+k},body:JSON.stringify({model:model,messages:[{role:'user',content:prompt}],max_tokens:mt})});
+    var d = await r.json(); if (!r.ok) throw new Error((d.error && d.error.message) || 'Custom error'); return d.choices[0].message.content;
+  }
+}
+
+// simple JSON extractor — same as AIVideoFactory
+function parseJSON(raw) {
+  if (!raw) return null;
+  var cleaned = raw.replace(/^```[a-zA-Z]*\n?/, '').replace(/\n?```$/, '').trim();
+  var m = cleaned.match(/\{[\s\S]*\}/);
+  if (m) { try { return JSON.parse(m[0]); } catch(e) {} }
+  return null;
+}
+
+function logLine(msg) {
+  var box = document.getElementById('logBox');
+  box.style.display = 'block';
+  box.innerHTML += msg + '<br>';
+  box.scrollTop = box.scrollHeight;
+}
+
+// ── GENERATE — Story Bible first, then one episode per loop ──────────────────
+document.getElementById('genBtn').addEventListener('click', generateAll);
+
+async function generateAll() {
+  if (!getKey()) { setNotice('No API key saved. Add one in the AI Engine section.', 'warn'); return; }
+
+  var genre    = document.getElementById('genre').value;
+  var tone     = document.getElementById('tone').value;
+  var duration = document.getElementById('duration').value;
+  var seed     = document.getElementById('seed').value.trim();
+  var ending   = document.getElementById('ending').value.trim();
+  var narrator = document.getElementById('narrator').value.trim() || 'Zara';
+  var qty      = Math.min(10, Math.max(1, parseInt(document.getElementById('qty').value) || 3));
+  var platforms= getActivePlatforms();
+  var useExpr  = document.getElementById('useExpr').checked;
+  var googleUrl= document.getElementById('gasUrl').value.trim();
+
+  lastSettings = {genre:genre,tone:tone,duration:duration,narrator:narrator,platforms:platforms,seed:seed,ending:ending};
+
+  setNotice('');
+  var btn = document.getElementById('genBtn');
+  btn.disabled = true;
+  document.getElementById('stepTxt').style.display = 'block';
+  document.getElementById('logBox').innerHTML = '';
+  document.getElementById('logBox').style.display = 'block';
+  generatedData = [];
+
+  var exprGuide = useExpr
+    ? 'Include HeyGen expression tags naturally: [[smile]], [[pause:0.3s]], [[excited]], [[confident]], [[gesture]], [[laugh]].'
+    : 'No expression tags. Clean narration only.';
+
+  var successCount = 0;
+  var storyBible = '';
+  var episodeOutlines = [];
+
+  // ── STEP 1: Generate Story Bible & Episode Outlines ───────────────────────
+  try {
+    btn.textContent = 'Building story bible...';
+    setStep('Planning full ' + qty + '-episode story arc...');
+    setProgress(5);
+    logLine('📖 Creating story bible and episode outlines for ' + qty + ' episodes...');
+
+    var biblePrompt = 'You are a viral short-form video series creator for AI avatar storytelling channels.\n\n'
+      + 'Create a complete ' + qty + '-episode ' + genre + ' story series with a ' + tone + ' tone.\n'
+      + 'Avatar narrator: ' + narrator + '. Video length per episode: ' + duration + '. Platforms: ' + platforms + '.\n'
+      + (seed ? 'Series concept / story seed: "' + seed + '".\n' : 'Invent an original gripping series concept.\n')
+      + (ending ? 'The series must build toward this finale: "' + ending + '".\n' : '')
+      + '\nReturn ONLY valid JSON in this exact structure:\n'
+      + '{\n'
+      + '  "series_title": "overall series title",\n'
+      + '  "series_logline": "1-2 sentence series hook that makes viewers want to watch all episodes",\n'
+      + '  "main_characters": "brief description of key characters",\n'
+      + '  "story_arc": "overall narrative arc across all episodes",\n'
+      + '  "episodes": [\n'
+      + '    {\n'
+      + '      "episode_number": 1,\n'
+      + '      "episode_title": "title",\n'
+      + '      "what_happens": "detailed scene-by-scene outline of this episode — 3-5 sentences",\n'
+      + '      "starts_with": "exact opening hook sentence to grab attention",\n'
+      + '      "ends_with": "how this episode ends — cliffhanger, reveal, or emotional beat to keep viewers coming back",\n'
+      + '      "key_moment": "the most dramatic or emotional moment in this episode"\n'
+      + '    }\n'
+      + '  ]\n'
+      + '}';
+
+    var bibleRaw = await callAI(biblePrompt, 4000);
+    var bible = parseJSON(bibleRaw);
+
+    if (!bible || !bible.episodes || !bible.episodes.length) {
+      throw new Error('Story bible generation failed — could not parse episode outlines.');
+    }
+
+    storyBible = 'Series: ' + bible.series_title + '\nLogline: ' + bible.series_logline
+      + '\nCharacters: ' + bible.main_characters + '\nArc: ' + bible.story_arc;
+    episodeOutlines = bible.episodes;
+
+    logLine('✅ Story bible ready: "' + bible.series_title + '" — ' + episodeOutlines.length + ' episodes planned.');
+    logLine('📺 Arc: ' + (bible.story_arc || '').substring(0, 120) + '...');
+
+  } catch(bibleErr) {
+    logLine('❌ Story bible failed: ' + bibleErr.message);
+    setNotice('Story bible generation failed. Check your API key and try again.', 'err');
+    btn.disabled = false;
+    btn.textContent = '✨ Generate Episode Series + Social Posts + YouTube Meta → Save to Sheet';
+    document.getElementById('stepTxt').style.display = 'none';
+    return;
+  }
+
+  await new Promise(function(r) { setTimeout(r, 400); });
+
+  // ── STEP 2: Generate each episode script using the story bible ────────────
+  for (var i = 0; i < qty; i++) {
+    var epNum = i + 1;
+    var outline = episodeOutlines[i] || {};
+
+    btn.textContent = 'Writing Episode ' + epNum + ' of ' + qty + '...';
+    setStep('Episode ' + epNum + ' of ' + qty + ' — writing script...');
+    setProgress(Math.round(10 + (i / qty) * 70));
+    logLine('⚡ Episode ' + epNum + ': writing narration...');
+
+    try {
+      // ── A: Episode script using story bible context ────────────────────────
+      var prevSummary = '';
+      if (i > 0 && generatedData.length > 0) {
+        var prev = generatedData[generatedData.length - 1];
+        prevSummary = 'Previous episode (' + i + ') ended with: "' + (prev.episode_ending || prev.script.slice(-200)) + '"\n';
+      }
+
+      var scriptPrompt = 'You are a viral short-form video scriptwriter for AI avatar storytelling channels.\n\n'
+        + '=== SERIES BIBLE ===\n' + storyBible + '\n\n'
+        + '=== THIS EPISODE ===\n'
+        + 'Episode ' + epNum + ' of ' + qty + ': "' + (outline.episode_title || 'Episode ' + epNum) + '"\n'
+        + 'What happens: ' + (outline.what_happens || '') + '\n'
+        + 'Opens with: ' + (outline.starts_with || '') + '\n'
+        + 'Key moment: ' + (outline.key_moment || '') + '\n'
+        + 'Episode ending: ' + (outline.ends_with || '') + '\n'
+        + (prevSummary ? '\n=== CONTINUITY ===\n' + prevSummary : '')
+        + '\n=== INSTRUCTIONS ===\n'
+        + 'Write the FULL narration script for Episode ' + epNum + '. Video length: ' + duration + '. Narrator: ' + narrator + '.\n'
+        + exprGuide + '\n'
+        + (epNum === 1 ? '- First line MUST be the series hook — grabs attention and makes viewers want to follow the whole series\n' : '- First line MUST briefly recap where we left off, then immediately escalate tension\n')
+        + '- Use [PAUSE] for dramatic moments\n'
+        + (epNum < qty ? '- End on a CLIFFHANGER that makes viewers desperate to watch Episode ' + (epNum + 1) + '\n' : '- This is the FINALE — deliver the payoff, resolve all storylines, end with an emotional punch\n')
+        + '- Write ONLY the narration. No labels, no JSON, no preamble. Start directly with the hook.';
+
+      var script = await callAI(scriptPrompt, 3400);
+      script = script.trim();
+      var lines = script.split('\n').filter(function(l) { return l.trim().length > 0; });
+      var hook = lines[0] || script.substring(0, 100);
+
+      // ── B: Title & thumbnail ───────────────────────────────────────────────
+      setStep('Episode ' + epNum + ' — title & thumbnail...');
+      logLine('  → title & thumbnail...');
+      var metaPrompt = 'Based on this Episode ' + epNum + ' of a ' + genre + ' series titled "' + (outline.episode_title || 'Episode ' + epNum) + '":\n"' + script.substring(0, 500) + '"\n\n'
+        + 'Return ONLY valid JSON:\n'
+        + '{"title":"episode title max 8 words including Ep.' + epNum + '","hashtags":"#tag1 #tag2 #tag3 #tag4 #tag5 #tag6 #tag7","thumbnail_text":"bold 3-6 word Canva thumbnail for this episode"}';
+      var metaRaw = await callAI(metaPrompt, 400);
+      var meta = parseJSON(metaRaw) || {};
+      var title    = meta.title         || ('Ep.' + epNum + ': ' + (outline.episode_title || genre + ' Episode ' + epNum));
+      var hashtags = meta.hashtags      || '#storytime #viral #shorts #series';
+      var thumb    = meta.thumbnail_text|| title;
+
+      // ── C: Social posts ────────────────────────────────────────────────────
+      setStep('Episode ' + epNum + ' — social posts...');
+      logLine('  → social posts...');
+
+      var seriesCtx = 'This is Episode ' + epNum + ' of ' + qty + ' in a ' + genre + ' series. ';
+      var cliffNote = epNum < qty ? 'Tease the cliffhanger ending to make them desperate for Episode ' + (epNum+1) + '.' : 'This is the series finale — emphasise the payoff and resolution.';
+
+      var fbPost = (await callAI(
+        'Write a Facebook post for Episode ' + epNum + ' of ' + qty + ' of a ' + genre + ' story series.\n'
+        + seriesCtx + '\n"' + script.substring(0, 400) + '"\n\n'
+        + 'Requirements: Emotional, teases this episode without spoiling it. ' + cliffNote + ' Conversational. End with a question.\n'
+        + 'Include 5-7 hashtags. Write ONLY the post text. No labels, no quotes.', 500)).trim();
+
+      var igPost = (await callAI(
+        'Write an Instagram caption for Episode ' + epNum + ' of ' + qty + ' of a ' + genre + ' story series.\n'
+        + seriesCtx + '\n"' + script.substring(0, 400) + '"\n\n'
+        + 'Requirements: Visual and emotional. Use line breaks. ' + cliffNote + ' Include CTA (follow for Ep.' + (epNum+1) + ', save this, share).\n'
+        + 'Include 8-12 hashtags. Write ONLY the caption. No labels, no quotes.', 500)).trim();
+
+      var ttPost = (await callAI(
+        'Write a TikTok caption for Episode ' + epNum + ' of ' + qty + ' of a ' + genre + ' story series.\n'
+        + seriesCtx + '\n"' + script.substring(0, 400) + '"\n\n'
+        + 'Requirements: Short, punchy, high energy. Reference something SPECIFIC from this episode. ' + cliffNote + '\n'
+        + 'Include 6-8 TikTok hashtags (#storytime #fyp #foryou #series). Write ONLY the caption. No labels, no quotes.', 400)).trim();
+
+      // ── D: YouTube metadata ────────────────────────────────────────────────
+      setStep('Episode ' + epNum + ' — YouTube metadata...');
+      logLine('  → YouTube metadata...');
+      var ytPrompt = 'Episode ' + epNum + ' of ' + qty + ' of a ' + genre + ' series titled "' + title + '":\n"' + script.substring(0, 500) + '"\n\n'
+        + 'Generate YouTube metadata. Return ONLY valid JSON:\n'
+        + '{"youtube_title":"click-worthy title with Ep.' + epNum + '/' + qty + ' and 2-3 hashtags","youtube_description":"SEO description: series context, this episode teaser 2-3 sentences, CTA to subscribe for next episode, relevant keywords","youtube_tags":"tag1, tag2, tag3, tag4, tag5, tag6, tag7, tag8, tag9, tag10, tag11, tag12, tag13, tag14, tag15"}';
+      var ytRaw = await callAI(ytPrompt, 1200);
+      var yt = parseJSON(ytRaw) || {};
+
+      var entry = {
+        title:            title,
+        episode_number:   epNum,
+        episode_ending:   outline.ends_with || '',
+        hook:             hook,
+        script:           script,
+        hashtags:         hashtags,
+        thumbnail_text:   thumb,
+        fb_post:          fbPost,
+        ig_post:          igPost,
+        tt_post:          ttPost,
+        yt_title:         yt.youtube_title       || title,
+        yt_desc:          yt.youtube_description || '',
+        yt_tags:          yt.youtube_tags        || ''
+      };
+      generatedData.push(entry);
+
+      // ── WRITE TO SHEET ─────────────────────────────────────────────────────
+      if (googleUrl) {
+        logLine('  → saving to Google Sheet...');
+        try {
+          await postToSheet(googleUrl, {
+            sheet_name:         'Sheet1',
+            Timestamp:          new Date().toLocaleString(),
+            Genre:              genre + ' (Ep.' + epNum + '/' + qty + ')',
+            Tone:               tone,
+            Duration:           duration,
+            Seed:               seed,
+            Ending:             ending,
+            Hook:               hook,
+            Full_Script:        script,
+            Thumbnail_Text:     thumb,
+            Platforms:          platforms,
+            Facebook_Post:      fbPost,
+            Instagram_Post:     igPost,
+            TikTok_Post:        ttPost,
+            YouTube_Title:      entry.yt_title,
+            YouTube_Description:entry.yt_desc,
+            YouTube_Tags:       entry.yt_tags
+          });
+          totalSaved++;
+          document.getElementById('stSaved').textContent = totalSaved;
+          logLine('  ✅ Episode ' + epNum + ' saved to sheet!');
+        } catch(sheetErr) {
+          logLine('  ⚠️ Sheet save failed for Episode ' + epNum + ': ' + sheetErr.message);
+        }
+      }
+
+      successCount++;
+
+    } catch(e) {
+      logLine('❌ Episode ' + epNum + ' failed: ' + e.message);
+    }
+
+    await new Promise(function(r) { setTimeout(r, 500); });
+  }
+
+  setProgress(100);
+  setTimeout(function() { setProgress(0); }, 600);
+
+  if (generatedData.length > 0) {
+    renderOutput(generatedData);
+    setNotice(successCount + ' of ' + qty + ' episodes generated' + (googleUrl ? ' and saved to sheet!' : '!'), 'ok');
+  } else {
+    setNotice('Generation failed. Check your API key and try again.', 'err');
+  }
+
+  btn.disabled = false;
+  btn.textContent = '✨ Generate Episode Series + Social Posts + YouTube Meta → Save to Sheet';
+  document.getElementById('stepTxt').style.display = 'none';
+}
+
+// ── RENDER ────────────────────────────────────────────────
+function eh(s) { if (!s) return ''; return s.replace(/[&<>]/g, function(c) { return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c]; }); }
+function ej(s) { if (!s) return ''; return s.replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\n/g,'\\n'); }
+
+function renderOutput(data) {
+  document.getElementById('outArea').style.display = 'block';
+  document.getElementById('scLabel').textContent = '— ' + data.length + ' episodes';
+  var div = document.getElementById('scOut');
+  div.innerHTML = '';
+  var totalWords = 0;
+
+  data.forEach(function(s, i) {
+    totalWords += (s.script || '').split(' ').length;
+    var scriptHtml = eh(s.script || '').replace(/\[PAUSE\]/g, '<span style="color:var(--accent);background:rgba(200,75,49,.1);padding:1px 5px;border-radius:3px;">[PAUSE]</span>');
+
+    div.innerHTML += '<div class="sc-card">'
+      + '<div class="sc-head"><h3>Episode ' + (i+1) + ' — ' + eh(s.title || 'Untitled') + '</h3>'
+      + '<button class="btn" style="background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.3);color:#fff;font-size:11px;" onclick="copyScript(' + i + ')">📋 Copy Script</button></div>'
+      + '<div class="sc-body">'
+      // Hook
+      + '<div class="fld-lbl">🎣 Hook</div>'
+      + '<div class="fld-val" style="color:var(--accent);font-weight:600;margin-bottom:10px;">"' + eh(s.hook || '') + '"</div>'
+      // Script
+      + '<div class="fld-lbl">🎬 Full Script (for HeyGen)</div>'
+      + '<div class="fld-val" style="margin-bottom:10px;">' + scriptHtml + '</div>'
+      // Thumbnail
+      + '<div style="margin-bottom:12px;font-size:12px;">🎨 Canva Thumbnail: <strong>"' + eh(s.thumbnail_text || '') + '"</strong></div>'
+      + '<hr class="divider">'
+      // Social posts
+      + '<div class="fld-lbl" style="margin-bottom:8px;">📱 Social Posts — ready to copy & paste</div>'
+      + '<div class="soc-grid">'
+      // Facebook
+      + '<div class="soc-box">'
+      + '<div class="soc-head"><span class="soc-name">🔵 Facebook</span><button class="cp-btn" onclick="copyText(\'' + ej(s.fb_post || '') + '\')">Copy</button></div>'
+      + '<div class="soc-txt">' + eh(s.fb_post || '—') + '</div>'
+      + '</div>'
+      // Instagram
+      + '<div class="soc-box">'
+      + '<div class="soc-head"><span class="soc-name">📸 Instagram</span><button class="cp-btn" onclick="copyText(\'' + ej(s.ig_post || '') + '\')">Copy</button></div>'
+      + '<div class="soc-txt">' + eh(s.ig_post || '—') + '</div>'
+      + '</div>'
+      // TikTok
+      + '<div class="soc-box">'
+      + '<div class="soc-head"><span class="soc-name">🎵 TikTok</span><button class="cp-btn" onclick="copyText(\'' + ej(s.tt_post || '') + '\')">Copy</button></div>'
+      + '<div class="soc-txt">' + eh(s.tt_post || '—') + '</div>'
+      + '</div>'
+      // YouTube
+      + '<div class="soc-box">'
+      + '<div class="soc-head"><span class="soc-name">🎬 YouTube</span><button class="cp-btn" onclick="copyText(\'' + ej(s.yt_title + '\n\n' + s.yt_desc + '\n\nTags: ' + s.yt_tags) + '\')">Copy All</button></div>'
+      + '<div style="font-size:10px;color:var(--muted);margin-bottom:3px;">TITLE</div>'
+      + '<div style="font-size:13px;font-weight:600;margin-bottom:8px;">' + eh(s.yt_title || '—') + '</div>'
+      + '<div style="font-size:10px;color:var(--muted);margin-bottom:3px;">DESCRIPTION</div>'
+      + '<div style="font-size:12px;line-height:1.6;white-space:pre-wrap;margin-bottom:8px;">' + eh(s.yt_desc || '—') + '</div>'
+      + '<div style="font-size:10px;color:var(--muted);margin-bottom:3px;">TAGS</div>'
+      + '<div style="font-size:11px;color:var(--muted);">' + eh(s.yt_tags || '—') + '</div>'
+      + '</div>'
+      + '</div>'
+      + '</div></div>';
+  });
+
+  // Table
+  var tbody = document.getElementById('tblBody');
+  tbody.innerHTML = '';
+  data.forEach(function(s, i) {
+    tbody.innerHTML += '<tr>'
+      + '<td style="font-weight:600;">' + (i+1) + '</td>'
+      + '<td>' + eh(lastSettings.genre || '') + '</td>'
+      + '<td>' + eh(lastSettings.tone || '') + '</td>'
+      + '<td>' + eh((s.hook || '').substring(0, 60)) + '</td>'
+      + '<td>' + eh((s.script || '').substring(0, 60)) + '…</td>'
+      + '<td>' + eh(s.thumbnail_text || '') + '</td>'
+      + '<td>' + eh((s.fb_post || '').substring(0, 60)) + '</td>'
+      + '<td>' + eh((s.ig_post || '').substring(0, 60)) + '</td>'
+      + '<td>' + eh((s.tt_post || '').substring(0, 60)) + '</td>'
+      + '<td>' + eh(s.yt_title || '') + '</td>'
+      + '<td>' + eh((s.yt_desc || '').substring(0, 60)) + '</td>'
+      + '<td>' + eh((s.yt_tags || '').substring(0, 60)) + '</td>'
+      + '<td>' + eh(lastSettings.duration || '') + '</td>'
+      + '</tr>';
+  });
+
+  document.getElementById('stScripts').textContent = data.length;
+  document.getElementById('outArea').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+// ── PUSH ALL (manual button) ──────────────────────────────
+async function pushAll() {
+  var googleUrl = document.getElementById('gasUrl').value.trim();
+  if (!googleUrl) { showToast('No Google Script URL saved!', '#c95a4a'); return; }
+  if (!generatedData.length) return;
+  var btn = document.getElementById('sheetBtn');
+  btn.textContent = 'Saving...'; btn.disabled = true;
+  for (var i = 0; i < generatedData.length; i++) {
+    var s = generatedData[i];
+    try {
+      await postToSheet(googleUrl, {
+        sheet_name:'Sheet1', Timestamp:new Date().toLocaleString(),
+        Genre:lastSettings.genre||'', Tone:lastSettings.tone||'',
+        Duration:lastSettings.duration||'', Seed:lastSettings.seed||'', Ending:lastSettings.ending||'',
+        Hook:s.hook||'', Full_Script:s.script||'', Thumbnail_Text:s.thumbnail_text||'',
+        Platforms:lastSettings.platforms||'',
+        Facebook_Post:s.fb_post||'', Instagram_Post:s.ig_post||'', TikTok_Post:s.tt_post||'',
+        YouTube_Title:s.yt_title||'', YouTube_Description:s.yt_desc||'', YouTube_Tags:s.yt_tags||''
+      });
+      totalSaved++;
+      document.getElementById('stSaved').textContent = totalSaved;
+    } catch(e) { console.warn('Row ' + (i+1) + ': ' + e.message); }
+    await new Promise(function(r) { setTimeout(r, 600); });
+  }
+  btn.disabled = false; btn.textContent = '↑ Push to Google Sheets';
+  showToast('✅ ' + generatedData.length + ' scripts pushed to Google Sheets!');
+}
+
+// ── COPY / EXPORT ─────────────────────────────────────────
+function copyScript(i) {
+  var s = generatedData[i];
+  navigator.clipboard.writeText('HOOK: ' + s.hook + '\n\nSCRIPT:\n' + s.script + '\n\nTHUMBNAIL: ' + s.thumbnail_text);
+  showToast('✅ Script copied!');
+}
+function copyText(txt) { navigator.clipboard.writeText(txt); showToast('✅ Copied!'); }
+
+function copyAllContent() {
+  if (!generatedData.length) return;
+  var text = generatedData.map(function(s, i) {
+    return '=== SCRIPT ' + (i+1) + ': ' + s.title + ' ===\n\n'
+      + 'HOOK: ' + s.hook + '\n\nSCRIPT:\n' + s.script + '\n\nTHUMBNAIL: ' + s.thumbnail_text + '\n\n'
+      + '── FACEBOOK ──\n' + s.fb_post + '\n\n'
+      + '── INSTAGRAM ──\n' + s.ig_post + '\n\n'
+      + '── TIKTOK ──\n' + s.tt_post + '\n\n'
+      + '── YOUTUBE ──\nTITLE: ' + s.yt_title + '\n\nDESCRIPTION:\n' + s.yt_desc + '\n\nTAGS: ' + s.yt_tags;
+  }).join('\n\n' + '─'.repeat(60) + '\n\n');
+  navigator.clipboard.writeText(text); showToast('✅ All content copied!');
+}
+
+function csvQ(v) { return '"' + (v || '').toString().replace(/"/g, '""') + '"'; }
+
+function copyCSV() {
+  if (!generatedData.length) return;
+  var h = 'No,Genre,Tone,Duration,Seed,Ending,Hook,Script,Thumbnail,Platforms,Facebook,Instagram,TikTok,YT_Title,YT_Description,YT_Tags';
+  var rows = generatedData.map(function(s, i) {
+    return [i+1, csvQ(lastSettings.genre), csvQ(lastSettings.tone), csvQ(lastSettings.duration),
+      csvQ(lastSettings.seed), csvQ(lastSettings.ending), csvQ(s.hook), csvQ(s.script),
+      csvQ(s.thumbnail_text), csvQ(lastSettings.platforms),
+      csvQ(s.fb_post), csvQ(s.ig_post), csvQ(s.tt_post),
+      csvQ(s.yt_title), csvQ(s.yt_desc), csvQ(s.yt_tags)].join(',');
+  });
+  navigator.clipboard.writeText([h].concat(rows).join('\n')); showToast('✅ CSV copied!');
+}
+
+function downloadCSV() {
+  if (!generatedData.length) return;
+  var h = 'Timestamp,No,Genre,Tone,Duration,Seed,Ending,Hook,Script,Thumbnail,Platforms,Facebook,Instagram,TikTok,YT_Title,YT_Description,YT_Tags';
+  var now = new Date().toLocaleString();
+  var rows = generatedData.map(function(s, i) {
+    return [csvQ(now), i+1, csvQ(lastSettings.genre), csvQ(lastSettings.tone), csvQ(lastSettings.duration),
+      csvQ(lastSettings.seed), csvQ(lastSettings.ending), csvQ(s.hook), csvQ(s.script),
+      csvQ(s.thumbnail_text), csvQ(lastSettings.platforms),
+      csvQ(s.fb_post), csvQ(s.ig_post), csvQ(s.tt_post),
+      csvQ(s.yt_title), csvQ(s.yt_desc), csvQ(s.yt_tags)].join(',');
+  });
+  var blob = new Blob([[h].concat(rows).join('\n')], {type:'text/csv'});
+  var a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'AI_StoryTelling_' + new Date().toISOString().slice(0,10) + '.csv'; a.click();
+  showToast('✅ CSV downloaded!');
+}
+
+// ── HELPERS ───────────────────────────────────────────────
+function getActivePlatforms() {
+  var active = [];
+  document.querySelectorAll('.pill.on').forEach(function(p) { active.push(p.dataset.p); });
+  return active.join(', ') || 'All';
+}
+function updateSBar() {
+  document.getElementById('stPlat').textContent = getActivePlatforms();
+  document.getElementById('stProv').textContent = currentProvider.charAt(0).toUpperCase() + currentProvider.slice(1);
+}
+function setNotice(msg, type) {
+  var el = document.getElementById('noticeArea');
+  var icons = {ok:'✅', warn:'⚠️', err:'❌'};
+  el.innerHTML = msg ? '<div class="notice ' + (type||'') + '" style="display:block;">' + (icons[type]||'') + ' ' + msg + '</div>' : '';
+}
+function setStep(msg) { document.getElementById('stepTxt').textContent = msg; }
+function setProgress(pct) {
+  document.getElementById('progWrap').style.display = pct > 0 ? 'block' : 'none';
+  document.getElementById('progFill').style.width = pct + '%';
+}
+function showToast(msg, bg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg; t.style.background = bg || '#4c8b6e';
+  t.style.display = 'block';
+  setTimeout(function() { t.style.display = 'none'; }, 3500);
+}
+
+// auto health check on load
+if (localStorage.getItem('archprompt_apikey')) { healthCheck().catch(console.error); }
+</script>
+<!-- ═══════════════════════════════════════════════════════════════
+     AISPRINT PROXY LAYER — injected into all tools
+     All AI calls route through /api/ai on Railway server.
+     API keys never touch the browser.
+═══════════════════════════════════════════════════════════════ -->
+<style>
+#as-bar{
+  position:sticky;top:0;z-index:9999;
+  display:flex;align-items:center;gap:8px;
+  padding:7px 14px;
+  background:#111318;border-bottom:1px solid #1e2330;
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-size:12px;flex-wrap:wrap;
+}
+#as-bar .as-logo{
+  font-family:'Space Mono',monospace;font-size:11px;font-weight:700;
+  color:#4f8ef7;background:rgba(79,142,247,0.12);
+  padding:3px 8px;border-radius:6px;white-space:nowrap;flex-shrink:0;
+}
+#as-bar select{
+  background:#181c24;border:1px solid #2a3045;border-radius:6px;
+  color:#e8eaf0;font-size:12px;padding:4px 8px;cursor:pointer;
+  font-family:inherit;min-width:100px;
+}
+#as-bar select:focus{outline:none;border-color:#4f8ef7}
+#as-bar select:disabled{opacity:.4;cursor:not-allowed}
+#as-dot{
+  width:7px;height:7px;border-radius:50%;
+  background:#1e2330;flex-shrink:0;transition:background .3s;
+}
+#as-dot.ready{background:#26de8a;box-shadow:0 0 6px rgba(38,222,138,.5)}
+#as-dot.error{background:#ff4e6a}
+#as-dot.busy{background:#ffd700;animation:as-pulse 1s infinite}
+#as-status{color:#4a5268;font-size:11px;white-space:nowrap}
+@keyframes as-pulse{0%,100%{opacity:1}50%{opacity:.4}}
+</style>
+
+<script>
+(function(){
+  // ── State ──────────────────────────────────────────────────────
+  var AS = {
+    proxyUrl:  '/api/ai',
+    email:     localStorage.getItem('aisprint_user') || '',
+    provider:  localStorage.getItem('as_provider') || 'claude',
+    model:     localStorage.getItem('as_model') || '',
+    providers: {},
+    ready:     false
+  };
+
+  // ── Build selector bar ─────────────────────────────────────────
+  var bar = document.createElement('div');
+  bar.id  = 'as-bar';
+  bar.innerHTML =
+    '<span class="as-logo">AS</span>' +
+    '<span style="color:#4a5268;font-size:11px">AI provider</span>' +
+    '<select id="as-prov-sel" onchange="AS_onProvChange()"><option>Loading...</option></select>' +
+    '<select id="as-model-sel" onchange="AS_onModelChange()"><option>Loading...</option></select>' +
+    '<span id="as-dot"></span>' +
+    '<span id="as-status">Connecting...</span>';
+  document.body.insertBefore(bar, document.body.firstChild);
+
+  // ── Load available providers from server ───────────────────────
+  fetch('/api/providers')
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      AS.providers = d.providers || {};
+      AS_buildProviderSel();
+      AS_setStatus('ready', 'Ready');
+    })
+    .catch(function(){
+      AS_setStatus('error', 'Server offline');
+      document.getElementById('as-prov-sel').innerHTML = '<option>Offline</option>';
+    });
+
+  // ── Build provider dropdown ────────────────────────────────────
+  window.AS_buildProviderSel = function() {
+    var sel    = document.getElementById('as-prov-sel');
+    var names  = {claude:'Claude',deepseek:'DeepSeek',gemini:'Gemini',perplexity:'Perplexity',openai:'OpenAI'};
+    var opts   = '';
+    var hasAny = false;
+    Object.keys(names).forEach(function(p){
+      var info = AS.providers[p];
+      if (!info || !info.enabled) return;
+      hasAny = true;
+      var sel2 = (p === AS.provider) ? ' selected' : '';
+      opts += '<option value="'+p+'"'+sel2+'>'+names[p]+'</option>';
+    });
+    if (!hasAny) {
+      sel.innerHTML = '<option value="">No providers</option>';
+      sel.disabled  = true;
+      AS_setStatus('error','No API keys set in Railway');
+      return;
+    }
+    sel.innerHTML = opts;
+    // Ensure AS.provider is one that's actually available
+    if (!AS.providers[AS.provider] || !AS.providers[AS.provider].enabled) {
+      AS.provider = sel.value;
+    }
+    AS_buildModelSel();
+  };
+
+  window.AS_buildModelSel = function() {
+    var sel    = document.getElementById('as-model-sel');
+    var info   = AS.providers[AS.provider];
+    var models = (info && info.models) ? info.models : [];
+    sel.innerHTML = '';
+    models.forEach(function(m){
+      var opt   = document.createElement('option');
+      opt.value = m.id;
+      opt.text  = m.label + (m.note ? ' — '+m.note : '');
+      if (m.id === AS.model) opt.selected = true;
+      sel.appendChild(opt);
+    });
+    // Sync model
+    AS.model = sel.value;
+    localStorage.setItem('as_model', AS.model);
+  };
+
+  window.AS_onProvChange = function() {
+    var sel    = document.getElementById('as-prov-sel');
+    AS.provider = sel.value;
+    localStorage.setItem('as_provider', AS.provider);
+    AS_buildModelSel();
+    AS_setStatus('ready','Ready');
+  };
+
+  window.AS_onModelChange = function() {
+    var sel  = document.getElementById('as-model-sel');
+    AS.model = sel.value;
+    localStorage.setItem('as_model', AS.model);
+  };
+
+  // ── Status helper ──────────────────────────────────────────────
+  window.AS_setStatus = function(state, msg) {
+    var dot = document.getElementById('as-dot');
+    var txt = document.getElementById('as-status');
+    dot.className = state;
+    txt.textContent = msg;
+    AS.ready = (state === 'ready');
+  };
+
+  // ── Listen for config from dashboard (postMessage) ─────────────
+  window.addEventListener('message', function(e){
+    if (!e.data || e.data.type !== 'AISPRINT_CONFIG') return;
+    if (e.data.email)    AS.email    = e.data.email;
+    if (e.data.proxyUrl) AS.proxyUrl = e.data.proxyUrl;
+    // Override selectors if dashboard pushes a provider/model
+    if (e.data.provider && AS.providers[e.data.provider] && AS.providers[e.data.provider].enabled) {
+      AS.provider = e.data.provider;
+      var ps = document.getElementById('as-prov-sel');
+      if (ps) ps.value = AS.provider;
+      AS_buildModelSel();
+    }
+    if (e.data.model) {
+      AS.model = e.data.model;
+      var ms = document.getElementById('as-model-sel');
+      if (ms) ms.value = AS.model;
+    }
+  });
+
+  // ── THE PROXY FUNCTION — replaces all direct API calls ─────────
+  // All tools call: await AS_callAI(messages, maxTokens, system)
+  // or the shim wraps their existing callAI() below
+  window.AS_callAI = async function(messages, maxTokens, system) {
+    if (!AS.email) AS.email = localStorage.getItem('aisprint_user') || '';
+    AS_setStatus('busy', 'Calling '+AS.provider+'...');
+    try {
+      var body = {
+        email:      AS.email,
+        provider:   AS.provider,
+        model:      AS.model || document.getElementById('as-model-sel').value,
+        messages:   Array.isArray(messages) ? messages : [{role:'user',content:messages}],
+        max_tokens: maxTokens || 1500,
+      };
+      if (system) body.system = system;
+
+      var r = await fetch(AS.proxyUrl, {
+        method:  'POST',
+        headers: {'Content-Type':'application/json'},
+        body:    JSON.stringify(body)
+      });
+      var d = await r.json();
+      if (!r.ok) throw new Error(d.error || 'Proxy error '+r.status);
+      AS_setStatus('ready', AS.provider+' · done');
+      return d.text;
+    } catch(err) {
+      AS_setStatus('error', err.message);
+      throw err;
+    }
+  };
+
+  // ── SHIM: override each tool's existing callAI() ───────────────
+  // Waits for DOM ready so it overrides after the tool defines its version
+  window.addEventListener('DOMContentLoaded', function(){
+    // Override the tool's callAI with our proxy version
+    window.callAI = async function(promptOrMessages, maxTokens) {
+      var msgs = typeof promptOrMessages === 'string'
+        ? [{role:'user', content: promptOrMessages}]
+        : promptOrMessages;
+      return await window.AS_callAI(msgs, maxTokens);
+    };
+
+    // Patch getKey() / getGeminiKey() to return a dummy truthy value
+    // so key-check guards in tools pass — actual key is on server
+    if (typeof window.getKey === 'undefined') {
+      window.getKey = function(){ return '__proxy__'; };
+    } else {
+      var _origGetKey = window.getKey;
+      window.getKey = function(){
+        var k = _origGetKey();
+        return k || '__proxy__';
+      };
+    }
+    if (typeof window.getGeminiKey !== 'undefined') {
+      window.getGeminiKey = function(){ return '__proxy__'; };
+    }
+    if (typeof window.getDeepSeekKey !== 'undefined') {
+      window.getDeepSeekKey = function(){ return '__proxy__'; };
+    }
+  });
+
+  window.AS = AS;
+})();
+</script>
+
+</body>
+</html>

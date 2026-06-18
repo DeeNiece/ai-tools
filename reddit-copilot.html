@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AISprint Reddit Co-pilot</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f7f6f3;
+    --surface: #ffffff;
+    --border: #e8e6e0;
+    --border-strong: #d0cdc5;
+    --text: #1a1917;
+    --text-2: #6b6860;
+    --text-3: #9c9a92;
+    --accent: #2d6a4f;
+    --accent-light: #eaf4ef;
+    --accent-text: #1a4232;
+    --warn: #b45309;
+    --warn-light: #fef3e2;
+    --info: #1e40af;
+    --info-light: #eff6ff;
+    --red: #b91c1c;
+    --red-light: #fef2f2;
+    --radius: 10px;
+    --radius-sm: 6px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #111110;
+      --surface: #1c1c1a;
+      --border: #2e2d2a;
+      --border-strong: #3d3c38;
+      --text: #e8e6df;
+      --text-2: #9c9a92;
+      --text-3: #6b6860;
+      --accent: #4ade80;
+      --accent-light: #0d2818;
+      --accent-text: #86efac;
+      --warn: #fbbf24;
+      --warn-light: #1c1400;
+      --info: #60a5fa;
+      --info-light: #0c1a2e;
+      --red: #f87171;
+      --red-light: #1c0a0a;
+    }
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .logo-mark {
+    width: 32px; height: 32px; background: var(--accent);
+    border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; color: #fff; font-weight: 700;
+  }
+  .logo-text { font-size: 15px; font-weight: 600; color: var(--text); }
+  .logo-sub { font-size: 12px; color: var(--text-2); margin-top: 1px; }
+
+  .header-actions { display: flex; gap: 8px; align-items: center; }
+
+  button {
+    cursor: pointer;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    color: var(--text);
+    font-size: 13px;
+    padding: 7px 14px;
+    font-family: inherit;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  button:hover { background: var(--bg); }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+    font-weight: 500;
+  }
+  .btn-primary:hover { opacity: 0.9; background: var(--accent); }
+
+  .btn-sm { padding: 5px 10px; font-size: 12px; }
+
+  main { max-width: 960px; margin: 0 auto; padding: 28px 20px; }
+
+  .top-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 20px; flex-wrap: wrap; gap: 12px;
+  }
+
+  .top-bar h1 { font-size: 18px; font-weight: 600; }
+  .top-bar p { font-size: 13px; color: var(--text-2); margin-top: 2px; }
+
+  .filters {
+    display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 20px;
+  }
+
+  .filter-chip {
+    padding: 5px 12px; border-radius: 99px; font-size: 12px; font-weight: 500;
+    border: 1px solid var(--border-strong); background: var(--surface);
+    color: var(--text-2); cursor: pointer; transition: all 0.15s;
+  }
+  .filter-chip:hover { border-color: var(--accent); color: var(--accent-text); }
+  .filter-chip.active {
+    background: var(--accent-light); border-color: var(--accent);
+    color: var(--accent-text);
+  }
+
+  .status-bar {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 12px 16px;
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 20px; font-size: 13px; color: var(--text-2);
+  }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-3); flex-shrink: 0; }
+  .dot.live { background: #22c55e; animation: pulse 2s infinite; }
+  .dot.loading { background: var(--warn); animation: pulse 1s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+  .thread-grid { display: flex; flex-direction: column; gap: 12px; }
+
+  .thread-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); overflow: hidden;
+    transition: border-color 0.15s;
+  }
+  .thread-card:hover { border-color: var(--border-strong); }
+
+  .thread-head {
+    padding: 14px 16px 12px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+  }
+
+  .thread-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; }
+
+  .subreddit-tag {
+    font-size: 11px; font-weight: 600; padding: 2px 8px;
+    border-radius: 99px; background: var(--accent-light); color: var(--accent-text);
+  }
+
+  .score-tag {
+    font-size: 11px; color: var(--text-3);
+    display: flex; align-items: center; gap: 3px;
+  }
+
+  .opportunity-tag {
+    font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 99px;
+  }
+  .opp-high { background: var(--accent-light); color: var(--accent-text); }
+  .opp-med { background: var(--warn-light); color: var(--warn); }
+  .opp-reply { background: var(--info-light); color: var(--info); }
+
+  .thread-title {
+    font-size: 14px; font-weight: 600; color: var(--text); line-height: 1.4;
+    text-decoration: none;
+  }
+  .thread-title:hover { color: var(--accent); }
+
+  .thread-excerpt {
+    font-size: 13px; color: var(--text-2); margin-top: 6px;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+
+  .thread-actions { display: flex; gap: 6px; flex-shrink: 0; }
+
+  .draft-section { padding: 14px 16px; }
+
+  .draft-label {
+    font-size: 11px; font-weight: 600; color: var(--text-3);
+    letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 8px;
+    display: flex; align-items: center; gap: 6px;
+  }
+
+  .draft-label .ai-badge {
+    background: var(--info-light); color: var(--info);
+    padding: 1px 6px; border-radius: 4px; font-size: 10px;
+  }
+
+  .draft-box {
+    width: 100%; border: 1px solid var(--border); border-radius: var(--radius-sm);
+    background: var(--bg); color: var(--text);
+    font-family: inherit; font-size: 13px; line-height: 1.6;
+    padding: 10px 12px; resize: vertical; min-height: 100px;
+    transition: border-color 0.15s;
+  }
+  .draft-box:focus { outline: none; border-color: var(--accent); }
+
+  .draft-actions {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 10px; flex-wrap: wrap; gap: 8px;
+  }
+
+  .draft-hint { font-size: 12px; color: var(--text-3); }
+
+  .copy-btn {
+    background: var(--accent); color: #fff; border-color: var(--accent);
+    font-weight: 500; font-size: 12px; padding: 6px 14px;
+  }
+  .copy-btn:hover { opacity: 0.9; background: var(--accent); }
+
+  .loading-placeholder {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 24px 16px;
+    text-align: center; color: var(--text-2); font-size: 13px;
+  }
+
+  .skeleton { background: var(--border); border-radius: 4px; height: 14px; margin: 6px 0; animation: shimmer 1.5s infinite; }
+  @keyframes shimmer { 0%,100%{opacity:0.5} 50%{opacity:1} }
+
+  .email-modal-bg {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.45); z-index: 200;
+    align-items: center; justify-content: center;
+  }
+  .email-modal-bg.open { display: flex; }
+
+  .email-modal {
+    background: var(--surface); border-radius: var(--radius);
+    border: 1px solid var(--border); padding: 24px;
+    width: 90%; max-width: 480px;
+  }
+  .email-modal h2 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+  .email-modal p { font-size: 13px; color: var(--text-2); margin-bottom: 16px; line-height: 1.6; }
+
+  .field-label { font-size: 12px; font-weight: 500; color: var(--text-2); margin-bottom: 5px; display: block; }
+  .field-input {
+    width: 100%; border: 1px solid var(--border-strong); border-radius: var(--radius-sm);
+    background: var(--bg); color: var(--text);
+    font-family: inherit; font-size: 13px; padding: 8px 12px;
+    transition: border-color 0.15s; margin-bottom: 14px;
+  }
+  .field-input:focus { outline: none; border-color: var(--accent); }
+
+  .modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 4px; }
+
+  .empty-state {
+    text-align: center; padding: 48px 24px;
+    color: var(--text-2); font-size: 14px;
+  }
+  .empty-state .icon { font-size: 32px; margin-bottom: 12px; opacity: 0.4; }
+
+  .config-bar {
+    background: var(--warn-light); border: 1px solid var(--warn);
+    border-radius: var(--radius); padding: 12px 16px;
+    font-size: 13px; color: var(--warn);
+    margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; flex-wrap: wrap;
+  }
+  .config-bar a { color: var(--warn); font-weight: 500; }
+
+  .settings-panel {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px; margin-bottom: 20px;
+    display: none;
+  }
+  .settings-panel.open { display: block; }
+  .settings-panel h3 { font-size: 14px; font-weight: 600; margin-bottom: 14px; }
+  .settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media(max-width:600px){ .settings-grid { grid-template-columns: 1fr; } }
+
+  .toast {
+    position: fixed; bottom: 20px; right: 20px;
+    background: var(--text); color: var(--bg);
+    padding: 10px 16px; border-radius: var(--radius-sm);
+    font-size: 13px; font-weight: 500; z-index: 300;
+    opacity: 0; transition: opacity 0.2s; pointer-events: none;
+  }
+  .toast.show { opacity: 1; }
+
+  .progress { font-size: 12px; color: var(--text-3); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-mark">AS</div>
+    <div>
+      <div class="logo-text">AISprint Reddit Co-pilot</div>
+      <div class="logo-sub">Find threads → get AI draft → copy & post</div>
+    </div>
+  </div>
+  <div class="header-actions">
+    <button onclick="toggleSettings()">⚙ Settings</button>
+    <button class="btn-primary" onclick="openEmailModal()">✉ Email digest</button>
+  </div>
+</header>
+
+<main>
+
+  <div id="config-bar" class="config-bar" style="display:none">
+    ⚠ Add your Claude API key in Settings to enable AI reply drafts.
+    <button class="btn-sm" onclick="toggleSettings()">Open settings</button>
+  </div>
+
+  <div id="settings-panel" class="settings-panel">
+    <h3>Configuration</h3>
+    <div class="settings-grid">
+      <div>
+        <label class="field-label">Claude API key</label>
+        <input class="field-input" id="cfg-apikey" type="password" placeholder="sk-ant-..." oninput="saveConfig()">
+        <div style="font-size:11px;color:var(--text-3);margin-top:-10px;margin-bottom:10px">Get yours at console.anthropic.com — stays in your browser only</div>
+      </div>
+      <div>
+        <label class="field-label">Your email (for digest)</label>
+        <input class="field-input" id="cfg-email" type="email" placeholder="you@email.com" oninput="saveConfig()">
+      </div>
+      <div>
+        <label class="field-label">AISprint site URL</label>
+        <input class="field-input" id="cfg-url" type="text" placeholder="https://aisprint.app" oninput="saveConfig()">
+      </div>
+      <div>
+        <label class="field-label">Your Reddit username</label>
+        <input class="field-input" id="cfg-reddit" type="text" placeholder="u/yourname" oninput="saveConfig()">
+      </div>
+    </div>
+    <button class="btn-primary" onclick="loadAllThreads()">Save & refresh threads</button>
+  </div>
+
+  <div class="top-bar">
+    <div>
+      <h1>Hot threads to join</h1>
+      <p id="last-refresh">Showing cached results — click Refresh to fetch live threads</p>
+    </div>
+    <button class="btn-primary" onclick="loadAllThreads()" id="refresh-btn">↻ Refresh threads</button>
+  </div>
+
+  <div class="filters" id="filters"></div>
+
+  <div id="status-bar" class="status-bar">
+    <div class="dot" id="status-dot"></div>
+    <span id="status-text">Click "Refresh threads" to load live Reddit data</span>
+  </div>
+
+  <div id="thread-list" class="thread-grid"></div>
+
+</main>
+
+<div class="email-modal-bg" id="email-modal-bg" onclick="closeEmailModal(event)">
+  <div class="email-modal">
+    <h2>Send digest to email</h2>
+    <p>This will open your email client with today's top threads and AI-drafted replies pre-filled — ready to review and send to yourself.</p>
+    <label class="field-label">Your email address</label>
+    <input class="field-input" id="digest-email" type="email" placeholder="you@email.com">
+    <label class="field-label">Include threads from</label>
+    <select class="field-input" id="digest-filter">
+      <option value="all">All niches</option>
+      <option value="high">High opportunity only</option>
+    </select>
+    <div class="modal-actions">
+      <button onclick="closeEmailModal()">Cancel</button>
+      <button class="btn-primary" onclick="sendDigest()">Open in email client</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SUBREDDITS = [
+  { sub: 'Accounting', niche: 'Accounting', color: '#2d6a4f' },
+  { sub: 'Architecture', niche: 'Architecture', color: '#1e40af' },
+  { sub: 'marketing', niche: 'Marketing', color: '#7c3aed' },
+  { sub: 'freelanceWriters', niche: 'Writing', color: '#b45309' },
+  { sub: 'sales', niche: 'Sales', color: '#b91c1c' },
+  { sub: 'humanresources', niche: 'HR', color: '#0e7490' },
+  { sub: 'interior_design', niche: 'Interior Design', color: '#6b7280' },
+  { sub: 'languagelearning', niche: 'Language', color: '#059669' },
+];
+
+let allThreads = [];
+let activeFilter = 'All';
+let config = {};
+
+function loadConfig() {
+  try { config = JSON.parse(localStorage.getItem('aisprint_cfg') || '{}'); } catch(e) { config = {}; }
+  if (config.apikey) document.getElementById('cfg-apikey').value = config.apikey;
+  if (config.email) document.getElementById('cfg-email').value = config.email;
+  if (config.url) document.getElementById('cfg-url').value = config.url;
+  if (config.reddit) document.getElementById('cfg-reddit').value = config.reddit;
+  if (config.email) document.getElementById('digest-email').value = config.email;
+  if (!config.apikey) document.getElementById('config-bar').style.display = 'flex';
+}
+
+function saveConfig() {
+  config.apikey = document.getElementById('cfg-apikey').value.trim();
+  config.email = document.getElementById('cfg-email').value.trim();
+  config.url = document.getElementById('cfg-url').value.trim() || 'https://aisprint.app';
+  config.reddit = document.getElementById('cfg-reddit').value.trim();
+  localStorage.setItem('aisprint_cfg', JSON.stringify(config));
+  document.getElementById('config-bar').style.display = config.apikey ? 'none' : 'flex';
+}
+
+function toggleSettings() {
+  const p = document.getElementById('settings-panel');
+  p.classList.toggle('open');
+}
+
+async function fetchSubreddit(sub) {
+  const url = `https://www.reddit.com/r/${sub}/hot.json?limit=10`;
+  const r = await fetch(url, { headers: { 'Accept': 'application/json' } });
+  if (!r.ok) throw new Error(`Failed: ${sub}`);
+  const d = await r.json();
+  return d.data.children.map(c => c.data);
+}
+
+function scoreThread(post) {
+  const title = (post.title || '').toLowerCase();
+  const body = (post.selftext || '').toLowerCase();
+  const text = title + ' ' + body;
+  const aiWords = ['ai', 'chatgpt', 'claude', 'automation', 'tool', 'software', 'workflow', 'efficiency', 'productivity', 'learn', 'training', 'skill', 'course', 'help', 'advice', 'struggling', 'how do', 'best way', 'anyone use'];
+  const score = aiWords.reduce((s, w) => s + (text.includes(w) ? 1 : 0), 0);
+  if (score >= 3) return 'high';
+  if (score >= 1) return 'medium';
+  return 'reply';
+}
+
+async function generateDraft(post, niche) {
+  if (!config.apikey) return null;
+  const siteUrl = config.url || 'https://aisprint.app';
+  const prompt = `You are a helpful professional in the ${niche} field who also runs AISprint (${siteUrl}), a platform with 28-day AI courses for professionals.
+
+A Reddit post in r/${post.subreddit} says:
+Title: "${post.title}"
+Body: "${(post.selftext || '').slice(0, 400)}"
+
+Write a genuine, helpful Reddit reply (3-5 sentences). Give real value first. Only mention AISprint naturally IF it's directly relevant — and only once, with no hard sell. Write as a knowledgeable peer, not a marketer. No bullet points. Conversational tone.`;
+
+  try {
+    return await window.AS_callAI([{role:'user',content:prompt}], 300);
+  } catch(e) { return null; }
+}
+
+async function loadAllThreads() {
+  setStatus('loading', 'Fetching live threads from Reddit...');
+  document.getElementById('refresh-btn').disabled = true;
+  document.getElementById('thread-list').innerHTML = renderSkeletons();
+  allThreads = [];
+
+  for (let i = 0; i < SUBREDDITS.length; i++) {
+    const { sub, niche } = SUBREDDITS[i];
+    setStatus('loading', `Fetching r/${sub} (${i+1}/${SUBREDDITS.length})...`);
+    try {
+      const posts = await fetchSubreddit(sub);
+      const top = posts.filter(p => !p.stickied && p.score > 5).slice(0, 3);
+      top.forEach(p => {
+        allThreads.push({ ...p, niche, opportunity: scoreThread(p), draft: null, generating: false });
+      });
+    } catch(e) { console.warn('Skip', sub, e.message); }
+    await new Promise(r => setTimeout(r, 600));
+  }
+
+  allThreads.sort((a, b) => {
+    const order = { high: 0, medium: 1, reply: 2 };
+    return order[a.opportunity] - order[b.opportunity];
+  });
+
+  setStatus('live', `${allThreads.length} threads loaded — ${allThreads.filter(t=>t.opportunity==='high').length} high opportunity`);
+  document.getElementById('last-refresh').textContent = `Last refreshed: ${new Date().toLocaleTimeString()}`;
+  document.getElementById('refresh-btn').disabled = false;
+
+  buildFilters();
+  renderThreads();
+
+  if (config.apikey) generateDraftsInBackground();
+}
+
+async function generateDraftsInBackground() {
+  const high = allThreads.filter(t => t.opportunity === 'high');
+  for (const t of high) {
+    t.generating = true;
+    renderThreads();
+    t.draft = await generateDraft(t, t.niche);
+    t.generating = false;
+    renderThreads();
+    await new Promise(r => setTimeout(r, 1000));
+  }
+}
+
+function buildFilters() {
+  const niches = ['All', ...new Set(allThreads.map(t => t.niche))];
+  const container = document.getElementById('filters');
+  container.innerHTML = niches.map(n =>
+    `<div class="filter-chip ${n === activeFilter ? 'active' : ''}" onclick="setFilter('${n}')">${n}</div>`
+  ).join('');
+}
+
+function setFilter(niche) {
+  activeFilter = niche;
+  buildFilters();
+  renderThreads();
+}
+
+function renderThreads() {
+  const filtered = activeFilter === 'All' ? allThreads : allThreads.filter(t => t.niche === activeFilter);
+  if (!filtered.length) {
+    document.getElementById('thread-list').innerHTML = `<div class="empty-state"><div class="icon">◎</div>No threads loaded yet. Click "Refresh threads" above.</div>`;
+    return;
+  }
+  document.getElementById('thread-list').innerHTML = filtered.map((t, i) => renderCard(t, i)).join('');
+}
+
+function oppLabel(o) {
+  if (o === 'high') return '<span class="opportunity-tag opp-high">★ High opportunity</span>';
+  if (o === 'medium') return '<span class="opportunity-tag opp-med">◈ Good to join</span>';
+  return '<span class="opportunity-tag opp-reply">◇ Worth replying</span>';
+}
+
+function renderCard(t, i) {
+  const idx = allThreads.indexOf(t);
+  const draftContent = t.generating
+    ? '<div style="font-size:13px;color:var(--text-3)">✦ Drafting reply with AI...</div>'
+    : t.draft
+      ? `<textarea class="draft-box" id="draft-${idx}">${t.draft}</textarea>
+         <div class="draft-actions">
+           <span class="draft-hint">Edit freely — this is your starting point, not a script</span>
+           <div style="display:flex;gap:6px">
+             <button class="btn-sm" onclick="regenerateDraft(${idx})">↺ Regenerate</button>
+             <button class="copy-btn btn-sm" onclick="copyDraft(${idx})">Copy reply</button>
+           </div>
+         </div>`
+      : config.apikey
+        ? `<button class="btn-sm" onclick="generateOne(${idx})">✦ Generate AI draft</button>`
+        : `<div style="font-size:12px;color:var(--text-3)">Add API key in Settings to generate drafts</div>`;
+
+  return `
+  <div class="thread-card">
+    <div class="thread-head">
+      <div style="flex:1;min-width:0">
+        <div class="thread-meta">
+          <span class="subreddit-tag">r/${t.subreddit}</span>
+          ${oppLabel(t.opportunity)}
+          <span class="score-tag">▲ ${t.score.toLocaleString()}</span>
+          <span class="score-tag">💬 ${t.num_comments}</span>
+        </div>
+        <a class="thread-title" href="https://reddit.com${t.permalink}" target="_blank" rel="noopener">${t.title}</a>
+        ${t.selftext ? `<div class="thread-excerpt">${t.selftext.slice(0,200)}...</div>` : ''}
+      </div>
+      <div class="thread-actions">
+        <a href="https://reddit.com${t.permalink}" target="_blank" rel="noopener">
+          <button class="btn-sm">Open ↗</button>
+        </a>
+      </div>
+    </div>
+    <div class="draft-section">
+      <div class="draft-label">AI-drafted reply <span class="ai-badge">Claude</span></div>
+      ${draftContent}
+    </div>
+  </div>`;
+}
+
+async function generateOne(idx) {
+  const t = allThreads[idx];
+  t.generating = true;
+  renderThreads();
+  t.draft = await generateDraft(t, t.niche);
+  t.generating = false;
+  renderThreads();
+}
+
+async function regenerateDraft(idx) {
+  const t = allThreads[idx];
+  t.draft = null;
+  await generateOne(idx);
+}
+
+function copyDraft(idx) {
+  const el = document.getElementById(`draft-${idx}`);
+  if (!el) return;
+  navigator.clipboard.writeText(el.value).then(() => showToast('Reply copied to clipboard'));
+}
+
+function sendDigest() {
+  const email = document.getElementById('digest-email').value.trim();
+  if (!email) { showToast('Enter your email address first'); return; }
+  const filterVal = document.getElementById('digest-filter').value;
+  const threads = filterVal === 'high'
+    ? allThreads.filter(t => t.opportunity === 'high')
+    : allThreads;
+
+  if (!threads.length) { showToast('No threads loaded — refresh first'); return; }
+
+  const subject = `AISprint Reddit digest — ${new Date().toLocaleDateString()}`;
+  const body = threads.slice(0, 8).map(t =>
+    `SUBREDDIT: r/${t.subreddit} | ${t.niche.toUpperCase()}\nTHREAD: ${t.title}\nLINK: https://reddit.com${t.permalink}\n${t.draft ? `DRAFT REPLY:\n${t.draft}` : '(No draft — open app to generate)'}\n\n---\n`
+  ).join('\n');
+
+  window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  closeEmailModal();
+  showToast('Opening your email client...');
+}
+
+function openEmailModal() {
+  if (config.email) document.getElementById('digest-email').value = config.email;
+  document.getElementById('email-modal-bg').classList.add('open');
+}
+function closeEmailModal(e) {
+  if (!e || e.target === document.getElementById('email-modal-bg'))
+    document.getElementById('email-modal-bg').classList.remove('open');
+}
+
+function setStatus(type, msg) {
+  document.getElementById('status-dot').className = 'dot ' + (type === 'live' ? 'live' : type === 'loading' ? 'loading' : '');
+  document.getElementById('status-text').textContent = msg;
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function renderSkeletons() {
+  return Array(4).fill(0).map(() => `
+    <div class="thread-card" style="padding:16px">
+      <div class="skeleton" style="width:60%;height:12px"></div>
+      <div class="skeleton" style="width:90%;height:16px;margin-top:10px"></div>
+      <div class="skeleton" style="width:75%;height:12px"></div>
+    </div>`).join('');
+}
+
+loadConfig();
+renderThreads();
+</script>
+<!-- ═══════════════════════════════════════════════════════════════
+     AISPRINT PROXY LAYER — injected into all tools
+     All AI calls route through /api/ai on Railway server.
+     API keys never touch the browser.
+═══════════════════════════════════════════════════════════════ -->
+<style>
+#as-bar{
+  position:sticky;top:0;z-index:9999;
+  display:flex;align-items:center;gap:8px;
+  padding:7px 14px;
+  background:#111318;border-bottom:1px solid #1e2330;
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-size:12px;flex-wrap:wrap;
+}
+#as-bar .as-logo{
+  font-family:'Space Mono',monospace;font-size:11px;font-weight:700;
+  color:#4f8ef7;background:rgba(79,142,247,0.12);
+  padding:3px 8px;border-radius:6px;white-space:nowrap;flex-shrink:0;
+}
+#as-bar select{
+  background:#181c24;border:1px solid #2a3045;border-radius:6px;
+  color:#e8eaf0;font-size:12px;padding:4px 8px;cursor:pointer;
+  font-family:inherit;min-width:100px;
+}
+#as-bar select:focus{outline:none;border-color:#4f8ef7}
+#as-bar select:disabled{opacity:.4;cursor:not-allowed}
+#as-dot{
+  width:7px;height:7px;border-radius:50%;
+  background:#1e2330;flex-shrink:0;transition:background .3s;
+}
+#as-dot.ready{background:#26de8a;box-shadow:0 0 6px rgba(38,222,138,.5)}
+#as-dot.error{background:#ff4e6a}
+#as-dot.busy{background:#ffd700;animation:as-pulse 1s infinite}
+#as-status{color:#4a5268;font-size:11px;white-space:nowrap}
+@keyframes as-pulse{0%,100%{opacity:1}50%{opacity:.4}}
+</style>
+
+<script>
+(function(){
+  // ── State ──────────────────────────────────────────────────────
+  var AS = {
+    proxyUrl:  '/api/ai',
+    email:     localStorage.getItem('aisprint_user') || '',
+    provider:  localStorage.getItem('as_provider') || 'claude',
+    model:     localStorage.getItem('as_model') || '',
+    providers: {},
+    ready:     false
+  };
+
+  // ── Build selector bar ─────────────────────────────────────────
+  var bar = document.createElement('div');
+  bar.id  = 'as-bar';
+  bar.innerHTML =
+    '<span class="as-logo">AS</span>' +
+    '<span style="color:#4a5268;font-size:11px">AI provider</span>' +
+    '<select id="as-prov-sel" onchange="AS_onProvChange()"><option>Loading...</option></select>' +
+    '<select id="as-model-sel" onchange="AS_onModelChange()"><option>Loading...</option></select>' +
+    '<span id="as-dot"></span>' +
+    '<span id="as-status">Connecting...</span>';
+  document.body.insertBefore(bar, document.body.firstChild);
+
+  // ── Load available providers from server ───────────────────────
+  fetch('/api/providers')
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      AS.providers = d.providers || {};
+      AS_buildProviderSel();
+      AS_setStatus('ready', 'Ready');
+    })
+    .catch(function(){
+      AS_setStatus('error', 'Server offline');
+      document.getElementById('as-prov-sel').innerHTML = '<option>Offline</option>';
+    });
+
+  // ── Build provider dropdown ────────────────────────────────────
+  window.AS_buildProviderSel = function() {
+    var sel    = document.getElementById('as-prov-sel');
+    var names  = {claude:'Claude',deepseek:'DeepSeek',gemini:'Gemini',perplexity:'Perplexity',openai:'OpenAI'};
+    var opts   = '';
+    var hasAny = false;
+    Object.keys(names).forEach(function(p){
+      var info = AS.providers[p];
+      if (!info || !info.enabled) return;
+      hasAny = true;
+      var sel2 = (p === AS.provider) ? ' selected' : '';
+      opts += '<option value="'+p+'"'+sel2+'>'+names[p]+'</option>';
+    });
+    if (!hasAny) {
+      sel.innerHTML = '<option value="">No providers</option>';
+      sel.disabled  = true;
+      AS_setStatus('error','No API keys set in Railway');
+      return;
+    }
+    sel.innerHTML = opts;
+    // Ensure AS.provider is one that's actually available
+    if (!AS.providers[AS.provider] || !AS.providers[AS.provider].enabled) {
+      AS.provider = sel.value;
+    }
+    AS_buildModelSel();
+  };
+
+  window.AS_buildModelSel = function() {
+    var sel    = document.getElementById('as-model-sel');
+    var info   = AS.providers[AS.provider];
+    var models = (info && info.models) ? info.models : [];
+    sel.innerHTML = '';
+    models.forEach(function(m){
+      var opt   = document.createElement('option');
+      opt.value = m.id;
+      opt.text  = m.label + (m.note ? ' — '+m.note : '');
+      if (m.id === AS.model) opt.selected = true;
+      sel.appendChild(opt);
+    });
+    // Sync model
+    AS.model = sel.value;
+    localStorage.setItem('as_model', AS.model);
+  };
+
+  window.AS_onProvChange = function() {
+    var sel    = document.getElementById('as-prov-sel');
+    AS.provider = sel.value;
+    localStorage.setItem('as_provider', AS.provider);
+    AS_buildModelSel();
+    AS_setStatus('ready','Ready');
+  };
+
+  window.AS_onModelChange = function() {
+    var sel  = document.getElementById('as-model-sel');
+    AS.model = sel.value;
+    localStorage.setItem('as_model', AS.model);
+  };
+
+  // ── Status helper ──────────────────────────────────────────────
+  window.AS_setStatus = function(state, msg) {
+    var dot = document.getElementById('as-dot');
+    var txt = document.getElementById('as-status');
+    dot.className = state;
+    txt.textContent = msg;
+    AS.ready = (state === 'ready');
+  };
+
+  // ── Listen for config from dashboard (postMessage) ─────────────
+  window.addEventListener('message', function(e){
+    if (!e.data || e.data.type !== 'AISPRINT_CONFIG') return;
+    if (e.data.email)    AS.email    = e.data.email;
+    if (e.data.proxyUrl) AS.proxyUrl = e.data.proxyUrl;
+    // Override selectors if dashboard pushes a provider/model
+    if (e.data.provider && AS.providers[e.data.provider] && AS.providers[e.data.provider].enabled) {
+      AS.provider = e.data.provider;
+      var ps = document.getElementById('as-prov-sel');
+      if (ps) ps.value = AS.provider;
+      AS_buildModelSel();
+    }
+    if (e.data.model) {
+      AS.model = e.data.model;
+      var ms = document.getElementById('as-model-sel');
+      if (ms) ms.value = AS.model;
+    }
+  });
+
+  // ── THE PROXY FUNCTION — replaces all direct API calls ─────────
+  // All tools call: await AS_callAI(messages, maxTokens, system)
+  // or the shim wraps their existing callAI() below
+  window.AS_callAI = async function(messages, maxTokens, system) {
+    if (!AS.email) AS.email = localStorage.getItem('aisprint_user') || '';
+    AS_setStatus('busy', 'Calling '+AS.provider+'...');
+    try {
+      var body = {
+        email:      AS.email,
+        provider:   AS.provider,
+        model:      AS.model || document.getElementById('as-model-sel').value,
+        messages:   Array.isArray(messages) ? messages : [{role:'user',content:messages}],
+        max_tokens: maxTokens || 1500,
+      };
+      if (system) body.system = system;
+
+      var r = await fetch(AS.proxyUrl, {
+        method:  'POST',
+        headers: {'Content-Type':'application/json'},
+        body:    JSON.stringify(body)
+      });
+      var d = await r.json();
+      if (!r.ok) throw new Error(d.error || 'Proxy error '+r.status);
+      AS_setStatus('ready', AS.provider+' · done');
+      return d.text;
+    } catch(err) {
+      AS_setStatus('error', err.message);
+      throw err;
+    }
+  };
+
+  // ── SHIM: override each tool's existing callAI() ───────────────
+  // Waits for DOM ready so it overrides after the tool defines its version
+  window.addEventListener('DOMContentLoaded', function(){
+    // Override the tool's callAI with our proxy version
+    window.callAI = async function(promptOrMessages, maxTokens) {
+      var msgs = typeof promptOrMessages === 'string'
+        ? [{role:'user', content: promptOrMessages}]
+        : promptOrMessages;
+      return await window.AS_callAI(msgs, maxTokens);
+    };
+
+    // Patch getKey() / getGeminiKey() to return a dummy truthy value
+    // so key-check guards in tools pass — actual key is on server
+    if (typeof window.getKey === 'undefined') {
+      window.getKey = function(){ return '__proxy__'; };
+    } else {
+      var _origGetKey = window.getKey;
+      window.getKey = function(){
+        var k = _origGetKey();
+        return k || '__proxy__';
+      };
+    }
+    if (typeof window.getGeminiKey !== 'undefined') {
+      window.getGeminiKey = function(){ return '__proxy__'; };
+    }
+    if (typeof window.getDeepSeekKey !== 'undefined') {
+      window.getDeepSeekKey = function(){ return '__proxy__'; };
+    }
+  });
+
+  window.AS = AS;
+})();
+</script>
+
+</body>
+</html>

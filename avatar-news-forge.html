@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>• Avatar News Forge • No Pauses • 2+ Sentences • Full Export •</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --bg: #faf8f5; --surface: #ffffff; --surface2: #f5f2ed; --border: #e2dbcf;
+    --border-active: #b7872f; --gold: #b57c1c; --gold-dim: #c69548;
+    --text: #2c2824; --text-muted: #6b6258; --text-dim: #9b8e7e;
+    --accent: #ca9622; --red: #c95a4a; --green: #4c8b6e; --blue: #4a7c9c;
+    --tooltip-bg: #2c2824; --tooltip-text: #ffffff;
+  }
+  body.dark {
+    --bg: #121212; --surface: #1e1e1e; --surface2: #2a2a2a; --border: #3a3a3a;
+    --border-active: #c8a96e; --gold: #d4a853; --gold-dim: #a8895a;
+    --text: #e8e4dc; --text-muted: #c0bcb4; --text-dim: #a8a29e;
+    --accent: #d4a853; --red: #d47a6a; --green: #7ab896; --blue: #6a9ab8;
+    --tooltip-bg: #3a3a3a; --tooltip-text: #e8e4dc;
+  }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-weight: 400; min-height: 100vh; transition: background 0.2s, color 0.2s; }
+  body.dark, body.dark .app, body.dark .news-content, body.dark .news-content *,
+  body.dark .api-section, body.dark .api-section *,
+  body.dark .date-scope, body.dark .date-scope *,
+  body.dark .key-status, body.dark .test-result,
+  body.dark .bottom-credit { color: var(--text) !important; }
+  body.dark .news-content strong, body.dark .news-content b,
+  body.dark .fetch-btn:hover, body.dark .provider-badge.selected { color: var(--gold) !important; }
+  body.dark .fetch-btn, body.dark .copy-news-btn, body.dark .btn-sm,
+  body.dark .theme-toggle, body.dark .provider-badge, body.dark .sheet-btn { color: var(--text-muted) !important; border-color: var(--border); }
+  body.dark .fetch-btn:hover, body.dark .copy-news-btn:hover, body.dark .btn-sm:hover, body.dark .sheet-btn:hover { color: var(--gold) !important; border-color: var(--gold); }
+  body.dark input, body.dark textarea { background: var(--surface2); color: var(--text) !important; border-color: var(--border); }
+  .news-content { background: var(--surface2); border-radius: 16px; padding: 16px; font-size: 13px; line-height: 1.65; min-height: 360px; max-height: 460px; overflow-y: auto; white-space: pre-wrap; word-break: break-word; }
+  .news-content li { margin-bottom: 12px; }
+  .status-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 8px; background: var(--text-dim); }
+  .status-dot.connected { background: var(--green); }
+  .status-dot.error { background: var(--red); }
+  .status-dot.checking { background: var(--gold); animation: pulse 1s infinite; }
+  @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+  .app { max-width: 1500px; margin: 0 auto; padding: 32px 24px 60px; }
+  header { margin-bottom: 32px; border-bottom: 1px solid var(--border); padding-bottom: 20px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px; }
+  .header-left .eyebrow { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.2em; color: var(--gold); text-transform: uppercase; margin-bottom: 6px; }
+  .header-left h1 { font-family: 'Cormorant Garamond', serif; font-size: 40px; font-weight: 400; letter-spacing: -0.01em; color: var(--text); }
+  .header-left h1 em { font-style: italic; color: var(--gold); }
+  .header-left p { margin-top: 8px; color: var(--text-muted); font-size: 13px; max-width: 620px; }
+  .theme-toggle { background: var(--surface); border: 1px solid var(--border); border-radius: 60px; padding: 6px 16px; font-size: 12px; font-family: 'DM Mono', monospace; cursor: pointer; }
+  .theme-toggle:hover { border-color: var(--gold); color: var(--gold); }
+  .api-section, .google-section { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 20px 24px; margin-bottom: 30px; }
+  .provider-group { display: flex; flex-wrap: wrap; gap: 10px; margin: 12px 0 8px; }
+  .provider-badge { padding: 5px 14px; background: var(--surface2); border: 1px solid var(--border); border-radius: 40px; font-size: 11px; font-family: 'DM Mono'; cursor: pointer; }
+  .provider-badge.selected { border-color: var(--gold); color: var(--gold); font-weight: 500; }
+  .api-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-top: 14px; }
+  .btn-sm { padding: 6px 16px; background: var(--surface2); border: 1px solid var(--border); border-radius: 40px; font-family: 'DM Mono', monospace; font-size: 11px; cursor: pointer; }
+  .btn-sm:hover { border-color: var(--gold); color: var(--gold); }
+  .btn-danger { border-color: var(--red); color: var(--red); }
+  .btn-danger:hover { background: var(--red); color: white; }
+  .key-status { font-size: 11px; margin-top: 10px; }
+  .test-result { margin-top: 12px; padding: 8px 12px; border-radius: 12px; font-size: 11px; display: none; }
+  .api-note { margin-top: 14px; font-size: 11px; font-style: italic; border-top: 1px solid var(--border); padding-top: 12px; color: var(--text-dim); }
+  .dashboard-header { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 16px; margin-bottom: 28px; padding-bottom: 12px; border-bottom: 2px solid var(--gold-dim); }
+  .dashboard-header h2 { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 400; color: var(--text); }
+  .date-scope { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; background: var(--surface2); padding: 6px 16px; border-radius: 60px; }
+  .date-scope label { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--text-muted); white-space: nowrap; }
+  .date-scope input[type="date"] { background: var(--surface); border: 1px solid var(--border); border-radius: 40px; padding: 4px 12px; font-size: 12px; font-family: 'DM Mono', monospace; color: var(--text); cursor: pointer; width: auto; }
+  .date-scope input[type="date"]:focus { outline: none; border-color: var(--gold); }
+  .date-scope .date-sep { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text-dim); }
+  .date-scope .date-quick-btns { display: flex; gap: 5px; flex-wrap: wrap; }
+  .date-scope .dq-btn { padding: 3px 10px; background: var(--surface); border: 1px solid var(--border); border-radius: 40px; font-family: 'DM Mono', monospace; font-size: 10px; cursor: pointer; color: var(--text-muted); white-space: nowrap; }
+  .date-scope .dq-btn:hover, .date-scope .dq-btn.active { border-color: var(--gold); color: var(--gold); }
+  .four-col-news { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-top: 16px; }
+  @media (max-width: 1200px) { .four-col-news { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 700px) { .four-col-news { grid-template-columns: 1fr; } }
+  .news-card { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; padding: 20px; display: flex; flex-direction: column; }
+  .news-card h3 { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 500; margin-bottom: 12px; color: var(--gold); border-left: 3px solid var(--gold); padding-left: 12px; }
+  .fetch-btn { align-self: flex-start; margin: 8px 0 16px; background: var(--surface2); border: 1px solid var(--border); border-radius: 40px; padding: 7px 18px; font-family: 'DM Mono', monospace; font-size: 12px; cursor: pointer; color: var(--text-muted); }
+  .fetch-btn:hover { border-color: var(--gold); color: var(--gold); }
+  .copy-news-btn { margin-top: 12px; background: transparent; border: 1px solid var(--border); border-radius: 40px; padding: 5px 12px; font-size: 10px; font-family: 'DM Mono'; cursor: pointer; align-self: flex-end; color: var(--text-muted); }
+  .copy-news-btn:hover { border-color: var(--green); color: var(--green); }
+  .sheet-btn { margin-top: 8px; background: var(--surface); border: 1px solid var(--gold-dim); border-radius: 40px; padding: 6px 14px; font-size: 10px; font-family: 'DM Mono'; cursor: pointer; color: var(--gold); width: 100%; font-weight: 500; text-align: center; }
+  .sheet-btn:hover { background: var(--gold); color: white; border-color: var(--gold); }
+  .loading-spinner-small { display: inline-block; width: 12px; height: 12px; border: 2px solid var(--border); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.6s linear infinite; margin-right: 6px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .error-text { color: var(--red); }
+  .bottom-credit { text-align: center; margin-top: 48px; font-size: 11px; font-style: italic; color: var(--text-dim); }
+  .tooltip-container { position: relative; display: inline-block; cursor: help; margin-left: 8px; }
+  .tooltip-text { visibility: hidden; width: 260px; background-color: var(--tooltip-bg); color: var(--tooltip-text); text-align: center; border-radius: 8px; padding: 6px 10px; position: absolute; z-index: 100; bottom: 125%; left: 50%; margin-left: -130px; font-size: 10px; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
+  .tooltip-container:hover .tooltip-text { visibility: visible; opacity: 1; }
+  .pause-note { background: var(--surface2); border-left: 3px solid var(--gold); padding: 10px 14px; margin-top: 16px; font-size: 11px; border-radius: 12px; color: var(--text-muted); }
+  .success-toast { position: fixed; bottom: 20px; right: 20px; background: var(--green); color: white; padding: 10px 16px; border-radius: 40px; font-size: 12px; z-index: 999; opacity: 0; transition: opacity 0.2s; pointer-events: none; }
+  .code-block { background: var(--surface2); padding: 12px; border-radius: 12px; font-family: monospace; font-size: 11px; overflow-x: auto; white-space: pre-wrap; margin-top: 10px; color: var(--text); }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="header-left">
+      <div class="eyebrow">AVATAR NEWS SCRIPT · NO PAUSES · 2+ SENTENCES</div>
+      <h1>News<em>Forge</em> · AI Reporter</h1>
+      <p>AI-powered top-10 lists: <strong>2+ sentences per item</strong> (no pause tags). Send to Sheets = full script + YouTube teaser (100 chars) + Video Description (5000 chars) + Tags (200 chars).</p>
+    </div>
+    <button class="theme-toggle" id="themeToggleBtn">🌙 Dark Mode</button>
+  </header>
+
+  <!-- GOOGLE SHEETS -->
+  <div class="google-section">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+      <span style="font-family: 'DM Mono'; font-size: 12px;">📊 GOOGLE SHEETS · AvatarScriptNews (4 sheets)</span>
+    </div>
+    <div class="api-row">
+      <input type="url" id="googleScriptUrl" placeholder="https://script.google.com/macros/s/.../exec" style="flex:2;">
+      <button class="btn-sm" id="saveGoogleUrlBtn">💾 Save URL</button>
+      <button class="btn-sm" id="testSheetBtn">🔍 Test</button>
+      <button class="btn-sm btn-danger" id="deleteGoogleUrlBtn">🗑️ Remove</button>
+    </div>
+    <div id="sheetStatus" style="font-size: 11px; margin-top: 8px; color: var(--text-muted);"></div>
+    <div id="sheetTestResult" style="display: none; margin-top: 8px; padding: 8px; border-radius: 12px; font-size: 11px;"></div>
+    <div class="api-note" style="margin-top: 12px;">
+      <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:6px;">
+        <strong>📋 Apps Script (copy to Extensions → Apps Script):</strong>
+        <button id="toggleAppsScriptBtn" style="padding:3px 12px; background:var(--surface2); border:1px solid var(--border); border-radius:40px; font-family:'DM Mono',monospace; font-size:10px; cursor:pointer; color:var(--text-muted);">▼ Show Code</button>
+        <button id="copyAppsScriptBtn" style="display:none; padding:3px 12px; background:var(--surface2); border:1px solid var(--gold); border-radius:40px; font-family:'DM Mono',monospace; font-size:10px; cursor:pointer; color:var(--gold);">📄 Copy Script</button>
+      </div>
+      <div id="appsScriptWrapper" style="display:none;">
+        <div class="code-block" id="appsScriptCode">function doPost(e) {
+  try {
+    var sheetName = e.parameter.sheetName || "Sheet1";
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var sheet = ss.getSheetByName(sheetName) || ss.insertSheet(sheetName);
+    var headers = ["Local_Timestamp","Topic_Category","Date_Scope","Full_Script_WithPauses","Youtube_Teaser_100","Video_Description_5000","Tags_200"];
+    if(sheet.getLastRow() == 0) sheet.appendRow(headers);
+    var row = [
+      e.parameter.LocalTimestamp || new Date().toISOString(),
+      e.parameter.Topic || "",
+      e.parameter.DateScope || "",
+      e.parameter.FullScript || "",
+      (e.parameter.YoutubeTeaser || "").substring(0,100),
+      (e.parameter.VideoDescription || "").substring(0,5000),
+      (e.parameter.Tags || "").substring(0,200)
+    ];
+    sheet.appendRow(row);
+    return ContentService.createTextOutput(JSON.stringify({result:"success"}));
+  } catch(err) {
+    return ContentService.createTextOutput(JSON.stringify({result:"error", error: err.toString()}));
+  }
+}</div>
+      </div>
+      <div id="appsScriptDeployNote" style="display:none; margin-top:6px; font-size:11px;">
+        Deploy → Web app → Execute as "Me" → Access "Anyone" → Copy URL.
+      </div>
+    </div>
+  </div>
+
+  <!-- API MANAGER -->
+  <div class="api-section">
+    <div class="provider-group" id="providerSelector">
+      <div class="provider-badge" data-provider="deepseek">DeepSeek</div>
+      <div class="provider-badge" data-provider="openai">OpenAI</div>
+      <div class="provider-badge" data-provider="claude">Claude</div>
+      <div class="provider-badge" data-provider="gemini">Gemini</div>
+      <div class="provider-badge" data-provider="custom">Custom</div>
+    </div>
+    <!-- Model selector — shown when provider is selected -->
+    <div id="modelSelectorWrap" style="display:none; align-items:center; gap:10px; flex-wrap:wrap; margin:8px 0 4px; padding:10px 14px; background:var(--surface2); border:1px solid var(--border); border-radius:14px;">
+      <label style="font-family:'DM Mono',monospace; font-size:11px; color:var(--text-muted); white-space:nowrap;">🤖 Model:</label>
+      <select id="modelSelector" style="flex:1; min-width:220px; padding:5px 10px; border:1px solid var(--border); border-radius:40px; background:var(--surface); color:var(--text); font-family:'DM Mono',monospace; font-size:11px;">
+        <option value="">— select provider first —</option>
+      </select>
+      <span id="modelNote" style="font-size:10px; color:var(--text-muted); font-style:italic;"></span>
+    </div>
+    <div class="api-row">
+      <span class="status-dot" id="apiDot"></span>
+      <input type="password" id="apiKeyInput" placeholder="API Key" autocomplete="off" style="flex:1;">
+      <button class="btn-sm" id="saveApiBtn">💾 Save</button>
+      <button class="btn-sm btn-danger" id="deleteApiBtn">🗑️ Delete</button>
+      <button class="btn-sm" id="healthCheckBtn">🔍 Health Check</button>
+    </div>
+    <div id="customEndpointGroup" style="display:none; margin-top: 12px;">
+      <input type="text" id="customEndpoint" placeholder="Custom endpoint URL">
+    </div>
+    <div id="keyStatus" class="key-status"></div>
+    <div id="testResult" class="test-result"></div>
+  </div>
+
+  <!-- NEWS DASHBOARD -->
+  <div class="dashboard-header">
+    <h2>📺 Avatar Script · 4 Reports (No Pauses)</h2>
+    <div class="date-scope">
+      <label>📅 From</label>
+      <input type="date" id="dateScopeFrom" title="Start date">
+      <span class="date-sep">→</span>
+      <label>To</label>
+      <input type="date" id="dateScopeTo" title="End date">
+      <div class="date-quick-btns">
+        <button class="dq-btn active" data-preset="today">Today</button>
+        <button class="dq-btn" data-preset="yesterday">Yesterday</button>
+        <button class="dq-btn" data-preset="week">This Week</button>
+        <button class="dq-btn" data-preset="month">This Month</button>
+      </div>
+    </div>
+  </div>
+  <div class="four-col-news">
+    <div class="news-card"><h3>🌟 Celebrity Gossip</h3><button class="fetch-btn" data-topic="celebrity_world">Fetch</button><div class="news-content" id="newsCelebrityWorld">📌 Click Fetch</div><button class="copy-news-btn" data-copy="newsCelebrityWorld">📋 Copy</button><button class="sheet-btn" data-sheet-topic="celebrity_world" data-sheet-name="Sheet1">📤 Send to Sheet</button></div>
+    <div class="news-card"><h3>🇵🇭 PH Celebrity</h3><button class="fetch-btn" data-topic="celebrity_ph">Fetch</button><div class="news-content" id="newsCelebrityPh">📌 Click Fetch</div><button class="copy-news-btn" data-copy="newsCelebrityPh">📋 Copy</button><button class="sheet-btn" data-sheet-topic="celebrity_ph" data-sheet-name="Sheet2">📤 Send to Sheet</button></div>
+    <div class="news-card"><h3>🤖 AI News</h3><button class="fetch-btn" data-topic="ai_news">Fetch</button><div class="news-content" id="newsAi">📌 Click Fetch</div><button class="copy-news-btn" data-copy="newsAi">📋 Copy</button><button class="sheet-btn" data-sheet-topic="ai_news" data-sheet-name="Sheet3">📤 Send to Sheet</button></div>
+    <div class="news-card"><h3>🕵️ Blind Items</h3><button class="fetch-btn" data-topic="celebrity_ph_blind">Fetch</button><div class="news-content" id="newsBlindItems">📌 Click Fetch</div><button class="copy-news-btn" data-copy="newsBlindItems">📋 Copy</button><button class="sheet-btn" data-sheet-topic="celebrity_ph_blind" data-sheet-name="Sheet4">📤 Send to Sheet</button></div>
+  </div>
+  <div class="bottom-credit">✨ 2+ sentences per item (no ⏸️). Send to Sheets includes YouTube teaser (100 chars), video description (5000 chars), and tags (200 chars).</div>
+  <div id="toastMsg" class="success-toast"></div>
+</div>
+
+<script>
+  let apiHealthy = false;
+  let currentProvider = 'deepseek';
+  let selectedModel = '';
+  let googleSheetUrl = '';
+
+  // ── Model catalogue (May 2026) ─────────────────────────────────────────────
+  const MODEL_CATALOGUE = {
+    deepseek: [
+      { id:'deepseek-v4-pro',    label:'DeepSeek V4 Pro ✨',     note:'Latest flagship · 1M context (Apr 2026)' },
+      { id:'deepseek-v4-flash',  label:'DeepSeek V4 Flash',      note:'Fast & affordable V4' },
+      { id:'deepseek-v3.2',      label:'DeepSeek V3.2',          note:'Previous gen — stable' },
+      { id:'deepseek-r1',        label:'DeepSeek R1',            note:'Open-source reasoning' },
+    ],
+    openai: [
+      { id:'gpt-5.5',            label:'GPT-5.5 ✨',             note:'Current flagship (Apr 2026)' },
+      { id:'gpt-5.4',            label:'GPT-5.4',                note:'Previous flagship (Mar 2026)' },
+      { id:'gpt-5.4-mini',       label:'GPT-5.4 mini',          note:'Fast & affordable' },
+      { id:'gpt-5.4-nano',       label:'GPT-5.4 nano',          note:'Fastest & cheapest' },
+      { id:'gpt-5',              label:'GPT-5',                  note:'Original GPT-5 (Aug 2025)' },
+      { id:'gpt-4o',             label:'GPT-4o',                 note:'Previous gen — multimodal' },
+    ],
+    claude: [
+      { id:'claude-opus-4-7',               label:'Claude Opus 4.7 ✨',    note:'Current flagship (Apr 2026)' },
+      { id:'claude-sonnet-4-6',             label:'Claude Sonnet 4.6',     note:'Best balance (Feb 2026)' },
+      { id:'claude-haiku-4-5-20251001',     label:'Claude Haiku 4.5',      note:'Fastest & most affordable' },
+    ],
+    gemini: [
+      { id:'gemini-3.5-flash',              label:'Gemini 3.5 Flash ✨',   note:'Brand-new GA (May 19 2026)' },
+      { id:'gemini-3.1-pro-preview',        label:'Gemini 3.1 Pro',        note:'Most capable before 3.5' },
+      { id:'gemini-2.5-flash',              label:'Gemini 2.5 Flash',      note:'Previous gen — stable' },
+      { id:'gemini-2.5-pro',               label:'Gemini 2.5 Pro',         note:'Previous gen top model' },
+      { id:'gemini-2.0-flash',             label:'Gemini 2.0 Flash',       note:'⚠️ Shutting down Jun 1 2026' },
+    ],
+    custom: []
+  };
+
+  function updateModelSelector(provider) {
+    const wrap = document.getElementById('modelSelectorWrap');
+    const sel  = document.getElementById('modelSelector');
+    const note = document.getElementById('modelNote');
+    if (!wrap || !sel) return;
+    if (provider === 'custom') { wrap.style.display = 'none'; return; }
+    wrap.style.display = 'flex';
+    const models = MODEL_CATALOGUE[provider] || [];
+    sel.innerHTML = models.map(m => `<option value="${m.id}">${m.label}</option>`).join('');
+    const saved = localStorage.getItem('archprompt_model_' + provider);
+    const valid = models.find(m => m.id === saved);
+    sel.value = valid ? saved : (models[0]?.id || '');
+    selectedModel = sel.value;
+    const chosen = models.find(m => m.id === sel.value);
+    note.textContent = chosen ? chosen.note : '';
+  }
+
+  // DOM elements
+  const providerBadges = document.querySelectorAll('.provider-badge');
+  const customEndpointGroup = document.getElementById('customEndpointGroup');
+  const apiKeyInput = document.getElementById('apiKeyInput');
+  const saveApiBtn = document.getElementById('saveApiBtn');
+  const deleteApiBtn = document.getElementById('deleteApiBtn');
+  const healthCheckBtn = document.getElementById('healthCheckBtn');
+  const apiDot = document.getElementById('apiDot');
+  const keyStatusDiv = document.getElementById('keyStatus');
+  const testResultDiv = document.getElementById('testResult');
+  const themeToggleBtn = document.getElementById('themeToggleBtn');
+  const dateScopeFromInput = document.getElementById('dateScopeFrom');
+  const dateScopeToInput   = document.getElementById('dateScopeTo');
+
+  // Format a Date as YYYY-MM-DD for <input type="date">
+  function toDateVal(d) {
+    return d.toISOString().split('T')[0];
+  }
+
+  // Return human-readable date scope string for prompts + sheet
+  function getDateScope() {
+    const from = dateScopeFromInput.value;
+    const to   = dateScopeToInput.value;
+    if (!from && !to) return 'today';
+    if (from === to || !to) return formatDateLabel(from);
+    return `${formatDateLabel(from)} to ${formatDateLabel(to)}`;
+  }
+
+  function formatDateLabel(isoStr) {
+    if (!isoStr) return 'today';
+    const d = new Date(isoStr + 'T00:00:00');
+    return d.toLocaleDateString('en-US', { month:'long', day:'numeric', year:'numeric' });
+  }
+
+  function setDatePreset(preset) {
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    let from = today, to = today;
+    if (preset === 'yesterday') {
+      from = to = new Date(today); from.setDate(from.getDate() - 1); to = new Date(from);
+    } else if (preset === 'week') {
+      from = new Date(today); from.setDate(today.getDate() - today.getDay());
+    } else if (preset === 'month') {
+      from = new Date(today.getFullYear(), today.getMonth(), 1);
+    }
+    dateScopeFromInput.value = toDateVal(from);
+    dateScopeToInput.value   = toDateVal(to);
+    // Update active button
+    document.querySelectorAll('.dq-btn').forEach(b => b.classList.toggle('active', b.dataset.preset === preset));
+  }
+
+  // Init date pickers to today
+  const _today = new Date();
+  dateScopeFromInput.value = toDateVal(_today);
+  dateScopeToInput.value   = toDateVal(_today);
+
+  // Quick preset buttons
+  document.querySelectorAll('.dq-btn').forEach(btn => {
+    btn.addEventListener('click', () => setDatePreset(btn.dataset.preset));
+  });
+  // Clear active preset if user manually changes dates
+  [dateScopeFromInput, dateScopeToInput].forEach(inp => {
+    inp.addEventListener('change', () => document.querySelectorAll('.dq-btn').forEach(b => b.classList.remove('active')));
+  });
+  const googleUrlInput = document.getElementById('googleScriptUrl');
+  const saveGoogleUrlBtn = document.getElementById('saveGoogleUrlBtn');
+  const deleteGoogleUrlBtn = document.getElementById('deleteGoogleUrlBtn');
+  const testSheetBtn = document.getElementById('testSheetBtn');
+  const sheetStatusDiv = document.getElementById('sheetStatus');
+  const sheetTestResultDiv = document.getElementById('sheetTestResult');
+
+  function showToast(message, isError = false) {
+    const toast = document.getElementById('toastMsg');
+    toast.textContent = message;
+    toast.style.backgroundColor = isError ? 'var(--red)' : 'var(--green)';
+    toast.style.opacity = '1';
+    setTimeout(() => { toast.style.opacity = '0'; }, 3000);
+  }
+
+  function getLocalTimestamp() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    const offset = -now.getTimezoneOffset();
+    const sign = offset >= 0 ? '+' : '-';
+    const tzHours = String(Math.floor(Math.abs(offset) / 60)).padStart(2, '0');
+    const tzMins = String(Math.abs(offset) % 60).padStart(2, '0');
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds} UTC${sign}${tzHours}:${tzMins}`;
+  }
+
+  // Google Sheets
+  function loadGoogleUrl() {
+    const saved = localStorage.getItem('archprompt_google_news_url');
+    if (saved) { googleUrlInput.value = saved; googleSheetUrl = saved; sheetStatusDiv.innerHTML = '✅ URL saved'; }
+  }
+  saveGoogleUrlBtn.addEventListener('click', () => {
+    let url = googleUrlInput.value.trim();
+    if (!url) { showToast('Enter URL', true); return; }
+    localStorage.setItem('archprompt_google_news_url', url);
+    googleSheetUrl = url;
+    sheetStatusDiv.innerHTML = '✅ Saved';
+    showToast('Google Sheets URL saved');
+  });
+  deleteGoogleUrlBtn.addEventListener('click', () => {
+    localStorage.removeItem('archprompt_google_news_url');
+    googleUrlInput.value = '';
+    googleSheetUrl = '';
+    sheetStatusDiv.innerHTML = 'No URL';
+    showToast('URL removed', true);
+  });
+  testSheetBtn.addEventListener('click', async () => {
+    const url = googleUrlInput.value.trim();
+    if (!url) { showToast('Save URL first', true); return; }
+    sheetTestResultDiv.style.display = 'block';
+    sheetTestResultDiv.innerHTML = '⏳ Testing...';
+    try {
+      const testData = { sheetName: 'Sheet1', LocalTimestamp: getLocalTimestamp(), Topic: 'TEST', DateScope: 'test', FullScript: 'test', YoutubeTeaser: 'test', VideoDescription: 'desc', Tags: 'tag1,tag2' };
+      const response = await fetch(url, { method: 'POST', mode: 'cors', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams(testData) });
+      const text = await response.text();
+      let json; try { json = JSON.parse(text); } catch(e) { throw new Error('Invalid response'); }
+      if (json.result === 'success') { sheetTestResultDiv.innerHTML = '✅ Connected!'; sheetTestResultDiv.style.background = 'rgba(76,139,110,0.2)'; }
+      else throw new Error(json.error);
+    } catch(err) { sheetTestResultDiv.innerHTML = `❌ ${err.message}`; sheetTestResultDiv.style.background = 'rgba(201,90,74,0.2)'; }
+    setTimeout(() => { sheetTestResultDiv.style.display = 'none'; }, 4000);
+  });
+  loadGoogleUrl();
+
+  // API Management
+  function updateKeyStatusDisplay() {
+    const savedKey = localStorage.getItem('archprompt_apikey');
+    if (savedKey) keyStatusDiv.innerHTML = `🔑 Key: ${savedKey.substring(0,8)}... ${apiHealthy ? '✅' : '⚠️'}`;
+    else keyStatusDiv.innerHTML = '🔑 No API key';
+  }
+  function setProvider(prov) {
+    currentProvider = prov;
+    localStorage.setItem('archprompt_provider', prov);
+    providerBadges.forEach(el => el.classList.toggle('selected', el.dataset.provider === prov));
+    customEndpointGroup.style.display = prov === 'custom' ? 'block' : 'none';
+    apiHealthy = false;
+    updateDotState(false, false, false);
+    updateKeyStatusDisplay();
+    updateModelSelector(prov);
+  }
+  function updateDotState(healthy, error, checking) {
+    apiDot.classList.remove('connected', 'error', 'checking');
+    if (checking) apiDot.classList.add('checking');
+    else if (healthy) apiDot.classList.add('connected');
+    else if (error) apiDot.classList.add('error');
+  }
+  async function healthCheck() {
+    const key = localStorage.getItem('archprompt_apikey');
+    if (!key) { updateDotState(false, true, false); showToast('No API key', true); return; }
+    updateDotState(false, false, true);
+    const model = selectedModel || (MODEL_CATALOGUE[currentProvider]?.[0]?.id || '');
+    try {
+      let ok = false;
+      if (currentProvider === 'deepseek') {
+        let r = await fetch('https://api.deepseek.com/v1/chat/completions', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` }, body: JSON.stringify({ model, messages: [{ role: 'user', content: 'OK' }], max_tokens: 5 }) });
+        ok = r.ok;
+      } else if (currentProvider === 'openai') {
+        let r = await fetch('https://api.openai.com/v1/chat/completions', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` }, body: JSON.stringify({ model, messages: [{ role: 'user', content: 'OK' }], max_tokens: 5 }) });
+        ok = r.ok;
+      } else if (currentProvider === 'claude') {
+        let r = await fetch('https://api.anthropic.com/v1/messages', { method: 'POST', headers: { 'x-api-key': key, 'anthropic-version': '2023-06-01', 'Content-Type': 'application/json' }, body: JSON.stringify({ model, max_tokens: 5, messages: [{ role: 'user', content: 'Hi' }] }) });
+        ok = r.status === 200 || r.status === 400;
+      } else if (currentProvider === 'gemini') {
+        let r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${key}`);
+        ok = r.ok;
+      } else {
+        let ep = document.getElementById('customEndpoint')?.value.trim() || localStorage.getItem('archprompt_custom_endpoint') || 'https://api.openai.com/v1/chat/completions';
+        let r = await fetch(ep, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` }, body: JSON.stringify({ model: 'gpt-4o', max_tokens: 5, messages: [{ role: 'user', content: 'test' }] }) });
+        ok = r.ok;
+      }
+      apiHealthy = ok;
+      updateDotState(ok, !ok, false);
+      showToast(ok ? 'API ready' : 'Invalid key', !ok);
+    } catch(e) { apiHealthy = false; updateDotState(false, true, false); showToast(`Error: ${e.message}`, true); }
+    updateKeyStatusDisplay();
+  }
+  function saveApiKey() {
+    const key = apiKeyInput.value.trim();
+    if (!key) { showToast('Enter API key', true); return; }
+    localStorage.setItem('archprompt_apikey', key);
+    if (currentProvider === 'custom') {
+      const ep = document.getElementById('customEndpoint').value.trim();
+      if (ep) localStorage.setItem('archprompt_custom_endpoint', ep);
+    }
+    apiHealthy = false;
+    updateDotState(false, false, false);
+    updateKeyStatusDisplay();
+    showToast('API key saved. Run Health Check.');
+    apiKeyInput.value = '';
+  }
+  function deleteApiKey() { localStorage.removeItem('archprompt_apikey'); apiHealthy = false; updateDotState(false, false, false); updateKeyStatusDisplay(); showToast('API key removed'); }
+  saveApiBtn.addEventListener('click', saveApiKey);
+  deleteApiBtn.addEventListener('click', deleteApiKey);
+  healthCheckBtn.addEventListener('click', healthCheck);
+  providerBadges.forEach(el => el.addEventListener('click', () => setProvider(el.dataset.provider)));
+
+  // AI Call with retry and 60s timeout
+  async function callAI(systemPrompt, userPrompt, retryCount = 0) {
+    const key = localStorage.getItem('archprompt_apikey');
+    if (!key || !apiHealthy) throw new Error('API key missing or not healthy');
+    const prov = currentProvider;
+    const model = selectedModel || (MODEL_CATALOGUE[prov]?.[0]?.id || 'gpt-4o');
+    let endpoint, headers, body;
+
+    if (prov === 'deepseek') {
+      endpoint = 'https://api.deepseek.com/v1/chat/completions';
+      headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` };
+      body = { model, messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: userPrompt }], max_tokens: 2000, temperature: 0.7 };
+    } else if (prov === 'openai') {
+      endpoint = 'https://api.openai.com/v1/chat/completions';
+      headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` };
+      body = { model, messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: userPrompt }], max_tokens: 2000, temperature: 0.7 };
+    } else if (prov === 'claude') {
+      endpoint = 'https://api.anthropic.com/v1/messages';
+      headers = { 'Content-Type': 'application/json', 'x-api-key': key, 'anthropic-version': '2023-06-01' };
+      body = { model, max_tokens: 2000, system: systemPrompt, messages: [{ role: 'user', content: userPrompt }] };
+    } else if (prov === 'gemini') {
+      endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`;
+      headers = { 'Content-Type': 'application/json' };
+      body = { contents: [{ parts: [{ text: `${systemPrompt}
+
+${userPrompt}` }] }], generationConfig: { maxOutputTokens: 2000, temperature: 0.7 } };
+    } else {
+      let customEp = document.getElementById('customEndpoint')?.value.trim() || localStorage.getItem('archprompt_custom_endpoint') || 'https://api.openai.com/v1/chat/completions';
+      headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` };
+      body = { model: 'gpt-4o', max_tokens: 2000, messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: userPrompt }] };
+      endpoint = customEp;
+    }
+
+    try {
+      const response = await fetch(endpoint, { method: 'POST', headers, body: JSON.stringify(body), signal: AbortSignal.timeout(60000) });
+      const data = await response.json();
+      if (prov === 'claude' && data.content) return data.content[0].text;
+      if (prov === 'gemini' && data.candidates) return data.candidates[0].content.parts[0].text;
+      if ((prov === 'deepseek' || prov === 'openai' || prov === 'custom') && data.choices) return data.choices[0].message.content;
+      throw new Error('Invalid API response');
+    } catch(err) {
+      if (retryCount === 0 && err.message.includes('timeout')) {
+        console.log('Retrying due to timeout...');
+        return callAI(systemPrompt, userPrompt, 1);
+      }
+      throw err;
+    }
+  }
+
+  // FETCH NEWS - NO PAUSE TAGS
+  async function fetchTopicNews(topicType, dateScope) {
+    const systemPrompt = `You are a news writer. Output ONLY valid HTML with <ol><li>...</li></ol>. Each <li> must have AT LEAST 2 complete sentences. Do NOT use bold, asterisks, or <strong> tags. Do NOT include any pause symbols like ⏸️ or (0.5s).`;
+    let userPrompt = '';
+    if (topicType === 'celebrity_world') userPrompt = `Top 10 worldwide celebrity gossip for "${dateScope}". Start each item with 'Wow did you know, ' then write 2-3 sentences. No pause tags.`;
+    else if (topicType === 'celebrity_ph') userPrompt = `Top 10 Filipino celebrity gossip for "${dateScope}". Start each with 'Alam mo ba, ' then 2-3 Taglish sentences. No pause tags.`;
+    else if (topicType === 'ai_news') userPrompt = `Top 10 AI breakthroughs for "${dateScope}". Start each with 'Did you know, ' then 2-3 sentences. No pause tags.`;
+    else userPrompt = `Top 10 blind items about PH celebrities for "${dateScope}". Start each with 'Rumors have it, ' then 2-3 cryptic sentences. No real names. No pause tags.`;
+    
+    let rawHtml = await callAI(systemPrompt, userPrompt);
+    rawHtml = rawHtml.replace(/```html?|```/g, '');
+    rawHtml = rawHtml.replace(/\*\*(.+?)\*\*/g, '$1');
+    rawHtml = rawHtml.replace(/<\/?strong[^>]*>/gi, '');
+    rawHtml = rawHtml.replace(/<\/?b[^>]*>/gi, '');
+    if (!rawHtml.includes('<ol')) {
+      const lines = rawHtml.split('\n').filter(l => l.trim().length > 0);
+      rawHtml = '<ol>' + lines.map(line => `<li>${line.replace(/^\d+\.\s*/, '')}</li>`).join('') + '</ol>';
+    }
+    return rawHtml;
+  }
+
+  function extractItemsFromHtml(html) {
+    const div = document.createElement('div');
+    div.innerHTML = html;
+    const items = [];
+    div.querySelectorAll('li').forEach(li => items.push(li.innerText.trim()));
+    return items;
+  }
+
+  function buildFullScript(topicType, itemsHtml, dateScope) {
+    const items = extractItemsFromHtml(itemsHtml);
+    let intro = '';
+    if (topicType === 'celebrity_world') intro = "Here's your daily dose of Top Ten Celebrity Gossip! Let's dive into the juiciest stories making headlines right now.";
+    else if (topicType === 'celebrity_ph') intro = "Here is our Top Ten Pinas Tsismis for today. Get ready for the hottest showbiz chika!";
+    else if (topicType === 'ai_news') intro = "Top Ten AI Breakthroughs this week! Here's what you need to know about the latest in artificial intelligence.";
+    else intro = "Eto na! Ang bagong Top Ten Blind Item for Today. These anonymous whispers have everyone in showbiz talking.";
+    
+    const numberedItems = items.map((item, idx) => `${idx+1}. ${item}`).join('\n\n.....\n\n');
+    const outro = "That's your top ten for today! Don't forget to like and subscribe. See you next time!";
+    return `${intro}\n\n${numberedItems}\n\n${outro}`;
+  }
+
+  // Generate YouTube Teaser (max 100 chars), Video Description (max 5000), Tags (max 200)
+  async function generateMetadata(topicLabel, fullScript, dateScope) {
+    const key = localStorage.getItem('archprompt_apikey');
+    if (!key || !apiHealthy) {
+      return {
+        teaser: `Latest ${topicLabel} top 10!`,
+        description: `Watch our top 10 ${topicLabel} stories for ${dateScope}. Don't miss out!`,
+        tags: `${topicLabel},news,top10`
+      };
+    }
+    try {
+      const prompt = `Based on this script about "${topicLabel}" (${dateScope}), generate:
+1. YouTube teaser (max 100 characters) - short hook
+2. Video description (max 5000 characters) - detailed summary, include call to action
+3. Tags (max 200 characters) - comma separated keywords
+Return as JSON: {"teaser":"...","description":"...","tags":"..."}`;
+      const result = await callAI("Output ONLY valid JSON.", prompt + `\nScript excerpt: ${fullScript.substring(0, 1000)}`);
+      let jsonMatch = result.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        let parsed = JSON.parse(jsonMatch[0]);
+        return {
+          teaser: (parsed.teaser || `Latest ${topicLabel} top 10!`).substring(0, 100),
+          description: (parsed.description || `Watch our top 10 ${topicLabel} stories for ${dateScope}.`).substring(0, 5000),
+          tags: (parsed.tags || `${topicLabel},news`).substring(0, 200)
+        };
+      }
+    } catch(e) { console.warn(e); }
+    return {
+      teaser: `🔥 ${topicLabel} top 10 inside! Watch now.`.substring(0,100),
+      description: `Here are the top 10 ${topicLabel} stories for ${dateScope}. Stay informed and entertained! Don't forget to like and subscribe.`.substring(0,5000),
+      tags: `${topicLabel},trending,news`.substring(0,200)
+    };
+  }
+
+  async function sendToSheet(topic, sheetName, contentDivId, topicLabel) {
+    const url = googleUrlInput.value.trim();
+    if (!url) { showToast('Save Google Script URL first', true); return; }
+    const contentDiv = document.getElementById(contentDivId);
+    const rawHtml = contentDiv.innerHTML;
+    if (rawHtml.includes('Click Fetch') || rawHtml.length < 100) { showToast('Fetch news first', true); return; }
+    
+    const fullScript = buildFullScript(topic, rawHtml, getDateScope());
+    const dateScope = getDateScope();
+    const metadata = await generateMetadata(topicLabel, fullScript, dateScope);
+    const localTimestamp = getLocalTimestamp();
+    
+    const payload = {
+      sheetName,
+      LocalTimestamp: localTimestamp,
+      Topic: topicLabel,
+      DateScope: dateScope,
+      FullScript: fullScript,
+      YoutubeTeaser: metadata.teaser,
+      VideoDescription: metadata.description,
+      Tags: metadata.tags
+    };
+    
+    try {
+      const response = await fetch(url, { method: 'POST', mode: 'cors', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams(payload) });
+      const text = await response.text();
+      let json; try { json = JSON.parse(text); } catch(e) { throw new Error('Invalid response'); }
+      if (json.result === 'success') showToast(`✅ Saved to ${sheetName}`, false);
+      else throw new Error(json.error);
+    } catch(err) { showToast(`❌ Error: ${err.message}`, true); }
+  }
+
+  async function refreshNewsCard(topic, elementId, dateScope) {
+    const contentDiv = document.getElementById(elementId);
+    contentDiv.innerHTML = '<span class="loading-spinner-small"></span> Generating 10 news items (2+ sentences each, no pauses)...';
+    try { const html = await fetchTopicNews(topic, dateScope); contentDiv.innerHTML = html; showToast('✅ News generated!'); }
+    catch(err) { contentDiv.innerHTML = `<p class="error-text">❌ ${err.message}. Try again or switch provider.</p>`; }
+  }
+
+  async function handleFetch(e) {
+    const topic = e.currentTarget.dataset.topic;
+    const map = { celebrity_world: 'newsCelebrityWorld', celebrity_ph: 'newsCelebrityPh', ai_news: 'newsAi', celebrity_ph_blind: 'newsBlindItems' };
+    await refreshNewsCard(topic, map[topic], getDateScope());
+  }
+  
+  function handleCopy(e) {
+    const targetId = e.currentTarget.dataset.copy;
+    const contentDiv = document.getElementById(targetId);
+    let topicType = '';
+    if (targetId === 'newsCelebrityWorld') topicType = 'celebrity_world';
+    else if (targetId === 'newsCelebrityPh') topicType = 'celebrity_ph';
+    else if (targetId === 'newsAi') topicType = 'ai_news';
+    else topicType = 'celebrity_ph_blind';
+    const fullScript = buildFullScript(topicType, contentDiv.innerHTML, getDateScope());
+    if (fullScript.includes('Click Fetch') || fullScript.length < 100) { showToast('Fetch news first', true); return; }
+    navigator.clipboard.writeText(fullScript);
+    showToast('✅ Full script copied!');
+  }
+  
+  async function handleSheetSend(e) {
+    const topic = e.currentTarget.dataset.sheetTopic;
+    const sheetName = e.currentTarget.dataset.sheetName;
+    const map = { celebrity_world: { id: 'newsCelebrityWorld', label: 'World Celebrity Gossip' }, celebrity_ph: { id: 'newsCelebrityPh', label: 'PH Celebrity Gossip' }, ai_news: { id: 'newsAi', label: 'AI News' }, celebrity_ph_blind: { id: 'newsBlindItems', label: 'PH Blind Items' } };
+    await sendToSheet(topic, sheetName, map[topic].id, map[topic].label);
+  }
+
+  function attachEventListeners() {
+    document.querySelectorAll('.fetch-btn').forEach(btn => { btn.removeEventListener('click', handleFetch); btn.addEventListener('click', handleFetch); });
+    document.querySelectorAll('.copy-news-btn').forEach(btn => { btn.removeEventListener('click', handleCopy); btn.addEventListener('click', handleCopy); });
+    document.querySelectorAll('.sheet-btn').forEach(btn => { btn.removeEventListener('click', handleSheetSend); btn.addEventListener('click', handleSheetSend); });
+  }
+
+  // Theme
+  function initTheme() { if (localStorage.getItem('darkMode') === 'true') document.body.classList.add('dark'); themeToggleBtn.innerText = document.body.classList.contains('dark') ? '☀️ Light' : '🌙 Dark'; }
+  function toggleTheme() { document.body.classList.toggle('dark'); localStorage.setItem('darkMode', document.body.classList.contains('dark')); themeToggleBtn.innerText = document.body.classList.contains('dark') ? '☀️ Light' : '🌙 Dark'; }
+  themeToggleBtn.addEventListener('click', toggleTheme);
+
+  // Model selector change
+  document.getElementById('modelSelector')?.addEventListener('change', function() {
+    selectedModel = this.value;
+    localStorage.setItem('archprompt_model_' + currentProvider, selectedModel);
+    const models = MODEL_CATALOGUE[currentProvider] || [];
+    const chosen = models.find(m => m.id === selectedModel);
+    document.getElementById('modelNote').textContent = chosen ? chosen.note : '';
+    apiHealthy = false;
+    updateDotState(false, false, false);
+  });
+
+  // Apps Script collapse/expand + copy
+  document.getElementById('toggleAppsScriptBtn')?.addEventListener('click', function() {
+    const wrapper = document.getElementById('appsScriptWrapper');
+    const note    = document.getElementById('appsScriptDeployNote');
+    const copyBtn = document.getElementById('copyAppsScriptBtn');
+    const isHidden = wrapper.style.display === 'none';
+    wrapper.style.display = isHidden ? 'block' : 'none';
+    note.style.display    = isHidden ? 'block' : 'none';
+    copyBtn.style.display = isHidden ? 'inline-block' : 'none';
+    this.textContent = isHidden ? '▲ Hide Code' : '▼ Show Code';
+  });
+  document.getElementById('copyAppsScriptBtn')?.addEventListener('click', function() {
+    const code = document.getElementById('appsScriptCode')?.textContent || '';
+    navigator.clipboard.writeText(code).then(() => showToast('✅ Apps Script copied!'))
+      .catch(() => showToast('Copy failed — select code manually', true));
+  });
+
+  function init() {
+    initTheme();
+    const savedProvider = localStorage.getItem('archprompt_provider') || 'deepseek';
+    setProvider(savedProvider);
+    if (localStorage.getItem('archprompt_apikey')) updateKeyStatusDisplay();
+    const savedCustomEp = localStorage.getItem('archprompt_custom_endpoint');
+    if (savedCustomEp && document.getElementById('customEndpoint')) document.getElementById('customEndpoint').value = savedCustomEp;
+    attachEventListeners();
+    if (localStorage.getItem('archprompt_apikey')) setTimeout(() => healthCheck(), 400);
+  }
+  init();
+</script>
+<!-- ═══════════════════════════════════════════════════════════════
+     AISPRINT PROXY LAYER — injected into all tools
+     All AI calls route through /api/ai on Railway server.
+     API keys never touch the browser.
+═══════════════════════════════════════════════════════════════ -->
+<style>
+#as-bar{
+  position:sticky;top:0;z-index:9999;
+  display:flex;align-items:center;gap:8px;
+  padding:7px 14px;
+  background:#111318;border-bottom:1px solid #1e2330;
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-size:12px;flex-wrap:wrap;
+}
+#as-bar .as-logo{
+  font-family:'Space Mono',monospace;font-size:11px;font-weight:700;
+  color:#4f8ef7;background:rgba(79,142,247,0.12);
+  padding:3px 8px;border-radius:6px;white-space:nowrap;flex-shrink:0;
+}
+#as-bar select{
+  background:#181c24;border:1px solid #2a3045;border-radius:6px;
+  color:#e8eaf0;font-size:12px;padding:4px 8px;cursor:pointer;
+  font-family:inherit;min-width:100px;
+}
+#as-bar select:focus{outline:none;border-color:#4f8ef7}
+#as-bar select:disabled{opacity:.4;cursor:not-allowed}
+#as-dot{
+  width:7px;height:7px;border-radius:50%;
+  background:#1e2330;flex-shrink:0;transition:background .3s;
+}
+#as-dot.ready{background:#26de8a;box-shadow:0 0 6px rgba(38,222,138,.5)}
+#as-dot.error{background:#ff4e6a}
+#as-dot.busy{background:#ffd700;animation:as-pulse 1s infinite}
+#as-status{color:#4a5268;font-size:11px;white-space:nowrap}
+@keyframes as-pulse{0%,100%{opacity:1}50%{opacity:.4}}
+</style>
+
+<script>
+(function(){
+  // ── State ──────────────────────────────────────────────────────
+  var AS = {
+    proxyUrl:  '/api/ai',
+    email:     localStorage.getItem('aisprint_user') || '',
+    provider:  localStorage.getItem('as_provider') || 'claude',
+    model:     localStorage.getItem('as_model') || '',
+    providers: {},
+    ready:     false
+  };
+
+  // ── Build selector bar ─────────────────────────────────────────
+  var bar = document.createElement('div');
+  bar.id  = 'as-bar';
+  bar.innerHTML =
+    '<span class="as-logo">AS</span>' +
+    '<span style="color:#4a5268;font-size:11px">AI provider</span>' +
+    '<select id="as-prov-sel" onchange="AS_onProvChange()"><option>Loading...</option></select>' +
+    '<select id="as-model-sel" onchange="AS_onModelChange()"><option>Loading...</option></select>' +
+    '<span id="as-dot"></span>' +
+    '<span id="as-status">Connecting...</span>';
+  document.body.insertBefore(bar, document.body.firstChild);
+
+  // ── Load available providers from server ───────────────────────
+  fetch('/api/providers')
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      AS.providers = d.providers || {};
+      AS_buildProviderSel();
+      AS_setStatus('ready', 'Ready');
+    })
+    .catch(function(){
+      AS_setStatus('error', 'Server offline');
+      document.getElementById('as-prov-sel').innerHTML = '<option>Offline</option>';
+    });
+
+  // ── Build provider dropdown ────────────────────────────────────
+  window.AS_buildProviderSel = function() {
+    var sel    = document.getElementById('as-prov-sel');
+    var names  = {claude:'Claude',deepseek:'DeepSeek',gemini:'Gemini',perplexity:'Perplexity',openai:'OpenAI'};
+    var opts   = '';
+    var hasAny = false;
+    Object.keys(names).forEach(function(p){
+      var info = AS.providers[p];
+      if (!info || !info.enabled) return;
+      hasAny = true;
+      var sel2 = (p === AS.provider) ? ' selected' : '';
+      opts += '<option value="'+p+'"'+sel2+'>'+names[p]+'</option>';
+    });
+    if (!hasAny) {
+      sel.innerHTML = '<option value="">No providers</option>';
+      sel.disabled  = true;
+      AS_setStatus('error','No API keys set in Railway');
+      return;
+    }
+    sel.innerHTML = opts;
+    // Ensure AS.provider is one that's actually available
+    if (!AS.providers[AS.provider] || !AS.providers[AS.provider].enabled) {
+      AS.provider = sel.value;
+    }
+    AS_buildModelSel();
+  };
+
+  window.AS_buildModelSel = function() {
+    var sel    = document.getElementById('as-model-sel');
+    var info   = AS.providers[AS.provider];
+    var models = (info && info.models) ? info.models : [];
+    sel.innerHTML = '';
+    models.forEach(function(m){
+      var opt   = document.createElement('option');
+      opt.value = m.id;
+      opt.text  = m.label + (m.note ? ' — '+m.note : '');
+      if (m.id === AS.model) opt.selected = true;
+      sel.appendChild(opt);
+    });
+    // Sync model
+    AS.model = sel.value;
+    localStorage.setItem('as_model', AS.model);
+  };
+
+  window.AS_onProvChange = function() {
+    var sel    = document.getElementById('as-prov-sel');
+    AS.provider = sel.value;
+    localStorage.setItem('as_provider', AS.provider);
+    AS_buildModelSel();
+    AS_setStatus('ready','Ready');
+  };
+
+  window.AS_onModelChange = function() {
+    var sel  = document.getElementById('as-model-sel');
+    AS.model = sel.value;
+    localStorage.setItem('as_model', AS.model);
+  };
+
+  // ── Status helper ──────────────────────────────────────────────
+  window.AS_setStatus = function(state, msg) {
+    var dot = document.getElementById('as-dot');
+    var txt = document.getElementById('as-status');
+    dot.className = state;
+    txt.textContent = msg;
+    AS.ready = (state === 'ready');
+  };
+
+  // ── Listen for config from dashboard (postMessage) ─────────────
+  window.addEventListener('message', function(e){
+    if (!e.data || e.data.type !== 'AISPRINT_CONFIG') return;
+    if (e.data.email)    AS.email    = e.data.email;
+    if (e.data.proxyUrl) AS.proxyUrl = e.data.proxyUrl;
+    // Override selectors if dashboard pushes a provider/model
+    if (e.data.provider && AS.providers[e.data.provider] && AS.providers[e.data.provider].enabled) {
+      AS.provider = e.data.provider;
+      var ps = document.getElementById('as-prov-sel');
+      if (ps) ps.value = AS.provider;
+      AS_buildModelSel();
+    }
+    if (e.data.model) {
+      AS.model = e.data.model;
+      var ms = document.getElementById('as-model-sel');
+      if (ms) ms.value = AS.model;
+    }
+  });
+
+  // ── THE PROXY FUNCTION — replaces all direct API calls ─────────
+  // All tools call: await AS_callAI(messages, maxTokens, system)
+  // or the shim wraps their existing callAI() below
+  window.AS_callAI = async function(messages, maxTokens, system) {
+    if (!AS.email) AS.email = localStorage.getItem('aisprint_user') || '';
+    AS_setStatus('busy', 'Calling '+AS.provider+'...');
+    try {
+      var body = {
+        email:      AS.email,
+        provider:   AS.provider,
+        model:      AS.model || document.getElementById('as-model-sel').value,
+        messages:   Array.isArray(messages) ? messages : [{role:'user',content:messages}],
+        max_tokens: maxTokens || 1500,
+      };
+      if (system) body.system = system;
+
+      var r = await fetch(AS.proxyUrl, {
+        method:  'POST',
+        headers: {'Content-Type':'application/json'},
+        body:    JSON.stringify(body)
+      });
+      var d = await r.json();
+      if (!r.ok) throw new Error(d.error || 'Proxy error '+r.status);
+      AS_setStatus('ready', AS.provider+' · done');
+      return d.text;
+    } catch(err) {
+      AS_setStatus('error', err.message);
+      throw err;
+    }
+  };
+
+  // ── SHIM: override each tool's existing callAI() ───────────────
+  // Waits for DOM ready so it overrides after the tool defines its version
+  window.addEventListener('DOMContentLoaded', function(){
+    // Override the tool's callAI with our proxy version
+    window.callAI = async function(promptOrMessages, maxTokens) {
+      var msgs = typeof promptOrMessages === 'string'
+        ? [{role:'user', content: promptOrMessages}]
+        : promptOrMessages;
+      return await window.AS_callAI(msgs, maxTokens);
+    };
+
+    // Patch getKey() / getGeminiKey() to return a dummy truthy value
+    // so key-check guards in tools pass — actual key is on server
+    if (typeof window.getKey === 'undefined') {
+      window.getKey = function(){ return '__proxy__'; };
+    } else {
+      var _origGetKey = window.getKey;
+      window.getKey = function(){
+        var k = _origGetKey();
+        return k || '__proxy__';
+      };
+    }
+    if (typeof window.getGeminiKey !== 'undefined') {
+      window.getGeminiKey = function(){ return '__proxy__'; };
+    }
+    if (typeof window.getDeepSeekKey !== 'undefined') {
+      window.getDeepSeekKey = function(){ return '__proxy__'; };
+    }
+  });
+
+  window.AS = AS;
+})();
+</script>
+
+</body>
+</html>

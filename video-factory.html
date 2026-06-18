@@ -1,0 +1,1890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AISprint – HeyGen Studio | YouTube Meta + Monthly Sheets + Strategy Planner</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg: #faf8f5; --surface: #ffffff; --border: #e2dbcf; --gold: #b57c1c; --text: #2c2824; --text-muted: #6b6258; --green: #4c8b6e; --red: #c95a4a; --blue: #2563eb; }
+        body.dark { --bg: #121212; --surface: #1e1e1e; --border: #3a3a3a; --gold: #d4a853; --text: #e8e4dc; --text-muted: #a8a29e; --green: #7ab896; --red: #d47a6a; --blue: #60a5fa; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); transition: 0.2s; padding: 30px 20px 60px; }
+        .container { max-width: 1100px; margin: 0 auto; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 15px; }
+        h1 { font-size: 26px; font-weight: 600; }
+        h1 span { color: var(--gold); }
+        .theme-btn { background: var(--surface); border: 1px solid var(--border); border-radius: 40px; padding: 6px 16px; cursor: pointer; color: var(--text); }
+
+        .tabs { display: flex; gap: 8px; margin-bottom: 24px; border-bottom: 2px solid var(--border); padding-bottom: 0; }
+        .tab-btn { padding: 10px 22px; border-radius: 12px 12px 0 0; border: 1px solid transparent; background: transparent; cursor: pointer; font-family: inherit; font-size: 14px; font-weight: 500; color: var(--text-muted); transition: 0.2s; margin-bottom: -2px; }
+        .tab-btn.active { background: var(--surface); border-color: var(--border); border-bottom-color: var(--surface); color: var(--gold); font-weight: 600; }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+
+        .card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 20px 24px; margin-bottom: 24px; }
+        .label { font-weight: 500; margin-bottom: 8px; display: block; color: var(--text); }
+        .provider-group { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+        .provider-badge { padding: 5px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 40px; font-size: 12px; cursor: pointer; color: var(--text); }
+        .provider-badge.selected { border-color: var(--gold); background: rgba(181,124,28,0.1); color: var(--gold); }
+        .api-row { display: flex; gap: 10px; align-items: center; margin-bottom: 12px; flex-wrap: wrap; }
+        .api-row input { flex: 2; min-width: 200px; }
+        .btn { background: var(--surface); border: 1px solid var(--border); border-radius: 40px; padding: 6px 16px; cursor: pointer; font-size: 12px; font-family: inherit; color: var(--text); white-space: nowrap; }
+        .btn-danger { border-color: var(--red); color: var(--red); }
+        .btn-danger:hover { background: var(--red); color: white; }
+        input, select, textarea { width: 100%; padding: 10px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 12px; color: var(--text) !important; font-family: inherit; }
+        input::placeholder, textarea::placeholder { color: var(--text-muted); opacity: 0.7; }
+        select { appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px; color: var(--text); background-color: var(--surface); }
+        select option { background: var(--surface); color: var(--text); }
+        #videoTopic { min-height: 140px; resize: vertical; }
+        .row-flex { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 12px; }
+        .image-preview { max-width: 100%; margin-top: 10px; border-radius: 12px; display: none; }
+        .image-preview img { max-width: 100%; max-height: 200px; border-radius: 12px; }
+        .generate-btn { width: 100%; background: var(--gold); color: white; border: none; border-radius: 60px; padding: 14px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 16px; }
+        .generate-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .generate-btn.blue { background: var(--blue); }
+        .output-area { margin-top: 24px; display: none; }
+        .output-card { background: var(--surface); border: 1px solid var(--gold); border-radius: 20px; padding: 20px; position: relative; }
+        .copy-btn { position: absolute; top: 12px; right: 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 40px; padding: 4px 12px; cursor: pointer; font-size: 11px; color: var(--text); }
+        pre { white-space: pre-wrap; font-family: monospace; font-size: 13px; margin-top: 20px; max-height: 450px; overflow-y: auto; color: var(--text); background: var(--surface); }
+        .hint { font-size: 11px; color: var(--text-muted); margin-top: 10px; text-align: center; }
+        .key-status { display: flex; align-items: center; gap: 8px; margin-top: 8px; font-size: 11px; color: var(--text); }
+        .test-result { margin-top: 8px; font-size: 11px; padding: 6px 10px; border-radius: 8px; background: var(--surface); display: none; color: var(--text); }
+        .checkbox-group { display: flex; align-items: center; gap: 12px; margin: 12px 0 8px; color: var(--text); }
+        .status-msg { font-size: 12px; margin-top: 8px; padding: 8px; border-radius: 12px; background: var(--surface); border-left: 3px solid var(--gold); word-break: break-word; color: var(--text); }
+        .success { border-left-color: var(--green); }
+        .error { border-left-color: var(--red); }
+        .code-block { background: var(--bg); padding: 12px; border-radius: 12px; font-family: monospace; font-size: 11px; overflow-x: auto; margin-top: 8px; white-space: pre-wrap; color: var(--text); }
+        .social-preview { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text); }
+        .social-preview strong { color: var(--gold); }
+        .youtube-meta-preview { background: var(--bg); border-radius: 16px; padding: 12px; margin-top: 10px; border-left: 3px solid var(--gold); }
+        .ai-principle-toggle { display: flex; align-items: flex-start; gap: 12px; background: var(--bg); padding: 12px 14px; border-radius: 16px; margin-top: 12px; margin-bottom: 8px; border: 1px solid var(--border); }
+        .toggle-switch { position: relative; display: inline-block; width: 44px; height: 24px; flex-shrink: 0; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: 0.2s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: 0.2s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--gold); }
+        input:checked + .slider:before { transform: translateX(20px); }
+        .principle-text { font-size: 13px; line-height: 1.4; color: var(--text); background: var(--surface); padding: 8px 12px; border-radius: 12px; border-left: 3px solid var(--gold); flex: 1; }
+        .principle-text small { display: block; color: var(--text-muted); font-size: 10px; margin-top: 4px; }
+        .script-copy-container { position: relative; margin-top: 12px; }
+        .copy-script-btn { position: absolute; top: 8px; right: 8px; background: var(--surface); border: 1px solid var(--border); border-radius: 40px; padding: 4px 12px; font-size: 11px; cursor: pointer; z-index: 2; color: var(--text); }
+
+        .strategy-progress { background: var(--bg); border-radius: 16px; padding: 16px; margin-bottom: 16px; display: none; }
+        .progress-bar-wrap { background: var(--border); border-radius: 20px; height: 8px; margin: 10px 0; overflow: hidden; }
+        .progress-bar { height: 8px; background: var(--gold); border-radius: 20px; transition: width 0.4s ease; width: 0%; }
+        .progress-label { font-size: 12px; color: var(--text-muted); }
+        .strategy-log { font-size: 11px; font-family: monospace; background: var(--bg); border-radius: 12px; padding: 10px; max-height: 200px; overflow-y: auto; margin-top: 8px; color: var(--text-muted); display: none; }
+        .course-badge-group { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+        .course-badge, .lang-badge { padding: 6px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 40px; font-size: 12px; cursor: pointer; color: var(--text); }
+        .course-badge.selected, .lang-badge.selected { border-color: var(--blue); background: rgba(37,99,235,0.08); color: var(--blue); }
+        .lang-badge.language-selected { border-color: var(--green); background: rgba(76,139,110,0.1); color: var(--green); }
+        .strategy-table-wrap { overflow-x: auto; margin-top: 16px; display: none; }
+        table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        th { background: var(--gold); color: white; padding: 8px 10px; text-align: left; white-space: nowrap; }
+        td { padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: top; color: var(--text); }
+        tr:nth-child(even) td { background: var(--bg); }
+        td.topic-cell { font-weight: 600; color: var(--gold); min-width: 200px; }
+        td.script-cell { max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .expand-btn { font-size: 10px; color: var(--gold); cursor: pointer; border: none; background: none; padding: 2px 6px; }
+        #modelSelectorWrap { display:flex !important; align-items:center; gap:10px; flex-wrap:wrap; padding:10px 14px; background:var(--bg); border:1px solid var(--border); border-radius:14px; }
+        #modelSelectorWrap select { margin-bottom:0; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>AISprint<span>.app</span> · HeyGen Studio + Strategy Planner</h1>
+        <button class="theme-btn" id="themeToggle">🌙 Dark Mode</button>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="script">🎬 Script Generator</button>
+        <button class="tab-btn" data-tab="strategy">📅 30-Day Strategy Planner</button>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- TAB 1: SCRIPT GENERATOR (original) -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <div class="tab-panel active" id="tab-script">
+
+        <!-- Google Script URL -->
+        <div class="card">
+            <label class="label">📎 Google Apps Script Web App URL</label>
+            <div class="api-row">
+                <input type="url" id="googleScriptUrl" placeholder="https://script.google.com/macros/s/.../exec">
+                <button class="btn" id="saveUrlBtn">💾 Save URL</button>
+                <button class="btn" id="testSheetBtn">🔌 Test Connection</button>
+                <button class="btn" id="openGetBtn" style="background:#4c8b6e; color:white;">🌐 Open GET URL</button>
+                <button class="btn btn-danger" id="deleteUrlBtn">🗑️ Delete</button>
+            </div>
+            <div id="urlStatus" style="font-size:11px; margin-top:4px; color: var(--text-muted);"></div>
+            <div id="sheetTestResult" class="status-msg" style="display: none;"></div>
+
+            <div class="hint" style="margin-top: 12px; text-align: left;">
+                <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px; flex-wrap:wrap;">
+                    <strong>📋 Google Apps Script (monthly + Video_Strategy sheet):</strong>
+                    <button class="btn" id="toggleAppsScriptBtn" onclick="toggleAppsScript()" style="font-size:11px; padding:4px 14px; border-color:var(--gold); color:var(--gold);">▼ Show Code</button>
+                </div>
+                <div id="appsScriptWrapper" style="display:none;">
+                <div class="script-copy-container">
+                    <button class="copy-script-btn" id="copyAppsScriptBtn">📄 Copy Script</button>
+                    <div class="code-block" id="appsScriptCodeBlock">
+function getOrCreateMonthlySheet() {
+  var now = new Date();
+  var year = now.getFullYear();
+  var monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  var sheetName = year + "-" + monthNames[now.getMonth()];
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName(sheetName);
+  if (!sheet) {
+    sheet = ss.insertSheet(sheetName);
+    var headers = ["", "Timestamp", "Video_Idea", "Target_Length", "Generated_Script", "Facebook_Post", "Threads_Post", "Instagram_Post", "Twitter_Post", "Linkedln_Post", "YouTube_Video_Title", "YouTube_Video_Description", "YouTube_Tags"];
+    sheet.getRange(1,1,1,headers.length).setValues([headers]);
+  }
+  return sheet;
+}
+
+function getOrCreateStrategySheet() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName("Video_Strategy");
+  if (!sheet) {
+    sheet = ss.insertSheet("Video_Strategy");
+    var headers = ["Day", "Timestamp", "Target_Course", "Video_Topic", "Generated_Script", "Facebook_Post", "Threads_Post", "Instagram_Post", "Twitter_Post", "Linkedln_Post", "YouTube_Video_Title", "YouTube_Video_Description", "YouTube_Tags", "Thumbnail_Text", "Prompt_Thumbnail", "Prompt_AI_Scene", "Prompt_Title_Card"];
+    sheet.getRange(1,1,1,headers.length).setValues([headers]);
+  }
+  return sheet;
+}
+
+function doPost(e) {
+  try {
+    var data = e.parameter;
+    var row, sheet;
+    if (data.sheet_type === "strategy") {
+      sheet = getOrCreateStrategySheet();
+      row = [
+        data.Day || "",
+        data.Timestamp || new Date().toISOString(),
+        data.Target_Course || "",
+        data.Video_Topic || "",
+        data.Generated_Script || "",
+        data.Facebook_Post || "",
+        data.Threads_Post || "",
+        data.Instagram_Post || "",
+        data.Twitter_Post || "",
+        data.Linkedln_Post || "",
+        data.YouTube_Video_Title || "",
+        data.YouTube_Video_Description || "",
+        data.YouTube_Tags || "",
+        data.Thumbnail_Text || "",
+        data.Prompt_Thumbnail || "",
+        data.Prompt_AI_Scene || "",
+        data.Prompt_Title_Card || ""
+      ];
+    } else {
+      sheet = getOrCreateMonthlySheet();
+      row = [
+        "",
+        data.Timestamp || new Date().toISOString(),
+        data.Video_Idea || "",
+        data.Target_Length || "",
+        data.Generated_Script || "",
+        data.Facebook_Post || "",
+        data.Threads_Post || "",
+        data.Instagram_Post || "",
+        data.Twitter_Post || "",
+        data.Linkedln_Post || "",
+        data.YouTube_Video_Title || "",
+        data.YouTube_Video_Description || "",
+        data.YouTube_Tags || ""
+      ];
+    }
+    sheet.appendRow(row);
+    return ContentService.createTextOutput(JSON.stringify({result:"success"})).setMimeType(ContentService.MimeType.JSON);
+  } catch(err) {
+    return ContentService.createTextOutput(JSON.stringify({result:"error", error: err.toString()})).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function doGet() {
+  return ContentService.createTextOutput("Apps Script is alive. Supports monthly sheet + Video_Strategy sheet.").setMimeType(ContentService.MimeType.TEXT);
+}
+                    </div>
+                </div>
+                </div><!-- end appsScriptWrapper -->
+                <div id="appsScriptDeployNote" style="display:none; margin-top:8px;">
+                <strong>📌 Deployment:</strong> Save → Deploy → New deployment → Web app → Execute as: "Me" → Access: "Anyone" → Deploy → Copy URL.<br>
+                ✅ Now handles both monthly script sheet and Video_Strategy sheet automatically.
+                </div><!-- end appsScriptDeployNote -->
+            </div>
+        </div>
+
+        <!-- AI Provider -->
+        <div class="card">
+            <label class="label">🧠 AI Engine</label>
+            <div class="provider-group" id="providerSelector">
+                <div class="provider-badge" data-provider="deepseek">DeepSeek</div>
+                <div class="provider-badge" data-provider="openai">OpenAI</div>
+                <div class="provider-badge" data-provider="anthropic">Claude</div>
+                <div class="provider-badge" data-provider="gemini">Gemini</div>
+                <div class="provider-badge" data-provider="perplexity">Perplexity</div>
+                <div class="provider-badge" data-provider="custom">Custom</div>
+            </div>
+
+            <!-- Per-provider model selector -->
+            <div id="modelSelectorWrap" style="margin-bottom:12px; display:none;">
+                <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+                    <label style="font-size:12px; font-weight:600; color:var(--text-muted); white-space:nowrap;">🤖 Model:</label>
+                    <select id="modelSelector" style="flex:1; min-width:220px; margin-bottom:0; font-size:13px; border-color:var(--gold);">
+                        <option value="">-- select provider first --</option>
+                    </select>
+                    <span id="modelBadge" style="font-size:10px; padding:3px 10px; border-radius:20px; background:rgba(181,124,28,0.12); color:var(--gold); border:1px solid var(--gold); white-space:nowrap;"></span>
+                </div>
+                <div id="modelNote" style="font-size:10px; color:var(--text-muted); margin-top:4px;"></div>
+            </div>
+            <div class="api-row">
+                <input type="password" id="apiKeyInput" placeholder="API Key">
+                <button class="btn" id="saveApiBtn">💾 Save</button>
+                <button class="btn btn-danger" id="deleteApiBtn">🗑️ Delete</button>
+                <button class="btn" id="healthCheckBtn">🔍 Health Check</button>
+            </div>
+            <div id="customEndpointGroup" style="display: none;">
+                <input type="text" id="customEndpoint" placeholder="Custom endpoint (e.g., https://api.openai.com/v1/chat/completions)">
+            </div>
+            <div id="keyStatus" class="key-status"></div>
+            <div id="testResult" class="test-result"></div>
+        </div>
+
+        <!-- Optional Image -->
+        <div class="card">
+            <label class="label">🖼️ Optional image (vision AI: OpenAI/Claude/Gemini)</label>
+            <input type="file" id="imageUpload" accept="image/jpeg,image/png">
+            <div class="image-preview" id="previewContainer"><img id="previewImage" src="#"></div>
+            <small id="visionNote" style="color: var(--text-muted);"></small>
+        </div>
+
+        <!-- Script Parameters -->
+        <div class="card">
+            <label class="label">🎯 Video topic / concept</label>
+            <textarea id="videoTopic" rows="4" placeholder="Example: Why 5 AM routines are overrated – the science of chronotypes"></textarea>
+            <div style="display:flex; gap:8px; margin-bottom:8px; flex-wrap:wrap;">
+                <button class="btn" id="suggestHookBtn" style="border-color:var(--gold); color:var(--gold); font-size:12px;">🪝 Suggest Hooks</button>
+                <span style="font-size:11px; color:var(--text-muted); align-self:center;">AI generates 5 scroll-stopping hooks for your topic</span>
+            </div>
+            <div id="hookSuggestions" style="display:none; background:var(--bg); border:1px solid var(--border); border-radius:14px; padding:12px; margin-bottom:12px;">
+                <div style="font-size:11px; font-weight:700; color:var(--gold); margin-bottom:8px;">🪝 Hook Suggestions — click to use:</div>
+                <div id="hookSuggestionsList"></div>
+            </div>
+
+            <div class="ai-principle-toggle">
+                <label class="toggle-switch">
+                    <input type="checkbox" id="aiPrincipleToggle">
+                    <span class="slider"></span>
+                </label>
+                <div class="principle-text">
+                    ✨ <strong>Include AI principle statement</strong><br>
+                    "Artificial Intelligence is transforming every industry, but it will not replace human professionals. [[pause:0.3s]] Instead, [[confident]] those who master AI tools will outpace those who do not."
+                    <small>Adds motivational AI mantra into script.</small>
+                </div>
+            </div>
+
+            <label class="label">📱 Platform style</label>
+            <select id="platform">
+                <option value="YouTube">YouTube (detailed, storytelling)</option>
+                <option value="TikTok/Shorts">TikTok/Shorts (fast, punchy)</option>
+            </select>
+
+            <label class="label">⏱️ Target length</label>
+            <div class="row-flex">
+                <select id="lengthPreset" style="flex:1">
+                    <option value="">-- Preset --</option>
+                    <option value="30 seconds">30 seconds</option>
+                    <option value="60 seconds">60 seconds</option>
+                    <option value="90 seconds">90 seconds</option>
+                    <option value="120 seconds">2 minutes</option>
+                    <option value="180 seconds">3 minutes</option>
+                </select>
+                <input type="text" id="lengthCustom" placeholder="Custom (e.g., 45 seconds)" style="flex:1">
+            </div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="heygenExpressions" checked>
+                <label>🎭 Add HeyGen expression tags ([[smile]], [[pause]], [[excited]], etc.)</label>
+            </div>
+        </div>
+
+        <button class="generate-btn" id="generateBtn">✨ Generate Script + Posts + YouTube Meta → Sheet</button>
+
+        <div class="output-area" id="outputArea">
+            <div class="output-card">
+                <button class="copy-btn" id="copyBtn">📋 Copy Script</button>
+                <pre id="outputText"></pre>
+                <div id="socialPreview" class="social-preview" style="display:none;"></div>
+                <div id="youtubeMetaPreview" class="youtube-meta-preview" style="display:none;"></div>
+                <div class="hint" id="outputHint"></div>
+            </div>
+        </div>
+    </div><!-- end tab-script -->
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- TAB 2: STRATEGY PLANNER (UPDATED with new courses + language course) -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <div class="tab-panel" id="tab-strategy">
+
+        <!-- CARD 1: Course + Competitors -->
+        <div class="card">
+            <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; margin-bottom:6px;">
+                <label class="label" style="margin-bottom:0;">🎯 Target Course (select one or more)</label>
+                <div id="curriculumStatusBadge" style="font-size:10px; padding:4px 10px; border-radius:20px; background:rgba(76,139,110,0.12); border:1px solid var(--green); color:var(--green); white-space:nowrap;">📚 Loading curriculum...</div>
+            </div>
+            <div class="course-badge-group" id="courseBadgeGroup">
+                <div class="course-badge selected" data-course="All Courses">🌐 All Courses</div>
+                <div class="course-badge" data-course="28-Day AI Skills Challenge">📅 28-Day AI Skills</div>
+                <div class="course-badge" data-course="Mastering Accounting with AI Integrations">📊 Accounting</div>
+                <div class="course-badge" data-course="Mastering AI in Architecture & Interior Design">🏛️ Architecture</div>
+                <div class="course-badge" data-course="Mastering AI in Vibe Coding & IOP">💻 Vibe Coding</div>
+                <div class="course-badge" data-course="Mastering Agentic AI & Multi-Agent Systems">🤖 Agentic AI</div>
+                <div class="course-badge" data-course="Mastering AI Strategy for Business Leaders">📈 Strategy</div>
+                <!-- NEW COURSES ADDED -->
+                <div class="course-badge" data-course="Mastering AI for Writers">✍️ Writers</div>
+                <div class="course-badge" data-course="Mastering AI for GIS and Spatial">🗺️ GIS & Spatial AI</div>
+                <div class="course-badge" data-course="Mastering AI for CyberSecurity">🛡️ CyberSecurity</div>
+                <div class="course-badge" data-course="Mastering AI for Product Marketing">📢 Product Marketing</div>
+                <div class="course-badge" data-course="Mastering AI for Sales Professionals">💼 Sales</div>
+                <div class="course-badge" data-course="Mastering AI for HR Professionals">👥 HR</div>
+            </div>
+
+            <!-- NEW: LANGUAGE COURSE SECTION -->
+            <label class="label" style="margin-top: 16px;">🌍 Language Course (offered languages)</label>
+            <div class="course-badge-group" id="languageCourseGroup">
+                <div class="lang-badge" data-lang-course="All Languages">🌐 All Languages</div>
+                <div class="lang-badge" data-lang-course="Mandarin">🇨🇳 Mandarin Course</div>
+                <div class="lang-badge" data-lang-course="Cantonese">🇭🇰 Cantonese Course</div>
+                <div class="lang-badge" data-lang-course="Japanese">🇯🇵 Japanese Course</div>
+                <div class="lang-badge" data-lang-course="Korean">🇰🇷 Korean Course</div>
+                <div class="lang-badge" data-lang-course="Spanish">🇪🇸 Spanish Course</div>
+                <div class="lang-badge" data-lang-course="French">🇫🇷 French Course</div>
+            </div>
+
+            <label class="label">🏆 Competitor Research <span style="font-weight:400; color:var(--text-muted); font-size:11px;">(helps AI generate gap-winning topics)</span></label>
+            <div style="background:var(--bg); border-radius:14px; padding:14px; margin-bottom:12px; border:1px solid var(--border);">
+                <div style="font-size:11px; color:var(--text-muted); margin-bottom:10px;">📌 Select competitors to differentiate from (one or multiple):</div>
+
+                <!-- Platforms -->
+                <div style="font-size:11px; font-weight:700; color:var(--gold); margin-bottom:6px; text-transform:uppercase; letter-spacing:.08em;">🎓 Course Platforms</div>
+                <div class="course-badge-group" id="competitorBadgeGroup" style="margin-bottom:12px;">
+                    <div class="course-badge selected" data-competitor="Coursera">🎓 Coursera</div>
+                    <div class="course-badge selected" data-competitor="Udemy">📚 Udemy</div>
+                    <div class="course-badge selected" data-competitor="LinkedIn Learning">💼 LinkedIn Learning</div>
+                    <div class="course-badge" data-competitor="DataCamp">📊 DataCamp</div>
+                    <div class="course-badge" data-competitor="Skillshare">🎨 Skillshare</div>
+                    <div class="course-badge" data-competitor="edX">🏫 edX</div>
+                    <div class="course-badge" data-competitor="Pluralsight">💻 Pluralsight</div>
+                </div>
+
+                <!-- YouTube Creators -->
+                <div style="font-size:11px; font-weight:700; color:var(--gold); margin-bottom:6px; text-transform:uppercase; letter-spacing:.08em;">📹 YouTube Creators</div>
+                <div class="course-badge-group" id="competitorYTGroup" style="margin-bottom:12px;">
+                    <div class="course-badge" data-competitor="Andrew Ng">🧠 Andrew Ng</div>
+                    <div class="course-badge" data-competitor="Ali Abdaal">📖 Ali Abdaal</div>
+                    <div class="course-badge" data-competitor="AI Jason">🤖 AI Jason</div>
+                    <div class="course-badge" data-competitor="NetworkChuck">🌐 NetworkChuck</div>
+                    <div class="course-badge" data-competitor="TechWithTim">⌨️ TechWithTim</div>
+                    <div class="course-badge" data-competitor="Matt Wolfe">🎬 Matt Wolfe</div>
+                    <div class="course-badge" data-competitor="Tina Huang">📈 Tina Huang</div>
+                </div>
+
+                <!-- Other input -->
+                <div style="font-size:11px; font-weight:700; color:var(--gold); margin-bottom:6px; text-transform:uppercase; letter-spacing:.08em;">➕ Other Competitors</div>
+                <input type="text" id="competitorOther" placeholder="Add others: e.g. DeepLearning.AI, fast.ai, Google AI courses, specific YouTube channels..." style="margin-bottom:4px;">
+                <div style="font-size:10px; color:var(--text-muted);">Comma-separated. These will be combined with your selections above.</div>
+            </div>
+
+            <label class="label">🎯 Target Audience <span style="font-weight:400; color:var(--text-muted); font-size:11px;">(who is watching?)</span></label>
+            <input type="text" id="audienceInput" placeholder="e.g. accountants, architects, business leaders, VAs, freelancers, working professionals over 30" value="working professionals with no coding background, accountants, architects, business strategists, VAs, freelancers">
+
+            <label class="label" style="margin-top:10px;">💡 Extra Considerations <span style="font-weight:400; color:var(--text-muted); font-size:11px;">(subjects, ideas, or topics for AI to consider)</span></label>
+            <textarea id="extraConsiderationsInput" rows="3" placeholder="e.g. emphasise no coding required&#10;mention 15-min daily format&#10;include HK-specific professional examples&#10;reference upcoming GIS &amp; Spatial AI course"></textarea>
+            <div style="font-size:11px; color:var(--text-muted); margin-top:2px; margin-bottom:4px;">These will be added to every AI generation call as extra context.</div>
+
+            <label class="label">🔥 Viral Angles <span style="font-weight:400; color:var(--text-muted); font-size:11px;">(select all that apply)</span></label>
+            <div class="course-badge-group" id="angleBadgeGroup">
+                <div class="course-badge selected" data-angle="How to">💡 How to</div>
+                <div class="course-badge selected" data-angle="Why">🤔 Why</div>
+                <div class="course-badge selected" data-angle="I tried">🧪 I tried</div>
+                <div class="course-badge selected" data-angle="Stop doing">🚫 Stop doing</div>
+                <div class="course-badge selected" data-angle="Truth about">🔍 Truth about</div>
+                <div class="course-badge" data-angle="Beginner mistakes">❌ Beginner mistakes</div>
+                <div class="course-badge" data-angle="Secret to">🔐 Secret to</div>
+                <div class="course-badge" data-angle="vs comparison">⚔️ vs comparison</div>
+                <div class="course-badge" data-angle="In 15 minutes">⏱️ In 15 minutes</div>
+                <div class="course-badge" data-angle="No one tells you">🤫 No one tells you</div>
+            </div>
+
+            <label class="label" style="margin-top:12px;">🎯 Keyword Intent Mix</label>
+            <div class="course-badge-group" id="intentBadgeGroup">
+                <div class="course-badge selected" data-intent="informational">📚 Informational (How/What/Why)</div>
+                <div class="course-badge selected" data-intent="commercial">💰 Commercial (Best/Top/Compare)</div>
+                <div class="course-badge selected" data-intent="inspirational">🚀 Inspirational (Future-proof/Transform)</div>
+            </div>
+
+            <!-- Hook Suggester for Strategy Planner -->
+            <div style="margin-top:4px; padding:14px; background:var(--bg); border:1px dashed var(--gold); border-radius:14px;">
+                <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:8px;">
+                    <span style="font-size:13px; font-weight:600; color:var(--text);">🪝 Hook Idea Generator</span>
+                    <button class="btn" id="strategyHookSuggestBtn" style="border-color:var(--gold); color:var(--gold); font-size:12px;">💡 Suggest Hook Topics</button>
+                    <span style="font-size:11px; color:var(--text-muted);">Get viral hook ideas based on your course &amp; audience</span>
+                </div>
+                <div id="strategyHookPanel" style="display:none;">
+                    <div id="strategyHookList" style="margin-top:6px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 2: Content Settings -->
+        <div class="card">
+            <label class="label">📱 Platform Style</label>
+            <select id="strategyPlatform">
+                <option value="YouTube">YouTube (detailed, storytelling, 7-minute avg)</option>
+                <option value="TikTok/Shorts">TikTok/Shorts (fast, punchy, hook in 3 seconds)</option>
+                <option value="Both">Both YouTube + Shorts versions</option>
+            </select>
+
+            <label class="label">⏱️ Default Script Length</label>
+            <select id="strategyLength">
+                <option value="60 seconds">60 seconds (~140 words)</option>
+                <option value="90 seconds">90 seconds (~210 words)</option>
+                <option value="120 seconds" selected>2 minutes (~280 words)</option>
+                <option value="180 seconds">3 minutes (~420 words)</option>
+                <option value="300 seconds">5 minutes (~700 words)</option>
+            </select>
+
+            <label class="label">📆 Number of Days to Generate</label>
+            <div class="row-flex">
+                <input type="number" id="numDays" value="30" min="1" max="90" style="max-width:120px; margin-bottom:0;">
+                <span style="font-size:13px; color:var(--text-muted);">days of content (1–90 max)</span>
+            </div>
+
+            <label class="label" style="margin-top:12px;">⚡ Generation Speed</label>
+            <select id="generationSpeed">
+                <option value="800">Normal (800ms between days — safest)</option>
+                <option value="400">Fast (400ms — may hit rate limits)</option>
+                <option value="1500">Slow (1.5s — most reliable for long plans)</option>
+            </select>
+
+            <div class="ai-principle-toggle" style="margin-top:16px;">
+                <label class="toggle-switch">
+                    <input type="checkbox" id="strategyPrincipleToggle" checked>
+                    <span class="slider"></span>
+                </label>
+                <div class="principle-text">
+                    ✨ <strong>Include AI principle statement in scripts</strong>
+                    <small>"AI won't replace professionals. It will replace those who refuse to learn."</small>
+                </div>
+            </div>
+
+            <div class="ai-principle-toggle">
+                <label class="toggle-switch">
+                    <input type="checkbox" id="strategyHeygenToggle" checked>
+                    <span class="slider"></span>
+                </label>
+                <div class="principle-text">
+                    🎭 <strong>Add HeyGen expression tags in scripts</strong>
+                    <small>[[smile]], [[pause:0.3s]], [[confident]], [[excited]] etc.</small>
+                </div>
+            </div>
+
+            <div class="ai-principle-toggle">
+                <label class="toggle-switch">
+                    <input type="checkbox" id="strategyHookToggle" checked>
+                    <span class="slider"></span>
+                </label>
+                <div class="principle-text">
+                    🪝 <strong>Generate retention-optimized opening hook</strong>
+                    <small>First 3-5 seconds designed to stop the scroll and keep viewers watching.</small>
+                </div>
+            </div>
+
+            <div class="ai-principle-toggle">
+                <label class="toggle-switch">
+                    <input type="checkbox" id="strategySaveSheetToggle" checked>
+                    <span class="slider"></span>
+                </label>
+                <div class="principle-text">
+                    📊 <strong>Save each day to Google Sheets (Video_Strategy)</strong>
+                    <small>Uncheck to preview only without saving to sheet.</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 3: Script Parts + Extra Considerations -->
+        <div class="card">
+
+            <!-- ── Script Parts ───────────────────────────────────────── -->
+            <label class="label">✂️ Divide Script Into How Many Parts? <span style="font-weight:400; color:var(--text-muted); font-size:11px;">(for HeyGen — each part = one avatar/scene)</span></label>
+            <div style="background:var(--bg); border-radius:14px; padding:14px; margin-bottom:18px; border:1px solid var(--border);">
+                <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap; margin-bottom:10px;">
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <button class="btn" id="partDecBtn" style="width:32px;height:32px;padding:0;font-size:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;">−</button>
+                        <input type="number" id="scriptPartsInput" value="1" min="1" max="12" style="width:60px; text-align:center; font-size:16px; font-weight:700; margin-bottom:0; border-color:var(--gold);">
+                        <button class="btn" id="partIncBtn" style="width:32px;height:32px;padding:0;font-size:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;">+</button>
+                        <span style="font-size:12px; color:var(--text-muted);">parts — script will be split into equal sections labelled <strong>Part 1 / Part 2…</strong></span>
+                    </div>
+                </div>
+                <!-- Live parts preview -->
+                <div style="padding:10px; background:var(--surface); border-radius:10px; border-left:3px solid var(--gold);">
+                    <div style="font-size:10px; font-weight:700; color:var(--gold); margin-bottom:4px;">📝 SCRIPT STRUCTURE PREVIEW</div>
+                    <div id="scriptPartsPreview" style="font-size:11px; font-family:monospace; color:var(--text-muted); line-height:1.8;"></div>
+                </div>
+            </div>
+
+            <!-- ── Extra Considerations ───────────────────────────────── -->
+            <label class="label">💡 Extra Considerations <span style="font-weight:400; color:var(--text-muted); font-size:11px;">(topics, ideas, or subjects you want the AI to factor in)</span></label>
+            <textarea id="extraConsiderationsInput2" rows="4" placeholder="e.g. emphasise that AI won't replace accountants — it replaces those who refuse to learn&#10;mention the 15-minute daily format&#10;include real-world use cases for Hong Kong professionals&#10;reference the upcoming GIS & Spatial AI course&#10;stress that no coding is required for L1 courses"></textarea>
+            <div style="font-size:11px; color:var(--text-muted); margin-top:4px;">These will be injected into every script prompt as additional context the AI must consider.</div>
+        </div>
+
+        <div style="display:flex; gap:10px; align-items:stretch;">
+            <button class="generate-btn blue" id="strategyGenerateBtn" style="flex:1; margin-top:16px;">🚀 Generate Best-in-Class Strategy Plan → Video_Strategy Sheet</button>
+            <button class="generate-btn" id="strategyStopBtn" style="flex:0 0 auto; width:140px; margin-top:16px; background:var(--red); display:none;" title="Stop after current day finishes">⏹ Stop</button>
+        </div>
+
+        <!-- Progress -->
+        <div class="strategy-progress" id="strategyProgress">
+            <div class="progress-label" id="progressLabel">Preparing...</div>
+            <div class="progress-bar-wrap"><div class="progress-bar" id="progressBar"></div></div>
+            <div class="strategy-log" id="strategyLog"></div>
+        </div>
+
+        <!-- Results Table -->
+        <div class="strategy-table-wrap" id="strategyTableWrap">
+            <div class="output-card" style="border-color: var(--blue);">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
+                    <h3 style="color:var(--blue);">📅 Generated Strategy Plan</h3>
+                    <div style="display:flex; gap:8px;">
+                        <button class="btn" id="exportCsvBtn" style="background:var(--green);color:white;border-color:var(--green);">📥 Export CSV</button>
+                        <button class="btn" id="clearTableBtn" style="border-color:var(--red);color:var(--red);">🗑️ Clear</button>
+                    </div>
+                </div>
+                <div id="strategyHint" class="hint" style="margin-bottom:12px;"></div>
+                <table id="strategyTable">
+                    <thead>
+                        <tr>
+                            <th>Day</th>
+                            <th>🔥</th>
+                            <th>Course</th>
+                            <th>Angle</th>
+                            <th>Video Topic</th>
+                            <th>Hook</th>
+                            <th>Script (preview)</th>
+                            <th>FB</th>
+                            <th>Threads</th>
+                            <th>IG</th>
+                            <th>Twitter</th>
+                            <th>LinkedIn</th>
+                            <th>YT Title</th>
+                            <th>YT Tags</th>
+                            <th>🖼️ Thumbnail Text</th>
+                            <th>📸 Prompt: Thumbnail</th>
+                            <th>🎨 Prompt: AI Scene</th>
+                            <th>🎬 Prompt: Title Card</th>
+                        </tr>
+                    </thead>
+                    <tbody id="strategyTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div><!-- end tab-strategy -->
+
+</div><!-- end container -->
+
+<script>
+// ═══════════════════════════════════════════
+// SHARED UTILITIES (fully preserved from original)
+// ═══════════════════════════════════════════
+function getUserLocalTimestamp() {
+    const now = new Date();
+    return now.toLocaleString([], { year:'numeric', month:'numeric', day:'numeric', hour:'2-digit', minute:'2-digit', hour12:false });
+}
+
+function lengthToWordCount(lengthStr) {
+    let totalSeconds = 0;
+    const lower = lengthStr.toLowerCase();
+    const minuteMatch = lower.match(/(\d+(?:\.\d+)?)\s*minutes?/);
+    const secondMatch = lower.match(/(\d+(?:\.\d+)?)\s*seconds?/);
+    if (minuteMatch) totalSeconds += parseFloat(minuteMatch[1]) * 60;
+    if (secondMatch) totalSeconds += parseFloat(secondMatch[1]);
+    if (totalSeconds === 0) { const num = parseFloat(lower); totalSeconds = isNaN(num) ? 60 : num; }
+    return Math.max(Math.round(totalSeconds * 2.33), 25);
+}
+
+function escapeHtml(str) {
+    return str.replace(/[&<>]/g, m => m==='&'?'&amp;':m==='<'?'&lt;':'&gt;');
+}
+
+// ─── Model catalogue (UPDATED: Jun 14, 2026)
+const MODEL_CATALOGUE = {
+    deepseek: [
+        { id:'deepseek-v4-pro',       label:'DeepSeek V4 Pro ✨',         note:'Latest flagship — 1M context, top reasoning (Apr 24, 2026)' },
+        { id:'deepseek-v4-flash',     label:'DeepSeek V4 Flash',          note:'Fast V4 — default alias for deepseek-chat (Apr 24, 2026)' },
+        { id:'deepseek-r1',           label:'DeepSeek R1',                note:'Open-source reasoning model — thinking mode' },
+    ],
+    openai: [
+        { id:'gpt-5.5',               label:'GPT-5.5 ✨',                 note:'Current OpenAI flagship — API available (Apr 24, 2026)' },
+        { id:'gpt-5.5-pro',           label:'GPT-5.5 Pro',               note:'Max capability GPT-5.5 variant' },
+        { id:'gpt-5.4',               label:'GPT-5.4',                    note:'Previous flagship (Mar 2026)' },
+        { id:'gpt-5.4-mini',          label:'GPT-5.4 mini',               note:'Fast & affordable — recommended for high-volume' },
+        { id:'gpt-5.4-nano',          label:'GPT-5.4 nano',               note:'Fastest & cheapest GPT-5.4 variant' },
+        { id:'gpt-5',                 label:'GPT-5',                      note:'Original GPT-5 (Aug 2025)' },
+        { id:'gpt-4o',                label:'GPT-4o',                     note:'Older gen — still solid for multimodal+audio' },
+    ],
+    anthropic: [
+        { id:'claude-fable-5',            label:'Claude Fable 5 ✨',          note:'Mythos-class — most capable public model (Jun 9, 2026)' },
+        { id:'claude-opus-4-8',           label:'Claude Opus 4.8',            note:'Most reliable Opus — 4x fewer coding errors (May 28, 2026)' },
+        { id:'claude-opus-4-7',           label:'Claude Opus 4.7',            note:'Previous Opus flagship (Apr 16, 2026)' },
+        { id:'claude-sonnet-4-6',         label:'Claude Sonnet 4.6',          note:'Best balance — speed + intelligence (Feb 2026)' },
+        { id:'claude-haiku-4-5-20251001', label:'Claude Haiku 4.5',           note:'Fastest & most affordable Claude (Oct 2025)' },
+    ],
+    gemini: [
+        { id:'gemini-3.5-flash',      label:'Gemini 3.5 Flash ✨',        note:'GA flagship — beats Pro on coding & agents! (May 19, 2026)' },
+        { id:'gemini-2.5-flash',      label:'Gemini 2.5 Flash',           note:'Previous gen fast model — stable' },
+        { id:'gemini-2.5-pro',        label:'Gemini 2.5 Pro',             note:'Previous gen top model — stable' },
+    ],
+    perplexity: [
+        { id:'sonar',                 label:'Sonar',                      note:'Fast, general purpose with web search (default)' },
+        { id:'sonar-pro',             label:'Sonar Pro',                  note:'More capable, higher quality + citations' },
+        { id:'sonar-reasoning',       label:'Sonar Reasoning',            note:'Chain-of-thought reasoning with live web search' },
+        { id:'sonar-deep-research',   label:'Sonar Deep Research',        note:'Exhaustive multi-step research with citations' },
+    ],
+    custom: []
+};
+
+let selectedModel = localStorage.getItem('archprompt_model') || '';
+
+function updateModelSelector(provider) {
+    const wrap = document.getElementById('modelSelectorWrap');
+    const sel  = document.getElementById('modelSelector');
+    const badge = document.getElementById('modelBadge');
+    const note  = document.getElementById('modelNote');
+
+    if (provider === 'custom') { wrap.style.display='none'; return; }
+    wrap.style.display = 'flex';
+    const models = MODEL_CATALOGUE[provider] || [];
+    sel.innerHTML = models.map(m =>
+        `<option value="${m.id}">${m.label}</option>`
+    ).join('');
+
+    // Restore saved model if it belongs to this provider, else default to first
+    const saved = localStorage.getItem('archprompt_model_' + provider);
+    const validSaved = models.find(m => m.id === saved);
+    sel.value = validSaved ? saved : (models[0]?.id || '');
+    selectedModel = sel.value;
+
+    const chosen = models.find(m => m.id === sel.value);
+    badge.textContent = chosen ? chosen.label : '';
+    note.textContent  = chosen ? chosen.note  : '';
+}
+
+document.getElementById('modelSelector').addEventListener('change', function() {
+    selectedModel = this.value;
+    localStorage.setItem('archprompt_model', selectedModel);
+    localStorage.setItem('archprompt_model_' + currentProvider, selectedModel);
+    const models = MODEL_CATALOGUE[currentProvider] || [];
+    const chosen = models.find(m => m.id === selectedModel);
+    document.getElementById('modelBadge').textContent = chosen ? chosen.label : '';
+    document.getElementById('modelNote').textContent  = chosen ? chosen.note  : '';
+    apiHealthy = false; updateKeyStatusUI();
+});
+
+// IMPROVED callAI with Perplexity integration
+async function callAI(prompt, maxTokens) {
+    const key = localStorage.getItem('archprompt_apikey');
+    const provider = currentProvider;
+    const mt = maxTokens || 1200;
+    const model = selectedModel || (MODEL_CATALOGUE[provider]?.[0]?.id || '');
+
+    if (provider === 'deepseek') {
+        let r = await fetch('https://api.deepseek.com/v1/chat/completions', {method:'POST', headers:{'Content-Type':'application/json','Authorization':`Bearer ${key}`}, body:JSON.stringify({model, messages:[{role:'user',content:prompt}], max_tokens:mt})});
+        let data = await r.json();
+        if (!r.ok) throw new Error(`DeepSeek error: ${data.error?.message || JSON.stringify(data)}`);
+        return data.choices[0].message.content;
+    } else if (provider === 'openai') {
+        let r = await fetch('https://api.openai.com/v1/chat/completions', {method:'POST', headers:{'Content-Type':'application/json','Authorization':`Bearer ${key}`}, body:JSON.stringify({model, messages:[{role:'user',content:prompt}], max_tokens:mt})});
+        let data = await r.json();
+        if (!r.ok) throw new Error(`OpenAI error: ${data.error?.message || JSON.stringify(data)}`);
+        return data.choices[0].message.content;
+    } else if (provider === 'anthropic') {
+        let r = await fetch('https://api.anthropic.com/v1/messages', {method:'POST', headers:{'x-api-key':key,'anthropic-version':'2023-06-01','Content-Type':'application/json'}, body:JSON.stringify({model, messages:[{role:'user',content:prompt}], max_tokens:mt})});
+        let data = await r.json();
+        if (!r.ok) throw new Error(`Claude error: ${data.error?.message || JSON.stringify(data)}`);
+        return data.content[0].text;
+    } else if (provider === 'gemini') {
+        let r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})});
+        let data = await r.json();
+        if (!r.ok || data.error) throw new Error(`Gemini error: ${data.error?.message || 'Unknown'}`);
+        return data.candidates[0].content.parts[0].text;
+    } else if (provider === 'perplexity') {
+        // Perplexity API (OpenAI-compatible)
+        let r = await fetch('https://api.perplexity.ai/chat/completions', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${key}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                model: model,
+                messages: [{ role: 'user', content: prompt }],
+                max_tokens: mt,
+                temperature: 0.7
+            })
+        });
+        let data = await r.json();
+        if (!r.ok) throw new Error(`Perplexity error: ${data.error?.message || JSON.stringify(data)}`);
+        return data.choices[0].message.content;
+    } else {
+        let ep = customEndpointInput.value.trim() || localStorage.getItem('archprompt_custom_endpoint') || 'https://api.openai.com/v1/chat/completions';
+        let r = await fetch(ep, {method:'POST', headers:{'Content-Type':'application/json','Authorization':`Bearer ${key}`}, body:JSON.stringify({model:'gpt-4o', messages:[{role:'user',content:prompt}], max_tokens:mt})});
+        let data = await r.json();
+        if (!r.ok) throw new Error(`Custom endpoint error: ${data.error?.message || JSON.stringify(data)}`);
+        return data.choices[0].message.content;
+    }
+}
+
+function parseJSON(raw) {
+    let m = raw.match(/\{[\s\S]*\}/);
+    if (m) try { return JSON.parse(m[0]); } catch(e) {}
+    return null;
+}
+
+async function postToSheet(payload) {
+    const googleUrl = googleUrlInput.value.trim();
+    if (!googleUrl) throw new Error('No Google Script URL saved');
+    const resp = await fetch(googleUrl, {method:'POST', mode:'cors', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body: new URLSearchParams(payload)});
+    const raw = await resp.text();
+    let json; try { json = JSON.parse(raw); } catch(e) { throw new Error(`Sheet error: ${raw.substring(0,200)}`); }
+    if (json.result !== 'success') throw new Error(json.error || 'Sheet write failed');
+}
+
+// ═══════════════════════════════════════════
+// TABS
+// ═══════════════════════════════════════════
+document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+    });
+});
+
+// ═══════════════════════════════════════════
+// PROVIDER + API KEY
+// ═══════════════════════════════════════════
+const googleUrlInput = document.getElementById('googleScriptUrl');
+const saveUrlBtn = document.getElementById('saveUrlBtn');
+const deleteUrlBtn = document.getElementById('deleteUrlBtn');
+const testSheetBtn = document.getElementById('testSheetBtn');
+const openGetBtn = document.getElementById('openGetBtn');
+const sheetTestResult = document.getElementById('sheetTestResult');
+const urlStatus = document.getElementById('urlStatus');
+const providerBadges = document.querySelectorAll('.provider-badge');
+const apiKeyInput = document.getElementById('apiKeyInput');
+const saveApiBtn = document.getElementById('saveApiBtn');
+const deleteApiBtn = document.getElementById('deleteApiBtn');
+const healthCheckBtn = document.getElementById('healthCheckBtn');
+const keyStatusDiv = document.getElementById('keyStatus');
+const testResultDiv = document.getElementById('testResult');
+const customEndpointGroup = document.getElementById('customEndpointGroup');
+const customEndpointInput = document.getElementById('customEndpoint');
+const imageUpload = document.getElementById('imageUpload');
+const previewContainer = document.getElementById('previewContainer');
+const previewImage = document.getElementById('previewImage');
+const visionNote = document.getElementById('visionNote');
+const videoTopic = document.getElementById('videoTopic');
+const platform = document.getElementById('platform');
+const lengthPreset = document.getElementById('lengthPreset');
+const lengthCustom = document.getElementById('lengthCustom');
+const generateBtn = document.getElementById('generateBtn');
+const outputArea = document.getElementById('outputArea');
+const outputText = document.getElementById('outputText');
+const outputHint = document.getElementById('outputHint');
+const copyBtn = document.getElementById('copyBtn');
+const themeToggle = document.getElementById('themeToggle');
+const heygenExpressionsCheckbox = document.getElementById('heygenExpressions');
+const socialPreview = document.getElementById('socialPreview');
+const youtubeMetaPreview = document.getElementById('youtubeMetaPreview');
+const aiPrincipleToggle = document.getElementById('aiPrincipleToggle');
+const copyAppsScriptBtn = document.getElementById('copyAppsScriptBtn');
+const appsScriptCodeBlock = document.getElementById('appsScriptCodeBlock');
+
+let currentProvider = localStorage.getItem('archprompt_provider') || 'deepseek';
+let apiHealthy = false;
+
+function setProvider(provider) {
+    currentProvider = provider;
+    providerBadges.forEach(b => b.classList.toggle('selected', b.dataset.provider === provider));
+    customEndpointGroup.style.display = provider === 'custom' ? 'block' : 'none';
+    localStorage.setItem('archprompt_provider', provider);
+    visionNote.innerHTML = (provider === 'openai' || provider === 'anthropic' || provider === 'gemini') ? '✅ Vision AI will read image.' : '⚠️ Text only.';
+    updateModelSelector(provider);
+    apiHealthy = false; updateKeyStatusUI();
+}
+providerBadges.forEach(b => b.addEventListener('click', () => setProvider(b.dataset.provider)));
+setProvider(currentProvider);
+if (localStorage.getItem('archprompt_custom_endpoint')) customEndpointInput.value = localStorage.getItem('archprompt_custom_endpoint');
+
+function updateKeyStatusUI() { let key = localStorage.getItem('archprompt_apikey'); if (!key) { keyStatusDiv.innerHTML = '🔑 No API key saved'; return; } keyStatusDiv.innerHTML = `🔑 Key saved: ${key.substring(0,8)}... ${apiHealthy ? '✅' : '⚠️'}`; }
+async function healthCheck() {
+    let k = localStorage.getItem('archprompt_apikey'); if (!k) { showTestResult('No API key', true); return false; }
+    try {
+        let ok=false;
+        if(currentProvider==='deepseek'){let r=await fetch('https://api.deepseek.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${k}`},body:JSON.stringify({model:'deepseek-chat',messages:[{role:'user',content:'ping'}],max_tokens:2})});ok=r.ok;}
+        else if(currentProvider==='openai'){let r=await fetch('https://api.openai.com/v1/models',{headers:{'Authorization':`Bearer ${k}`}});ok=r.ok;}
+        else if(currentProvider==='anthropic'){let r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'x-api-key':k,'anthropic-version':'2023-06-01','Content-Type':'application/json'},body:JSON.stringify({model:'claude-opus-4-7',max_tokens:1,messages:[{role:'user',content:'Hi'}]})});ok=r.status===200||r.status===400;}
+        else if(currentProvider==='gemini'){let r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${k}`);ok=r.ok;}
+        else if(currentProvider==='perplexity'){
+            let r=await fetch('https://api.perplexity.ai/chat/completions',{method:'POST',headers:{'Authorization':`Bearer ${k}`,'Content-Type':'application/json'},body:JSON.stringify({model:'sonar',messages:[{role:'user',content:'ping'}],max_tokens:1})});
+            ok=r.ok;
+        }
+        else{let ep=customEndpointInput.value.trim()||localStorage.getItem('archprompt_custom_endpoint')||'https://api.openai.com/v1/chat/completions';let r=await fetch(ep,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${k}`},body:JSON.stringify({model:'gpt-3.5-turbo',max_tokens:1,messages:[{role:'user',content:'test'}]})});ok=r.ok;}
+        apiHealthy=ok; updateKeyStatusUI(); showTestResult(ok?'Valid key':'Invalid key',!ok); return ok;
+    } catch(e){ showTestResult('Network error',true); return false; }
+}
+function showTestResult(msg, isErr) { testResultDiv.style.display='block'; testResultDiv.style.backgroundColor=isErr?'rgba(201,90,74,0.2)':'rgba(76,139,110,0.2)'; testResultDiv.innerHTML=msg; setTimeout(()=>testResultDiv.style.display='none',4000); }
+saveApiBtn.addEventListener('click', () => { let key=apiKeyInput.value.trim(); if(!key) return alert('Enter key'); localStorage.setItem('archprompt_apikey',key); if(currentProvider==='custom'){let ep=customEndpointInput.value.trim();if(ep)localStorage.setItem('archprompt_custom_endpoint',ep);} apiHealthy=false; updateKeyStatusUI(); apiKeyInput.value=''; alert('API key saved.'); });
+deleteApiBtn.addEventListener('click', () => { if(confirm('Delete API key?')){localStorage.removeItem('archprompt_apikey');apiHealthy=false;updateKeyStatusUI();alert('Deleted.');}});
+healthCheckBtn.addEventListener('click', healthCheck);
+
+function loadGoogleUrl() { let saved=localStorage.getItem('archprompt_google_url'); if(saved){googleUrlInput.value=saved;urlStatus.innerText='✅ URL saved';}else urlStatus.innerText='📌 No URL saved'; }
+saveUrlBtn.addEventListener('click', () => { let url=googleUrlInput.value.trim(); if(!url) return alert('Enter URL'); localStorage.setItem('archprompt_google_url',url); urlStatus.innerText='✅ URL saved'; alert('Saved. Test connection now.'); });
+deleteUrlBtn.addEventListener('click', () => { localStorage.removeItem('archprompt_google_url'); googleUrlInput.value=''; urlStatus.innerText='No URL saved'; alert('Deleted.'); });
+loadGoogleUrl();
+openGetBtn.addEventListener('click', () => { let url=googleUrlInput.value.trim(); if(!url) alert('No URL saved'); else window.open(url,'_blank'); });
+
+testSheetBtn.addEventListener('click', async () => {
+    const url = googleUrlInput.value.trim(); if(!url){alert('Please save Google Script URL first');return;}
+    sheetTestResult.style.display='block'; sheetTestResult.innerHTML='⏳ Sending test request...'; sheetTestResult.className='status-msg';
+    try {
+        const testData={Timestamp:getUserLocalTimestamp(),Video_Idea:"TEST_CONNECTION",Target_Length:"N/A",Generated_Script:"Test entry",Facebook_Post:"test",Threads_Post:"test",Instagram_Post:"test",Twitter_Post:"test",Linkedln_Post:"test",YouTube_Video_Title:"Test",YouTube_Video_Description:"desc",YouTube_Tags:"tag1,tag2"};
+        const response=await fetch(url,{method:'POST',mode:'cors',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams(testData)});
+        const rawText=await response.text(); let json; try{json=JSON.parse(rawText);}catch(e){sheetTestResult.innerHTML=`❌ Server error: ${escapeHtml(rawText.substring(0,400))}`;sheetTestResult.classList.add('error');return;}
+        if(json.result==="success"){sheetTestResult.innerHTML=`✅ SUCCESS! Connected to sheet.`;sheetTestResult.classList.add('success');}
+        else{sheetTestResult.innerHTML=`❌ Script error: ${json.error||'unknown'}`;sheetTestResult.classList.add('error');}
+    } catch(err){sheetTestResult.innerHTML=`❌ Network error: ${err.message}.`;sheetTestResult.classList.add('error');}
+    setTimeout(()=>sheetTestResult.style.display='none',6000);
+});
+
+copyAppsScriptBtn.addEventListener('click', () => { navigator.clipboard.writeText(appsScriptCodeBlock.innerText).then(()=>alert('✅ Apps Script code copied! Paste into Google Apps Script editor.')).catch(()=>alert('Failed to copy')); });
+
+// Dark mode
+if(localStorage.getItem('darkMode')==='true') document.body.classList.add('dark');
+themeToggle.textContent = document.body.classList.contains('dark')?'☀️ Light Mode':'🌙 Dark Mode';
+themeToggle.addEventListener('click',()=>{document.body.classList.toggle('dark');localStorage.setItem('darkMode',document.body.classList.contains('dark'));themeToggle.textContent=document.body.classList.contains('dark')?'☀️ Light Mode':'🌙 Dark Mode';});
+
+if(localStorage.getItem('aiPrincipleToggle')==='true') aiPrincipleToggle.checked=true;
+aiPrincipleToggle.addEventListener('change',()=>localStorage.setItem('aiPrincipleToggle',aiPrincipleToggle.checked));
+
+imageUpload.addEventListener('change',(e)=>{let file=e.target.files[0];if(file&&file.type.startsWith('image/')){let reader=new FileReader();reader.onload=(ev)=>{previewImage.src=ev.target.result;previewContainer.style.display='block';};reader.readAsDataURL(file);}else previewContainer.style.display='none';});
+
+// ═══════════════════════════════════════════
+// SCRIPT GENERATOR (Tab 1) - original logic
+// ═══════════════════════════════════════════
+const COURSE_CURRICULA = {
+  "Mastering Agentic AI & Multi-Agent Systems": { tagline: "84-day program...", levels: {}, audience: "Working professionals..." },
+  "28-Day AI Skills Challenge": { tagline: "84-day program...", levels: {}, audience: "Freelancers..." },
+  "Mastering Accounting with AI Integrations": { tagline: "56-day program...", levels: {}, audience: "Accountants..." },
+  "Mastering AI in Architecture & Interior Design": { tagline: "56-day program...", levels: {}, audience: "Architects..." },
+  "Mastering AI in Vibe Coding & IOP": { tagline: "56-day program...", levels: {}, audience: "Non-technical..." },
+  "Mastering AI Strategy for Business Leaders": { tagline: "56-day program...", levels: {}, audience: "Executives..." },
+  "Mastering AI for Writers": { tagline: "Coming soon", audience: "Writers, content creators", comingSoon: false },
+  "Mastering AI for GIS and Spatial": { tagline: "Coming soon", audience: "GIS analysts", comingSoon: false },
+  "Mastering AI for CyberSecurity": { tagline: "Coming soon", audience: "Security professionals", comingSoon: false },
+  "Mastering AI for Product Marketing": { tagline: "Coming soon", audience: "Product marketers", comingSoon: false },
+  "Mastering AI for Sales Professionals": { tagline: "Coming soon", audience: "Sales professionals, account executives, business development teams", comingSoon: false },
+  "Mastering AI for HR Professionals": { tagline: "Coming soon", audience: "HR professionals, talent acquisition, people operations teams", comingSoon: false }
+};
+
+function getCurriculumContext(courseNames) {
+  if (!courseNames || courseNames[0] === 'All Courses') { courseNames = Object.keys(COURSE_CURRICULA); }
+  const parts = [];
+  for (const name of courseNames) {
+    const c = COURSE_CURRICULA[name];
+    if (!c || c.tagline.includes('PENDING')) continue;
+    let txt = `\nCOURSE: ${name}\nTagline: ${c.tagline}\nAudience: ${c.audience}`;
+    parts.push(txt);
+  }
+  return parts.length ? parts.join('\n---') : '';
+}
+
+const BRAND_CONTEXT = `Website: https://aisprint.app
+Founder's note: We built AISprint.app because we kept seeing the same problem: most AI courses are either priced out of reach for working professionals, or they chase headlines instead of building real, lasting skills. We believe AI won't replace the accountant, the architect, the strategist, the marketer, the freelancer, the VA, and many more. It will replace the ones who refused to learn. The professionals who embrace AI — not as a gimmick, but as a genuine extension of their craft — will be the ones who lead their industries for the next decade. So we built something different. Practical. Specific. Affordable. Fifteen minutes a day, built around your profession, not around what's trending.
+Key phrases: "Built for people with 15 minutes, not 15 hours." | "Mastering AI Tools. Future-Proof Your Career." | "Practical, industry-specific AI courses built for real professionals." | "Learn by doing — not by watching. One sprint at a time."
+Courses: 28-Day AI Skills Challenge, Mastering AI in Architecture & Interior Design, Mastering AI in Vibe Coding & IOP, Mastering Agentic AI & Multi-Agent Systems, Mastering AI Strategy for Business Leaders, Mastering Accounting with AI Integrations.`;
+
+async function generateScript(topic, platformStr, lengthStr, expr, princ) {
+    const targetWC = lengthToWordCount(lengthStr);
+    const platformGuidance = platformStr === "YouTube" ? "detailed, educational, slower pace." : "fast, punchy, high energy.";
+    const exprGuide = expr ? `Include HeyGen tags: [[smile]], [[pause:0.3s]], [[confident]], [[excited]] etc.` : `No brackets.`;
+    const principleText = `Artificial Intelligence is transforming every industry, but it will not replace human professionals. [[pause:0.3s]] Instead, [[confident]] those who master AI tools will outpace those who do not.`;
+    const principleInstruction = princ ? `\nIntegrate this statement naturally: "${principleText}"` : '';
+    const prompt = `${BRAND_CONTEXT}\n\nWrite a voiceover script for faceless AI avatar. Topic: "${topic}". ${platformGuidance} Target length: ${lengthStr} (~${targetWC} words). ${exprGuide}${principleInstruction}\nStart directly. No intro fluff.`;
+    return await callAI(prompt, 3400);
+}
+
+async function generateSocialPosts(script, topic) {
+    const prompt = `Brand context: ${BRAND_CONTEXT}\n\nBased on this script about "${topic}":\n"${script.substring(0,600)}"\n\nGenerate 5 short social posts (max 240 chars each, 2-3 relevant hashtags). Return ONLY valid JSON:\n{"Facebook":"...","Threads":"...","Instagram":"...","Twitter":"...","Linkedln":"..."}`;
+    const raw = await callAI(prompt, 1000);
+    const parsed = parseJSON(raw);
+    const def = `🎬 ${topic.substring(0,50)}... #AISkills #FutureProof #AISprint`;
+    return { Facebook: parsed?.Facebook||def, Threads: parsed?.Threads||def, Instagram: parsed?.Instagram||def, Twitter: parsed?.Twitter||def, Linkedln: parsed?.Linkedln||def };
+}
+
+async function generateYouTubeMeta(script, topic) {
+    const prompt = `Brand: AISprint.app — practical AI courses for professionals. Topic: "${topic}". Script excerpt: "${script.substring(0,600)}"\n\nGenerate YouTube SEO metadata. Return ONLY valid JSON:\n{"title":"...","description":"...","tags":"..."}\nTitle: max 100 chars with 2-3 hashtags. Description: engaging, 300-500 chars, include CTA to visit aisprint.app. Tags: comma-separated, max 200 chars.`;
+    const raw = await callAI(prompt, 1200);
+    const parsed = parseJSON(raw);
+    return { title: (parsed?.title||topic).substring(0,100), description: (parsed?.description||'').substring(0,5000), tags: (parsed?.tags||'').substring(0,200) };
+}
+
+generateBtn.addEventListener('click', async () => {
+    const googleUrl = googleUrlInput.value.trim(); if(!googleUrl){alert('Save Google Script URL');return;}
+    const topic = videoTopic.value.trim(); if(!topic){alert('Enter topic');return;}
+    const finalLength = lengthCustom.value.trim() || lengthPreset.value || '60 seconds';
+    const useExpressions = heygenExpressionsCheckbox.checked;
+    const includePrinciple = aiPrincipleToggle.checked;
+    if(!localStorage.getItem('archprompt_apikey')){alert('No API key');return;}
+    generateBtn.disabled=true; generateBtn.textContent='⏳ Generating...';
+    outputArea.style.display='none';
+    try {
+        const script = await generateScript(topic, platform.value, finalLength, useExpressions, includePrinciple);
+        const posts = await generateSocialPosts(script, topic);
+        const ytMeta = await generateYouTubeMeta(script, topic);
+        socialPreview.innerHTML = `<strong>📱 Social Posts:</strong><br>🔵 FB: ${posts.Facebook}<br>🧵 Threads: ${posts.Threads}<br>📸 IG: ${posts.Instagram}<br>🐦 Twitter: ${posts.Twitter}<br>🔗 LinkedIn: ${posts.Linkedln}`;
+        socialPreview.style.display='block';
+        youtubeMetaPreview.innerHTML = `<strong>🎬 YouTube Metadata:</strong><br>📌 Title: ${ytMeta.title}<br>📝 Desc: ${ytMeta.description.substring(0,150)}...<br>🏷️ Tags: ${ytMeta.tags}`;
+        youtubeMetaPreview.style.display='block';
+        await postToSheet({ Timestamp:getUserLocalTimestamp(), Video_Idea:topic+(includePrinciple?" [AI Principle]":""), Target_Length:finalLength, Generated_Script:script, Facebook_Post:posts.Facebook, Threads_Post:posts.Threads, Instagram_Post:posts.Instagram, Twitter_Post:posts.Twitter, Linkedln_Post:posts.Linkedln, YouTube_Video_Title:ytMeta.title, YouTube_Video_Description:ytMeta.description, YouTube_Tags:ytMeta.tags });
+        outputText.innerText=script; outputHint.innerHTML=`✅ Saved to monthly sheet. Timestamp: ${getUserLocalTimestamp()}`; outputArea.style.display='block';
+    } catch(err){ alert('Error: '+err.message); outputHint.innerText='❌ '+err.message; outputArea.style.display='block'; outputText.innerText=err.message; socialPreview.style.display='none'; youtubeMetaPreview.style.display='none'; }
+    finally { generateBtn.disabled=false; generateBtn.textContent='✨ Generate Script + Posts + YouTube Meta → Sheet'; }
+});
+
+copyBtn.addEventListener('click',()=>{navigator.clipboard.writeText(outputText.innerText);alert('Script copied!');});
+
+// ═══════════════════════════════════════════
+// STRATEGY PLANNER (Tab 2) - with language courses integration
+// ═══════════════════════════════════════════
+let selectedCourses = ['All Courses'];
+let selectedAngles = ['How to','Why','I tried','Stop doing','Truth about'];
+let selectedIntents = ['informational','commercial','inspirational'];
+let selectedCompetitors = ['Coursera','Udemy','LinkedIn Learning'];
+let selectedLanguageCourses = [];
+
+// Course badge selection (original)
+document.querySelectorAll('#courseBadgeGroup .course-badge').forEach(badge => {
+    badge.addEventListener('click', () => {
+        const course = badge.dataset.course;
+        if (!course) return;
+        if (course === 'All Courses') {
+            selectedCourses = ['All Courses'];
+            document.querySelectorAll('#courseBadgeGroup .course-badge').forEach(b => b.classList.remove('selected'));
+            badge.classList.add('selected');
+        } else {
+            const allBadge = document.querySelector('#courseBadgeGroup .course-badge[data-course="All Courses"]');
+            allBadge.classList.remove('selected');
+            selectedCourses = selectedCourses.filter(c => c !== 'All Courses');
+            if (badge.classList.contains('selected')) {
+                badge.classList.remove('selected');
+                selectedCourses = selectedCourses.filter(c => c !== course);
+                if (selectedCourses.length === 0) { selectedCourses = ['All Courses']; allBadge.classList.add('selected'); }
+            } else {
+                badge.classList.add('selected');
+                selectedCourses.push(course);
+            }
+        }
+    });
+});
+
+// Language course selection with "All Languages"
+const langCourseBadges = document.querySelectorAll('#languageCourseGroup .lang-badge');
+langCourseBadges.forEach(b => {
+    b.addEventListener('click', () => {
+        const langVal = b.dataset.langCourse;
+        if (langVal === 'All Languages') {
+            if (b.classList.contains('selected')) {
+                b.classList.remove('selected');
+                selectedLanguageCourses = [];
+                langCourseBadges.forEach(lb => {
+                    if (lb.dataset.langCourse !== 'All Languages') lb.classList.remove('selected');
+                });
+            } else {
+                b.classList.add('selected');
+                selectedLanguageCourses = ['Mandarin', 'Cantonese', 'Japanese', 'Korean', 'Spanish', 'French'];
+                langCourseBadges.forEach(lb => {
+                    if (lb.dataset.langCourse !== 'All Languages') lb.classList.add('selected');
+                });
+            }
+        } else {
+            if (b.classList.contains('selected')) {
+                b.classList.remove('selected');
+                selectedLanguageCourses = selectedLanguageCourses.filter(l => l !== langVal);
+                const allBtn = document.querySelector('#languageCourseGroup .lang-badge[data-lang-course="All Languages"]');
+                if (allBtn.classList.contains('selected')) allBtn.classList.remove('selected');
+            } else {
+                b.classList.add('selected');
+                selectedLanguageCourses.push(langVal);
+                if (selectedLanguageCourses.length === 6) {
+                    const allBtn = document.querySelector('#languageCourseGroup .lang-badge[data-lang-course="All Languages"]');
+                    allBtn.classList.add('selected');
+                }
+            }
+        }
+    });
+});
+
+// Angle badge multi-select
+document.querySelectorAll('#angleBadgeGroup .course-badge').forEach(badge => {
+    badge.addEventListener('click', () => {
+        const angle = badge.dataset.angle;
+        if (badge.classList.contains('selected')) {
+            if (selectedAngles.length <= 1) return;
+            badge.classList.remove('selected');
+            selectedAngles = selectedAngles.filter(a => a !== angle);
+        } else {
+            badge.classList.add('selected');
+            selectedAngles.push(angle);
+        }
+    });
+});
+
+// Intent badge multi-select
+document.querySelectorAll('#intentBadgeGroup .course-badge').forEach(badge => {
+    badge.addEventListener('click', () => {
+        const intent = badge.dataset.intent;
+        if (badge.classList.contains('selected')) {
+            if (selectedIntents.length <= 1) return;
+            badge.classList.remove('selected');
+            selectedIntents = selectedIntents.filter(i => i !== intent);
+        } else {
+            badge.classList.add('selected');
+            selectedIntents.push(intent);
+        }
+    });
+});
+
+// Competitor badge multi-select (including YouTube)
+document.querySelectorAll('#competitorBadgeGroup .course-badge, #competitorYTGroup .course-badge').forEach(badge => {
+    badge.addEventListener('click', () => {
+        const comp = badge.dataset.competitor;
+        if (badge.classList.contains('selected')) {
+            badge.classList.remove('selected');
+            selectedCompetitors = selectedCompetitors.filter(c => c !== comp);
+        } else {
+            badge.classList.add('selected');
+            selectedCompetitors.push(comp);
+        }
+    });
+});
+
+function getCompetitorList() {
+    const other = document.getElementById('competitorOther').value.trim();
+    const all = [...selectedCompetitors];
+    if (other) other.split(',').map(s => s.trim()).filter(Boolean).forEach(c => { if (!all.includes(c)) all.push(c); });
+    return all.length ? all.join(', ') : 'Coursera, Udemy, LinkedIn Learning';
+}
+
+const ALL_AI_COURSES = [
+    '28-Day AI Skills Challenge',
+    'Mastering Accounting with AI Integrations',
+    'Mastering AI in Architecture & Interior Design',
+    'Mastering AI in Vibe Coding & IOP',
+    'Mastering Agentic AI & Multi-Agent Systems',
+    'Mastering AI Strategy for Business Leaders',
+    'Mastering AI for Writers',
+    'Mastering AI for GIS and Spatial',
+    'Mastering AI for CyberSecurity',
+    'Mastering AI for Product Marketing',
+    'Mastering AI for Sales Professionals',
+    'Mastering AI for HR Professionals'
+];
+
+let generatedStrategyData = [];
+let stopGenerationRequested = false;
+
+document.getElementById('strategyStopBtn').addEventListener('click', () => {
+    stopGenerationRequested = true;
+    const stopBtn = document.getElementById('strategyStopBtn');
+    stopBtn.textContent = '⏳ Stopping...';
+    stopBtn.disabled = true;
+    logStrategy('⚠️ Stop requested — finishing current day then halting...');
+});
+
+function logStrategy(msg) {
+    const log = document.getElementById('strategyLog');
+    log.style.display = 'block';
+    log.innerHTML += `<div>${msg}</div>`;
+    log.scrollTop = log.scrollHeight;
+}
+
+function setProgress(current, total) {
+    const pct = Math.round((current / total) * 100);
+    document.getElementById('progressBar').style.width = pct + '%';
+    document.getElementById('progressLabel').innerText = `Generating Day ${current} of ${total} (${pct}%)`;
+}
+
+function getViralityScore(topic, angle) {
+    const powerWords = ['secret','truth','never','stop','why','how','mistake','replace','without','faster','free','best','hack','fail','real'];
+    const topicLower = topic.toLowerCase();
+    let score = 60;
+    powerWords.forEach(w => { if (topicLower.includes(w)) score += 8; });
+    if (topic.includes('2026')) score += 5;
+    if (topic.length > 40 && topic.length < 80) score += 5;
+    if (topic.includes('?')) score += 5;
+    return Math.min(score, 99);
+}
+
+function getScoreColor(score) {
+    if (score >= 85) return '#4c8b6e';
+    if (score >= 70) return '#b57c1c';
+    return '#c95a4a';
+}
+
+function addTableRow(day, course, angle, intent, topic, hook, script, posts, ytMeta, imgData) {
+    const tbody = document.getElementById('strategyTableBody');
+    const score = getViralityScore(topic, angle);
+    const scoreColor = getScoreColor(score);
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+        <td style="font-weight:700; color:var(--gold); text-align:center;">${day}</td>
+        <td style="text-align:center; font-weight:700; color:${scoreColor};">${score}</td>
+        <td style="font-size:11px; color:var(--text-muted); white-space:nowrap;">${course.replace('Mastering ','').replace(' with AI Integrations','').replace(' & Multi-Agent Systems','').split(' ').slice(0,2).join(' ')}</td>
+        <td style="font-size:10px; color:var(--blue); white-space:nowrap;">${angle}</td>
+        <td style="font-weight:600; color:var(--gold); min-width:180px;" title="${escapeHtml(topic)}">${topic.substring(0,60)}${topic.length>60?'...':''}</td>
+        <td style="font-size:11px; font-style:italic; min-width:140px; color:var(--text-muted);" title="${escapeHtml(hook)}">${hook.substring(0,70)}...</td>
+        <td style="font-size:11px; max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${escapeHtml(script)}">${script.substring(0,80)}...</td>
+        <td style="font-size:10px;" title="${escapeHtml(posts.Facebook)}">${posts.Facebook.substring(0,50)}...</td>
+        <td style="font-size:10px;" title="${escapeHtml(posts.Threads)}">${posts.Threads.substring(0,50)}...</td>
+        <td style="font-size:10px;" title="${escapeHtml(posts.Instagram)}">${posts.Instagram.substring(0,50)}...</td>
+        <td style="font-size:10px;" title="${escapeHtml(posts.Twitter)}">${posts.Twitter.substring(0,50)}...</td>
+        <td style="font-size:10px;" title="${escapeHtml(posts.Linkedln)}">${posts.Linkedln.substring(0,50)}...</td>
+        <td style="font-size:11px; font-weight:600; min-width:150px;" title="${escapeHtml(ytMeta.title)}">${ytMeta.title.substring(0,55)}...</td>
+        <td style="font-size:10px;" title="${escapeHtml(ytMeta.tags)}">${ytMeta.tags.substring(0,40)}...</td>
+        <td style="font-size:11px; font-weight:700; color:var(--red); min-width:120px;" title="${escapeHtml(imgData?.thumbnail_text||'')}">${imgData?.thumbnail_text||''}</td>
+        <td style="font-size:10px; color:var(--text-muted);" title="${escapeHtml(imgData?.prompt_thumbnail||'')}">📸 ${(imgData?.prompt_thumbnail||'').substring(0,40)}...</td>
+        <td style="font-size:10px; color:var(--text-muted);" title="${escapeHtml(imgData?.prompt_ai_scene||'')}">🎨 ${(imgData?.prompt_ai_scene||'').substring(0,40)}...</td>
+        <td style="font-size:10px; color:var(--text-muted);" title="${escapeHtml(imgData?.prompt_title_card||'')}">🎬 ${(imgData?.prompt_title_card||'').substring(0,40)}...</td>
+    `;
+    tbody.appendChild(tr);
+}
+
+document.getElementById('exportCsvBtn').addEventListener('click', () => {
+    if (!generatedStrategyData.length) { alert('No data to export yet. Generate a plan first.'); return; }
+    const headers = ['Day','Virality Score','Course','Angle','Intent','Video Topic','Hook','Generated Script','Facebook Post','Threads Post','Instagram Post','Twitter Post','LinkedIn Post','YouTube Title','YouTube Description','YouTube Tags','Thumbnail Text','Prompt: Thumbnail','Prompt: AI Scene','Prompt: Title Card','Timestamp'];
+    const rows = generatedStrategyData.map(d => [
+        d.day, d.score, d.course, d.angle, d.intent, d.topic, d.hook,
+        d.script, d.posts.Facebook, d.posts.Threads, d.posts.Instagram,
+        d.posts.Twitter, d.posts.Linkedln, d.ytMeta.title, d.ytMeta.description,
+        d.ytMeta.tags,
+        d.imgData?.thumbnail_text||'', d.imgData?.prompt_thumbnail||'',
+        d.imgData?.prompt_ai_scene||'', d.imgData?.prompt_title_card||'',
+        d.timestamp
+    ].map(v => `"${String(v||'').replace(/"/g,'""')}"`));
+    const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    const blob = new Blob([csv], {type:'text/csv'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href=url; a.download=`AISprint_Video_Strategy_${new Date().toISOString().slice(0,10)}.csv`; a.click();
+    URL.revokeObjectURL(url);
+});
+
+document.getElementById('clearTableBtn').addEventListener('click', () => {
+    if (confirm('Clear the strategy table?')) {
+        document.getElementById('strategyTableBody').innerHTML = '';
+        document.getElementById('strategyTableWrap').style.display = 'none';
+        generatedStrategyData = [];
+    }
+});
+
+let scriptParts = 1;
+const PART_STRUCTURE = {
+    1: ['Hook → Problem → Key Points → CTA'],
+    2: ['Part 1: Hook + Problem Statement', 'Part 2: Key Points + CTA'],
+    3: ['Part 1: Hook + Problem', 'Part 2: Key Points (main body)', 'Part 3: Summary + CTA'],
+    4: ['Part 1: Hook + Problem', 'Part 2: Point 1 & 2', 'Part 3: Point 3 & Insight', 'Part 4: Summary + CTA'],
+    5: ['Part 1: Hook', 'Part 2: Problem', 'Part 3: Points 1–2', 'Part 4: Points 3–4', 'Part 5: Summary + CTA'],
+};
+
+function updateScriptPartsPreview() {
+    const preview = document.getElementById('scriptPartsPreview');
+    if (!preview) return;
+    const lengthVal = document.getElementById('strategyLength')?.value || '120 seconds';
+    const totalWC = lengthToWordCount(lengthVal);
+    const wordsEach = Math.round(totalWC / scriptParts);
+
+    if (scriptParts === 1) {
+        preview.innerHTML = `<span style="color:var(--gold);">// Single script · ~${totalWC} words</span><br>` +
+            `<span style="color:var(--text-muted);">[Hook] → [Problem] → [Key Points] → [CTA to aisprint.app]</span>`;
+        return;
+    }
+
+    const structures = PART_STRUCTURE[scriptParts] || Array.from({length:scriptParts}, (_,i) => `Part ${i+1}`);
+    let lines = `<span style="color:var(--gold);">// ${scriptParts} parts · ~${wordsEach} words each · ${totalWC} words total</span><br>`;
+    structures.forEach((label, i) => {
+        const colors = ['var(--gold)','var(--blue)','var(--green)','var(--red)'];
+        lines += `<span style="color:${colors[i%colors.length]};">━━ ${label}</span><br>`;
+    });
+    preview.innerHTML = lines;
+}
+
+const scriptPartsInputElem = document.getElementById('scriptPartsInput');
+document.getElementById('partIncBtn').addEventListener('click', () => {
+    if (scriptParts < 12) { scriptParts++; scriptPartsInputElem.value = scriptParts; updateScriptPartsPreview(); }
+});
+document.getElementById('partDecBtn').addEventListener('click', () => {
+    if (scriptParts > 1) { scriptParts--; scriptPartsInputElem.value = scriptParts; updateScriptPartsPreview(); }
+});
+scriptPartsInputElem.addEventListener('change', () => {
+    const v = Math.min(Math.max(parseInt(scriptPartsInputElem.value)||1, 1), 12);
+    scriptParts = v; scriptPartsInputElem.value = v; updateScriptPartsPreview();
+});
+
+updateScriptPartsPreview();
+document.getElementById('strategyLength')?.addEventListener('change', () => { updateScriptPartsPreview(); });
+
+function buildPartedScriptPrompt(topic, platformStr, lengthStr, useExpressions, includePrinciple, hook, parts, extraConsiderations) {
+    const targetWC = lengthToWordCount(lengthStr);
+    const wordsEach = Math.round(targetWC / parts);
+    const platformGuidance = platformStr.includes('TikTok') ? 'fast-paced, punchy, hook in first 3 seconds' : platformStr === 'Both' ? 'YouTube main version + 30-second Shorts adaptation at the end' : 'detailed, educational, storytelling';
+    const exprGuide = useExpressions ? `Include HeyGen expression tags throughout: [[smile]], [[pause:0.3s]], [[confident]], [[excited]], [[empathetic]] at natural moments.` : '';
+    const principleText = `Artificial Intelligence is transforming every industry, but it will not replace human professionals. Those who master AI tools will outpace those who do not.`;
+    const principleInstruction = includePrinciple ? `\nWeave this naturally into the script: "${principleText}"` : '';
+    const hookInstruction = hook ? `\nSTART WITH THIS HOOK: "${hook}"\n` : '';
+    const extraCtx = extraConsiderations?.trim() ? `\n\nADDITIONAL CONSIDERATIONS (must factor these in):\n${extraConsiderations.trim()}` : '';
+
+    if (parts === 1) {
+        return `${BRAND_CONTEXT}\n\nWrite a voiceover script for a HeyGen AI avatar.\nTopic: "${topic}"\nPlatform: ${platformGuidance}\nLength: ${lengthStr} (~${targetWC} words)\n${hookInstruction}${exprGuide}${principleInstruction}${extraCtx}\n\nStructure: Hook → Problem → 3-5 key points → CTA to aisprint.app\nStart immediately with the hook. No intro fluff.`;
+    }
+
+    const structures = PART_STRUCTURE[parts] || Array.from({length:parts}, (_,i) => `Part ${i+1}`);
+    const partInstructions = structures.map((label, i) =>
+        `━━ ${label} (~${wordsEach} words)
+[Write this section here]`
+    ).join('\n\n');
+
+    return `${BRAND_CONTEXT}\n\nWrite a HeyGen voiceover script divided into ${parts} equal parts for separate avatar scenes.\nTopic: "${topic}"\nPlatform: ${platformGuidance}\nTotal length: ${lengthStr} (~${targetWC} words total · ~${wordsEach} words per part)\n${hookInstruction}${exprGuide}${principleInstruction}${extraCtx}\n\nFORMAT RULES (critical — HeyGen will use each part as a separate scene):\n- Clearly label each section: ━━ PART 1 ━━ , ━━ PART 2 ━━ , etc.\n- Each part must be self-contained and flow naturally into the next\n- Part 1 MUST open with the hook and establish the problem\n- Final part MUST end with CTA to aisprint.app\n- Write ONLY the dialogue — no stage directions or scene notes\n${exprGuide ? '- Add [[expression]] tags inline throughout each part' : ''}\n\nSCRIPT STRUCTURE:\n${partInstructions}\n\nStart immediately with Part 1.`;
+}
+
+document.getElementById('strategyGenerateBtn').addEventListener('click', async () => {
+    const googleUrl = googleUrlInput.value.trim();
+    const saveToSheet = document.getElementById('strategySaveSheetToggle').checked;
+    if (saveToSheet && !googleUrl) { alert('Save Google Script URL first, or uncheck "Save to Sheet" to preview only.'); return; }
+    if (!localStorage.getItem('archprompt_apikey')) { alert('No API key saved'); return; }
+
+    const numDays = Math.min(Math.max(parseInt(document.getElementById('numDays').value)||30, 1), 90);
+    const platformStr = document.getElementById('strategyPlatform').value;
+    const lengthStr = document.getElementById('strategyLength').value;
+    const useExpressions = document.getElementById('strategyHeygenToggle').checked;
+    const includePrinciple = document.getElementById('strategyPrincipleToggle').checked;
+    const includeHook = document.getElementById('strategyHookToggle').checked;
+    const delay = parseInt(document.getElementById('generationSpeed').value) || 800;
+    let coursesToUse = selectedCourses[0] === 'All Courses' ? [...ALL_AI_COURSES] : [...selectedCourses];
+    selectedLanguageCourses.forEach(lang => {
+        const langCourseName = `${lang} Language Course`;
+        if (!coursesToUse.includes(langCourseName)) coursesToUse.push(langCourseName);
+    });
+    if (coursesToUse.length === 0) { alert('Please select at least one course or language.'); return; }
+
+    const competitors = getCompetitorList();
+    const audience = document.getElementById('audienceInput').value.trim() || 'working professionals';
+    const extraConsiderations = (document.getElementById('extraConsiderationsInput')?.value?.trim() || document.getElementById('extraConsiderationsInput2')?.value?.trim() || '');
+
+    const btn = document.getElementById('strategyGenerateBtn');
+    const stopBtn = document.getElementById('strategyStopBtn');
+    btn.disabled=true; btn.textContent='⏳ Generating...';
+    stopBtn.style.display='block'; stopBtn.disabled=false; stopBtn.textContent='⏹ Stop';
+    stopGenerationRequested = false;
+    document.getElementById('strategyProgress').style.display='block';
+    document.getElementById('strategyLog').innerHTML='';
+    document.getElementById('strategyTableWrap').style.display='none';
+    document.getElementById('strategyTableBody').innerHTML='';
+    generatedStrategyData = [];
+
+    logStrategy(`🔍 Step 1: Competitor gap analysis + generating ${numDays} topics...`);
+    const curriculumCtx = getCurriculumContext(coursesToUse);
+    const curriculumSection = curriculumCtx ? `\nCOURSE CURRICULUM DETAIL (use specific lesson titles, skills, and outcomes in topics):\n${curriculumCtx}\n` : '';
+
+    const isSingleCourse = coursesToUse.length === 1;
+    const courseFocusInstruction = isSingleCourse
+        ? `STRICT RULE: Every single topic MUST be about "${coursesToUse[0]}" only. Do NOT generate topics for any other course. Do NOT use the brand context list of other courses as inspiration — only focus on this one course.`
+        : `Distribute topics across these courses as evenly as possible: ${coursesToUse.join(', ')}`;
+
+    const topicsPrompt = `You are a world-class YouTube SEO strategist and content planner for AISprint.app.
+
+BRAND: AISprint.app — practical, affordable, industry-specific AI courses. Website: https://aisprint.app
+Founder message: AI won't replace professionals — it replaces those who refused to learn.
+Key phrases: "Built for people with 15 minutes, not 15 hours." | "Practical, industry-specific AI courses built for real professionals."
+
+TARGET AUDIENCE: ${audience}
+
+COMPETITORS TO DIFFERENTIATE FROM: ${competitors}
+(Generate topics that fill GAPS these competitors miss — be more specific, profession-focused, and actionable)
+
+VIRAL ANGLES TO USE (rotate through these): ${selectedAngles.join(', ')}
+
+KEYWORD INTENT MIX (distribute across): ${selectedIntents.join(', ')}
+
+${courseFocusInstruction}${curriculumSection}${extraConsiderations ? `\nEXTRA CONSIDERATIONS: ${extraConsiderations}` : ''}
+
+TASK: Generate exactly ${numDays} unique, high-converting longtail YouTube video topics.
+
+REQUIREMENTS:
+- Each topic must be a specific longtail keyword phrase (4-10 words) with HIGH search intent
+- Topics must be profession-specific or language-learning specific
+${isSingleCourse ? `- ALL ${numDays} topics must be strictly about: ${coursesToUse[0]}` : '- Rotate evenly across the selected courses listed above'}
+- Use different viral angles each time — avoid repeating the same angle consecutively
+- Mix keyword intents: informational (how/why/what), commercial (best/top/compare), inspirational (transform/future-proof)
+- Topics must clearly DIFFERENTIATE from what ${competitors} already cover
+- Include year 2026 where relevant for freshness
+- Make titles curiosity-driven and click-worthy
+- Assign virality_score (60-99)
+
+Return ONLY a valid JSON array (no markdown, no extra text):
+[
+  {"day":1,"course":"${isSingleCourse ? coursesToUse[0] : 'Course Name'}","topic":"Exact Video Title as Longtail Keyword","angle":"How to","intent":"informational","virality_score":87},
+  ...
+]`;
+
+    let topics = [];
+    try {
+        const raw = await callAI(topicsPrompt, 4000);
+        const match = raw.match(/\[[\s\S]*\]/);
+        if (match) topics = JSON.parse(match[0]);
+        if (!topics.length) throw new Error('No topics generated');
+        logStrategy(`✅ ${topics.length} competitor-gap topics generated`);
+    } catch(e) {
+        logStrategy(`❌ Failed to generate topics: ${e.message}`);
+        stopBtn.style.display='none';
+        btn.disabled=false; btn.textContent='🚀 Generate Best-in-Class Strategy Plan → Video_Strategy Sheet';
+        return;
+    }
+
+    logStrategy(`📝 Step 2: Generating hooks, scripts, posts & YouTube metadata...`);
+    document.getElementById('strategyTableWrap').style.display='block';
+    let successCount = 0;
+
+    for (let i = 0; i < topics.length; i++) {
+        if (stopGenerationRequested) {
+            logStrategy(`⏹ Generation stopped by user after Day ${i > 0 ? topics[i-1].day : 0}.`);
+            break;
+        }
+        const { day, course, topic, angle, intent, virality_score } = topics[i];
+        setProgress(i+1, topics.length);
+        logStrategy(`⚡ Day ${day} [${angle}] [Score:${virality_score||'—'}]: "${topic.substring(0,50)}..."`);
+
+        try {
+            let hook = '';
+            if (includeHook) {
+                const hookPrompt = `Write a single retention-optimized opening hook (2-3 sentences, max 40 words) for a YouTube video titled: "${topic}". Target audience: ${audience}. Course context: ${course}. The hook must stop the scroll in the first 3 seconds, create curiosity, and make the viewer feel this video is specifically for them. Return ONLY the hook text.`;
+                hook = await callAI(hookPrompt, 200);
+                hook = hook.trim().replace(/^["']|["']$/g, '');
+            }
+
+            const extraConsiderationsAll = (document.getElementById('extraConsiderationsInput')?.value || document.getElementById('extraConsiderationsInput2')?.value || '');
+            const scriptPrompt = buildPartedScriptPrompt(topic, platformStr, lengthStr, useExpressions, includePrinciple, hook, scriptParts, extraConsiderationsAll);
+            const script = await callAI(scriptPrompt, 3400);
+
+            const postsPrompt = `Brand: AISprint.app — practical AI courses for ${audience}. 
+Video topic: "${topic}" (angle: ${angle})
+Script excerpt: "${script.substring(0,500)}"
+
+Generate 5 platform-specific social posts. Each must:
+- Be under 240 characters
+- Include 2-3 highly relevant hashtags  
+- Match the platform's tone
+- Drive curiosity and clicks
+- Reference aisprint.app subtly
+
+Return ONLY valid JSON (no markdown):
+{"Facebook":"...","Threads":"...","Instagram":"...","Twitter":"...","Linkedln":"..."}`;
+
+            const postsRaw = await callAI(postsPrompt, 1000);
+            const parsedPosts = parseJSON(postsRaw);
+            const def = `🎯 ${topic.substring(0,40)}... #AISkills #FutureProof #AISprint`;
+            const posts = {
+                Facebook: parsedPosts?.Facebook||def,
+                Threads: parsedPosts?.Threads||def,
+                Instagram: parsedPosts?.Instagram||def,
+                Twitter: parsedPosts?.Twitter||def,
+                Linkedln: parsedPosts?.Linkedln||def
+            };
+
+            const metaPrompt = `You are a YouTube SEO expert. 
+Brand: AISprint.app — practical AI courses for ${audience}.
+Video topic: "${topic}"
+Viral angle: ${angle}
+Script excerpt: "${script.substring(0,600)}"
+
+Generate YouTube metadata optimized for longtail search in 2026. Return ONLY valid JSON:
+{
+  "title": "...",
+  "description": "...",
+  "tags": "..."
+}
+Rules:
+- Title: max 100 chars, include primary keyword naturally, end with 2 hashtags (#AISprint #AISkills or relevant)
+- Description: 400-600 chars, engaging, includes longtail keywords naturally, CTA to aisprint.app, mention course name
+- Tags: 15-20 comma-separated tags, mix of broad and longtail, max 500 chars total`;
+
+            const metaRaw = await callAI(metaPrompt, 1200);
+            const parsedMeta = parseJSON(metaRaw);
+            const ytMeta = {
+                title: (parsedMeta?.title||topic).substring(0,100),
+                description: (parsedMeta?.description||'').substring(0,5000),
+                tags: (parsedMeta?.tags||'').substring(0,500)
+            };
+
+            logStrategy(`🖼️ Day ${day}: Generating image prompts...`);
+            const imagePrompt = `You are a viral YouTube thumbnail designer and AI image prompt engineer.
+
+Brand: AISprint.app — practical AI courses for ${audience}.
+Video topic: "${topic}"
+Viral angle: ${angle}
+YouTube title: "${ytMeta.title}"
+
+Generate high-CTR opening image assets. Return ONLY valid JSON (no markdown):
+{
+  "thumbnail_text": "4-6 word bold text that goes ON the image (shocking, curiosity-driving, no fluff)",
+  "prompt_thumbnail": "Midjourney/Canva prompt for a YouTube thumbnail: professional person reacting with shock or excitement, bold text overlay space on left, vibrant gradient background (teal to dark), cinematic lighting, 16:9, photorealistic",
+  "prompt_ai_scene": "Midjourney/DALL-E prompt for a cinematic AI scene that visually represents the topic: no text, dramatic lighting, futuristic but grounded, professional setting, ultra-detailed, 16:9",
+  "prompt_title_card": "Prompt for a dark cinematic title card: deep dark background with subtle tech grid pattern, large bold white text centered: [THUMBNAIL_TEXT], thin gold accent line below text, AISprint.app logo bottom right, minimal and dramatic, 16:9"
+}`;
+
+            const imageRaw = await callAI(imagePrompt, 1000);
+            const parsedImage = parseJSON(imageRaw);
+            const imgData = {
+                thumbnail_text: parsedImage?.thumbnail_text || topic.split(' ').slice(0,5).join(' '),
+                prompt_thumbnail: parsedImage?.prompt_thumbnail || `YouTube thumbnail for: ${topic}`,
+                prompt_ai_scene: parsedImage?.prompt_ai_scene || `Cinematic AI scene representing: ${topic}`,
+                prompt_title_card: parsedImage?.prompt_title_card || `Dark title card with text: ${topic}`
+            };
+
+            const score = virality_score || getViralityScore(topic, angle);
+            const timestamp = getUserLocalTimestamp();
+
+            addTableRow(day, course, angle, intent, topic, hook||'(no hook)', script, posts, ytMeta, imgData);
+            generatedStrategyData.push({ day, score, course, angle, intent, topic, hook, script, posts, ytMeta, imgData, timestamp });
+
+            if (saveToSheet) {
+                const partsNote = scriptParts > 1 ? `[SCRIPT: ${scriptParts} PARTS]` : '[SCRIPT: SINGLE]';
+                await postToSheet({
+                    sheet_type: 'strategy',
+                    Day: day,
+                    Timestamp: timestamp,
+                    Target_Course: course,
+                    Video_Topic: topic,
+                    Generated_Script: (hook ? `[HOOK]: ${hook}\n\n` : '') + `${partsNote}\n\n` + script,
+                    Facebook_Post: posts.Facebook,
+                    Threads_Post: posts.Threads,
+                    Instagram_Post: posts.Instagram,
+                    Twitter_Post: posts.Twitter,
+                    Linkedln_Post: posts.Linkedln,
+                    YouTube_Video_Title: ytMeta.title,
+                    YouTube_Video_Description: ytMeta.description,
+                    YouTube_Tags: ytMeta.tags,
+                    Thumbnail_Text: imgData.thumbnail_text,
+                    Prompt_Thumbnail: imgData.prompt_thumbnail,
+                    Prompt_AI_Scene: imgData.prompt_ai_scene,
+                    Prompt_Title_Card: imgData.prompt_title_card
+                });
+                logStrategy(`✅ Day ${day} saved → Video_Strategy sheet (Score: ${score})`);
+            } else {
+                logStrategy(`✅ Day ${day} generated (Score: ${score}) — preview only`);
+            }
+            successCount++;
+        } catch(e) {
+            logStrategy(`❌ Day ${day} failed: ${e.message}`);
+        }
+        await new Promise(r => setTimeout(r, delay));
+    }
+
+    setProgress(topics.length, topics.length);
+    const stoppedEarly = stopGenerationRequested;
+    const savedMsg = saveToSheet ? `and saved to <strong>Video_Strategy</strong> sheet` : `(preview only — not saved to sheet)`;
+    const stoppedNote = stoppedEarly ? ` <span style="color:var(--red);">⏹ Stopped early.</span>` : '';
+    document.getElementById('strategyHint').innerHTML = `🎉 ${successCount} of ${topics.length} days generated ${savedMsg}. Generated: ${getUserLocalTimestamp()}. <strong>Download CSV</strong> for the full plan.${stoppedNote}`;
+    logStrategy(`${stoppedEarly ? '⏹ Stopped.' : '🎉 Done!'} ${successCount}/${topics.length} days generated. ${saveToSheet ? 'Rows saved to Video_Strategy sheet.' : 'Preview only.'}`);
+    stopBtn.style.display='none'; stopBtn.disabled=false; stopBtn.textContent='⏹ Stop';
+    stopGenerationRequested = false;
+    btn.disabled=false; btn.textContent='🚀 Generate Best-in-Class Strategy Plan → Video_Strategy Sheet';
+});
+
+if(localStorage.getItem('archprompt_apikey')) healthCheck().catch(console.error);
+updateKeyStatusUI();
+
+(function() {
+    const badge = document.getElementById('curriculumStatusBadge');
+    if (!badge) return;
+    const aiCount = ALL_AI_COURSES.length;
+    const langCount = 6;
+    badge.textContent = `✅ ${aiCount} AI courses + ${langCount} language courses`;
+    badge.style.background = 'rgba(76,139,110,0.12)';
+    badge.style.borderColor = 'var(--green)';
+    badge.style.color = 'var(--green)';
+})();
+
+function toggleAppsScript() {
+    const wrapper = document.getElementById('appsScriptWrapper');
+    const note = document.getElementById('appsScriptDeployNote');
+    const btn = document.getElementById('toggleAppsScriptBtn');
+    const isHidden = wrapper.style.display === 'none';
+    wrapper.style.display = isHidden ? 'block' : 'none';
+    note.style.display = isHidden ? 'block' : 'none';
+    btn.textContent = isHidden ? '▲ Hide Code' : '▼ Show Code';
+}
+
+document.getElementById('suggestHookBtn').addEventListener('click', async () => {
+    const topic = document.getElementById('videoTopic').value.trim();
+    if (!topic) { alert('Enter a video topic first.'); return; }
+    if (!localStorage.getItem('archprompt_apikey')) { alert('No API key saved.'); return; }
+
+    const btn = document.getElementById('suggestHookBtn');
+    btn.textContent = '⏳ Generating...'; btn.disabled = true;
+    const panel = document.getElementById('hookSuggestions');
+    const list = document.getElementById('hookSuggestionsList');
+    panel.style.display = 'none';
+
+    try {
+        const prompt = `You are a viral YouTube hook writer for AISprint.app — practical AI courses for working professionals.
+
+Video topic: "${topic}"
+Brand: Built for people with 15 minutes, not 15 hours. Practical, profession-specific AI skills.
+
+Generate exactly 5 scroll-stopping opening hooks for this video. Each hook should:
+- Be 1-2 sentences max (under 30 words)
+- Hit different emotional triggers: curiosity, fear of missing out, shock, aspiration, relatability
+- Start immediately — no "Hey guys" or "Welcome back"
+- Feel like it was written for a specific professional (accountant, architect, VA, business leader, etc.)
+- Use power words: Stop, Warning, Truth, Secret, Most, Never, Finally, Mistake
+
+Return ONLY a JSON array of 5 strings:
+["Hook 1 here.", "Hook 2 here.", "Hook 3 here.", "Hook 4 here.", "Hook 5 here."]`;
+
+        const raw = await callAI(prompt, 600);
+        const match = raw.match(/\[[\s\S]*?\]/);
+        if (!match) throw new Error('Could not parse hooks');
+        const hooks = JSON.parse(match[0]);
+
+        list.innerHTML = hooks.map((h, i) => `
+            <div style="display:flex; align-items:flex-start; gap:8px; margin-bottom:8px; padding:8px 10px; background:var(--surface); border-radius:10px; border-left:3px solid var(--gold); cursor:pointer;"
+                 onclick="useHook(${JSON.stringify(h)})"
+                 title="Click to use this hook">
+                <span style="font-size:10px; font-weight:700; color:var(--gold); min-width:18px; margin-top:1px;">${i+1}.</span>
+                <span style="font-size:12px; line-height:1.5; color:var(--text);">${escapeHtml(h)}</span>
+                <span style="font-size:10px; color:var(--text-muted); margin-left:auto; align-self:center; white-space:nowrap;">← use</span>
+            </div>`).join('');
+        panel.style.display = 'block';
+    } catch(e) {
+        list.innerHTML = `<div style="color:var(--red); font-size:12px;">❌ Error: ${e.message}</div>`;
+        panel.style.display = 'block';
+    }
+    btn.textContent = '🪝 Suggest Hooks'; btn.disabled = false;
+});
+
+function useHook(hookText) {
+    const ta = document.getElementById('videoTopic');
+    const current = ta.value.trim();
+    if (current && !current.startsWith('[HOOK]')) {
+        ta.value = '[HOOK]: ' + hookText + '\n\n' + current;
+    } else {
+        ta.value = '[HOOK]: ' + hookText + (current ? '\n\n' + current.replace(/^\[HOOK\]:.*?\n\n/s,'') : '');
+    }
+    document.getElementById('hookSuggestions').style.display = 'none';
+}
+
+document.getElementById('strategyHookSuggestBtn').addEventListener('click', async () => {
+    if (!localStorage.getItem('archprompt_apikey')) { alert('No API key saved.'); return; }
+
+    const btn = document.getElementById('strategyHookSuggestBtn');
+    btn.textContent = '⏳ Generating...'; btn.disabled = true;
+    const panel = document.getElementById('strategyHookPanel');
+    const list = document.getElementById('strategyHookList');
+    panel.style.display = 'block';
+    list.innerHTML = '<div style="font-size:12px; color:var(--text-muted);">⏳ Generating hook ideas...</div>';
+
+    const audience = document.getElementById('audienceInput').value.trim() || 'working professionals';
+    const coursesToUse = selectedCourses[0] === 'All Courses' ? ALL_AI_COURSES : selectedCourses;
+    const angles = selectedAngles.join(', ');
+
+    try {
+        const prompt = `You are a viral hook strategist for AISprint.app — practical AI skill courses for working professionals.
+
+Target audience: ${audience}
+Courses: ${coursesToUse.join(', ')}
+Viral angles in use: ${angles}
+
+Generate 8 HIGH-IMPACT hook TOPICS (not full scripts — these are topic ideas with a built-in hook angle) that would make a professional STOP scrolling.
+
+Each hook topic should:
+- Be a complete, clickable video title idea (5-12 words)
+- Combine a pain point or desire with a specific profession or scenario
+- Hint at surprising or contrarian information
+- Work well as a 30-day content hook (something you can build a series around)
+- Reference AI productivity, career transformation, or professional efficiency
+
+Return ONLY a JSON array of 8 strings (topic ideas):
+["Hook topic 1", "Hook topic 2", ..., "Hook topic 8"]`;
+
+        const raw = await callAI(prompt, 800);
+        const match = raw.match(/\[[\s\S]*?\]/);
+        if (!match) throw new Error('Could not parse suggestions');
+        const topics = JSON.parse(match[0]);
+
+        list.innerHTML = '<div style="font-size:11px; font-weight:700; color:var(--gold); margin-bottom:8px;">💡 Hook topic ideas — click to copy &amp; use in your strategy:</div>' +
+            topics.map((t, i) => `
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px; padding:8px 10px; background:var(--surface); border-radius:10px; border-left:3px solid var(--blue); cursor:pointer;"
+                 onclick="copyStrategyHook(${JSON.stringify(t)}, this)"
+                 title="Click to copy">
+                <span style="font-size:10px; font-weight:700; color:var(--blue); min-width:18px;">${i+1}.</span>
+                <span style="font-size:12px; line-height:1.5; color:var(--text); flex:1;">${escapeHtml(t)}</span>
+                <span style="font-size:10px; color:var(--text-muted); white-space:nowrap;" id="copyHint${i}">📋 copy</span>
+            </div>`).join('');
+    } catch(e) {
+        list.innerHTML = `<div style="color:var(--red); font-size:12px;">❌ Error: ${e.message}</div>`;
+    }
+    btn.textContent = '💡 Suggest Hook Topics'; btn.disabled = false;
+});
+
+function copyStrategyHook(text, el) {
+    navigator.clipboard.writeText(text).then(() => {
+        const hint = el.querySelector('span:last-child');
+        if (hint) { hint.textContent = '✅ copied!'; setTimeout(() => hint.textContent = '📋 copy', 2000); }
+    }).catch(() => alert(text));
+}
+</script>
+<!-- ═══════════════════════════════════════════════════════════════
+     AISPRINT PROXY LAYER — injected into all tools
+     All AI calls route through /api/ai on Railway server.
+     API keys never touch the browser.
+═══════════════════════════════════════════════════════════════ -->
+<style>
+#as-bar{
+  position:sticky;top:0;z-index:9999;
+  display:flex;align-items:center;gap:8px;
+  padding:7px 14px;
+  background:#111318;border-bottom:1px solid #1e2330;
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-size:12px;flex-wrap:wrap;
+}
+#as-bar .as-logo{
+  font-family:'Space Mono',monospace;font-size:11px;font-weight:700;
+  color:#4f8ef7;background:rgba(79,142,247,0.12);
+  padding:3px 8px;border-radius:6px;white-space:nowrap;flex-shrink:0;
+}
+#as-bar select{
+  background:#181c24;border:1px solid #2a3045;border-radius:6px;
+  color:#e8eaf0;font-size:12px;padding:4px 8px;cursor:pointer;
+  font-family:inherit;min-width:100px;
+}
+#as-bar select:focus{outline:none;border-color:#4f8ef7}
+#as-bar select:disabled{opacity:.4;cursor:not-allowed}
+#as-dot{
+  width:7px;height:7px;border-radius:50%;
+  background:#1e2330;flex-shrink:0;transition:background .3s;
+}
+#as-dot.ready{background:#26de8a;box-shadow:0 0 6px rgba(38,222,138,.5)}
+#as-dot.error{background:#ff4e6a}
+#as-dot.busy{background:#ffd700;animation:as-pulse 1s infinite}
+#as-status{color:#4a5268;font-size:11px;white-space:nowrap}
+@keyframes as-pulse{0%,100%{opacity:1}50%{opacity:.4}}
+</style>
+
+<script>
+(function(){
+  // ── State ──────────────────────────────────────────────────────
+  var AS = {
+    proxyUrl:  '/api/ai',
+    email:     localStorage.getItem('aisprint_user') || '',
+    provider:  localStorage.getItem('as_provider') || 'claude',
+    model:     localStorage.getItem('as_model') || '',
+    providers: {},
+    ready:     false
+  };
+
+  // ── Build selector bar ─────────────────────────────────────────
+  var bar = document.createElement('div');
+  bar.id  = 'as-bar';
+  bar.innerHTML =
+    '<span class="as-logo">AS</span>' +
+    '<span style="color:#4a5268;font-size:11px">AI provider</span>' +
+    '<select id="as-prov-sel" onchange="AS_onProvChange()"><option>Loading...</option></select>' +
+    '<select id="as-model-sel" onchange="AS_onModelChange()"><option>Loading...</option></select>' +
+    '<span id="as-dot"></span>' +
+    '<span id="as-status">Connecting...</span>';
+  document.body.insertBefore(bar, document.body.firstChild);
+
+  // ── Load available providers from server ───────────────────────
+  fetch('/api/providers')
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      AS.providers = d.providers || {};
+      AS_buildProviderSel();
+      AS_setStatus('ready', 'Ready');
+    })
+    .catch(function(){
+      AS_setStatus('error', 'Server offline');
+      document.getElementById('as-prov-sel').innerHTML = '<option>Offline</option>';
+    });
+
+  // ── Build provider dropdown ────────────────────────────────────
+  window.AS_buildProviderSel = function() {
+    var sel    = document.getElementById('as-prov-sel');
+    var names  = {claude:'Claude',deepseek:'DeepSeek',gemini:'Gemini',perplexity:'Perplexity',openai:'OpenAI'};
+    var opts   = '';
+    var hasAny = false;
+    Object.keys(names).forEach(function(p){
+      var info = AS.providers[p];
+      if (!info || !info.enabled) return;
+      hasAny = true;
+      var sel2 = (p === AS.provider) ? ' selected' : '';
+      opts += '<option value="'+p+'"'+sel2+'>'+names[p]+'</option>';
+    });
+    if (!hasAny) {
+      sel.innerHTML = '<option value="">No providers</option>';
+      sel.disabled  = true;
+      AS_setStatus('error','No API keys set in Railway');
+      return;
+    }
+    sel.innerHTML = opts;
+    // Ensure AS.provider is one that's actually available
+    if (!AS.providers[AS.provider] || !AS.providers[AS.provider].enabled) {
+      AS.provider = sel.value;
+    }
+    AS_buildModelSel();
+  };
+
+  window.AS_buildModelSel = function() {
+    var sel    = document.getElementById('as-model-sel');
+    var info   = AS.providers[AS.provider];
+    var models = (info && info.models) ? info.models : [];
+    sel.innerHTML = '';
+    models.forEach(function(m){
+      var opt   = document.createElement('option');
+      opt.value = m.id;
+      opt.text  = m.label + (m.note ? ' — '+m.note : '');
+      if (m.id === AS.model) opt.selected = true;
+      sel.appendChild(opt);
+    });
+    // Sync model
+    AS.model = sel.value;
+    localStorage.setItem('as_model', AS.model);
+  };
+
+  window.AS_onProvChange = function() {
+    var sel    = document.getElementById('as-prov-sel');
+    AS.provider = sel.value;
+    localStorage.setItem('as_provider', AS.provider);
+    AS_buildModelSel();
+    AS_setStatus('ready','Ready');
+  };
+
+  window.AS_onModelChange = function() {
+    var sel  = document.getElementById('as-model-sel');
+    AS.model = sel.value;
+    localStorage.setItem('as_model', AS.model);
+  };
+
+  // ── Status helper ──────────────────────────────────────────────
+  window.AS_setStatus = function(state, msg) {
+    var dot = document.getElementById('as-dot');
+    var txt = document.getElementById('as-status');
+    dot.className = state;
+    txt.textContent = msg;
+    AS.ready = (state === 'ready');
+  };
+
+  // ── Listen for config from dashboard (postMessage) ─────────────
+  window.addEventListener('message', function(e){
+    if (!e.data || e.data.type !== 'AISPRINT_CONFIG') return;
+    if (e.data.email)    AS.email    = e.data.email;
+    if (e.data.proxyUrl) AS.proxyUrl = e.data.proxyUrl;
+    // Override selectors if dashboard pushes a provider/model
+    if (e.data.provider && AS.providers[e.data.provider] && AS.providers[e.data.provider].enabled) {
+      AS.provider = e.data.provider;
+      var ps = document.getElementById('as-prov-sel');
+      if (ps) ps.value = AS.provider;
+      AS_buildModelSel();
+    }
+    if (e.data.model) {
+      AS.model = e.data.model;
+      var ms = document.getElementById('as-model-sel');
+      if (ms) ms.value = AS.model;
+    }
+  });
+
+  // ── THE PROXY FUNCTION — replaces all direct API calls ─────────
+  // All tools call: await AS_callAI(messages, maxTokens, system)
+  // or the shim wraps their existing callAI() below
+  window.AS_callAI = async function(messages, maxTokens, system) {
+    if (!AS.email) AS.email = localStorage.getItem('aisprint_user') || '';
+    AS_setStatus('busy', 'Calling '+AS.provider+'...');
+    try {
+      var body = {
+        email:      AS.email,
+        provider:   AS.provider,
+        model:      AS.model || document.getElementById('as-model-sel').value,
+        messages:   Array.isArray(messages) ? messages : [{role:'user',content:messages}],
+        max_tokens: maxTokens || 1500,
+      };
+      if (system) body.system = system;
+
+      var r = await fetch(AS.proxyUrl, {
+        method:  'POST',
+        headers: {'Content-Type':'application/json'},
+        body:    JSON.stringify(body)
+      });
+      var d = await r.json();
+      if (!r.ok) throw new Error(d.error || 'Proxy error '+r.status);
+      AS_setStatus('ready', AS.provider+' · done');
+      return d.text;
+    } catch(err) {
+      AS_setStatus('error', err.message);
+      throw err;
+    }
+  };
+
+  // ── SHIM: override each tool's existing callAI() ───────────────
+  // Waits for DOM ready so it overrides after the tool defines its version
+  window.addEventListener('DOMContentLoaded', function(){
+    // Override the tool's callAI with our proxy version
+    window.callAI = async function(promptOrMessages, maxTokens) {
+      var msgs = typeof promptOrMessages === 'string'
+        ? [{role:'user', content: promptOrMessages}]
+        : promptOrMessages;
+      return await window.AS_callAI(msgs, maxTokens);
+    };
+
+    // Patch getKey() / getGeminiKey() to return a dummy truthy value
+    // so key-check guards in tools pass — actual key is on server
+    if (typeof window.getKey === 'undefined') {
+      window.getKey = function(){ return '__proxy__'; };
+    } else {
+      var _origGetKey = window.getKey;
+      window.getKey = function(){
+        var k = _origGetKey();
+        return k || '__proxy__';
+      };
+    }
+    if (typeof window.getGeminiKey !== 'undefined') {
+      window.getGeminiKey = function(){ return '__proxy__'; };
+    }
+    if (typeof window.getDeepSeekKey !== 'undefined') {
+      window.getDeepSeekKey = function(){ return '__proxy__'; };
+    }
+  });
+
+  window.AS = AS;
+})();
+</script>
+
+</body>
+</html>
