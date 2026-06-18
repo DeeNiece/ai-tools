@@ -484,7 +484,7 @@ A Reddit post in r/${post.subreddit} says:
 Title: "${post.title}"
 Body: "${(post.selftext || '').slice(0, 400)}"
 
-Write a genuine, helpful Reddit reply (3-5 sentences). Give real practical value first — specific advice, not generic tips. Only mention AISprint and the course "${courseName}" naturally at the end IF it's directly relevant to what they asked. One mention only, no hard sell, no links. Write as a knowledgeable peer. No bullet points. Conversational tone.`;
+Write a genuine, helpful Reddit reply (3-5 sentences). Give real practical value first — specific advice, not generic tips. Only mention AISprint.app and the course "${courseName}" naturally at the end IF it's directly relevant to what they asked. One mention only, no hard sell, no links. Write as a knowledgeable peer. No bullet points. Conversational tone.`;
 
   try {
     return await window.AS_callAI([{role:'user',content:prompt}], 300);
@@ -563,12 +563,14 @@ OPPORTUNITY: [high/medium/low]
       const nicheData = ALL_NICHES.find(n => n.name === niche) || batch.find(n => n.name.toLowerCase().includes(niche.toLowerCase())) || {};
       const course  = nicheData.course || niche;
       const permalink = url.replace('https://www.reddit.com','').replace('https://reddit.com','') || '/r/' + sub;
-      allThreads.push({
+      const _pt = {
         title, subreddit: sub, permalink, selftext: summary,
         score: 0, num_comments: 0, niche, course,
         opportunity: opp.includes('high') ? 'high' : opp.includes('medium') ? 'medium' : 'reply',
-        draft: null, generating: false, fromPerplexity: true
-      });
+        draft: null, generating: false, fromPerplexity: true, status: ''
+      };
+      _pt.status = loadSavedStatus(_pt);
+      allThreads.push(_pt);
     });
   }
 
@@ -583,7 +585,7 @@ OPPORTUNITY: [high/medium/low]
       const result = await window.AS_callAI(
         [{ role: 'user', content: prompt }],
         1500,
-        'You are a Reddit research assistant with live web search. Find real, currently existing Reddit posts. Return only verified posts with real URLs. Use the exact output format requested.'
+        'You are a Reddit research assistant with live web search. Find real, currently existing Reddit posts. Return only verified posts with real URLs. Use the exact output format requested. Never use markdown formatting, bold text, or citation brackets in your response.'
       );
       parseBlocks(result, batch);
       // Show partial results after each batch
@@ -610,7 +612,7 @@ OPPORTUNITY: [high/medium/low]
   document.getElementById('refresh-btn').disabled = false;
   buildFilters();
   renderThreads();
-  if (allThreads.length) generateDraftsInBackground();
+  // Auto-draft disabled — click Generate on each card to save tokens
 }
 
 function handleRefresh() {
@@ -637,7 +639,9 @@ async function loadAllThreads() {
       const posts = await fetchSubreddit(sub);
       const top = posts.filter(p => !p.stickied && p.score > 5).slice(0, 3);
       top.forEach(p => {
-        allThreads.push({ ...p, niche, course: SUBREDDITS.find(s=>s.sub===sub)?.course||niche, opportunity: scoreThread(p), draft: null, generating: false });
+        const _t = { ...p, niche, course: SUBREDDITS.find(s=>s.sub===sub)?.course||niche, opportunity: scoreThread(p), draft: null, generating: false, status: '' };
+        _t.status = loadSavedStatus(_t);
+        allThreads.push(_t);
       });
     } catch(e) { console.warn('Skip', sub, e.message); }
     await new Promise(r => setTimeout(r, 600));
@@ -655,7 +659,7 @@ async function loadAllThreads() {
   buildFilters();
   renderThreads();
 
-  generateDraftsInBackground(); // proxy handles keys
+  // Auto-draft disabled — manual per card only
 }
 
 async function generateDraftsInBackground() {
@@ -672,10 +676,19 @@ async function generateDraftsInBackground() {
 
 function buildFilters() {
   const niches = ['All', ...new Set(allThreads.map(t => t.niche))];
+  // Count by status for filter chips
+  const replied = allThreads.filter(t => t.status === 'replied').length;
+  const pending = allThreads.filter(t => !t.status).length;
   const container = document.getElementById('filters');
-  container.innerHTML = niches.map(n =>
+  const nicheChips = niches.map(n =>
     `<div class="filter-chip ${n === activeFilter ? 'active' : ''}" onclick="setFilter('${n}')">${n}</div>`
   ).join('');
+  const statusChips = `
+    <div class="filter-chip filter-status ${activeFilter==='__pending__' ? 'active' : ''}"
+      onclick="setFilter('__pending__')">⬤ Pending (${pending})</div>
+    <div class="filter-chip filter-status ${activeFilter==='__replied__' ? 'active' : ''}"
+      onclick="setFilter('__replied__')">✓ Replied (${replied})</div>`;
+  container.innerHTML = nicheChips + statusChips;
 }
 
 function setFilter(niche) {
@@ -685,13 +698,25 @@ function setFilter(niche) {
 }
 
 function renderThreads() {
-  const filtered = activeFilter === 'All' ? allThreads : allThreads.filter(t => t.niche === activeFilter);
+  let filtered;
+  if (activeFilter === 'All') {
+    filtered = allThreads;
+  } else if (activeFilter === '__pending__') {
+    filtered = allThreads.filter(t => !t.status);
+  } else if (activeFilter === '__replied__') {
+    filtered = allThreads.filter(t => t.status === 'replied');
+  } else {
+    filtered = allThreads.filter(t => t.niche === activeFilter);
+  }
   if (!filtered.length) {
-    document.getElementById('thread-list').innerHTML = `<div class="empty-state"><div class="icon">◎</div>No threads loaded yet. Click "Refresh threads" above.</div>`;
+    document.getElementById('thread-list').innerHTML = `<div class="empty-state"><div class="icon">◎</div>No threads here.</div>`;
     return;
   }
   document.getElementById('thread-list').innerHTML = filtered.map((t, i) => renderCard(t, i)).join('');
 }
+
+
+// renderThreads is defined inside setFilter replacement above
 
 function oppLabel(o) {
   if (o === 'high') return '<span class="opportunity-tag opp-high">★ High opportunity</span>';
@@ -700,29 +725,59 @@ function oppLabel(o) {
 }
 
 function renderCard(t, i) {
-  const idx = allThreads.indexOf(t);
+  const idx    = allThreads.indexOf(t);
+  const status = t.status || '';
+
+  // Status badge shown in meta row
+  const statusBadge = status
+    ? `<span class="status-badge ${status}">${
+        status === 'replied'  ? '✓ Replied'  :
+        status === 'spam'     ? '✕ Spam'     :
+        status === 'deleted'  ? '⊘ Deleted'  :
+        status === 'skipped'  ? '→ Skipped'  : ''
+      }</span>`
+    : '';
+
+  // Draft section — manual only, no auto-generate
   const draftContent = t.generating
     ? '<div style="font-size:13px;color:var(--text-3)">✦ Drafting reply with AI...</div>'
     : t.draft
       ? `<textarea class="draft-box" id="draft-${idx}">${t.draft}</textarea>
          <div class="draft-actions">
-           <span class="draft-hint">Edit freely — this is your starting point, not a script</span>
+           <span class="draft-hint">Edit freely before posting</span>
            <div style="display:flex;gap:6px">
              <button class="btn-sm" onclick="regenerateDraft(${idx})">↺ Regenerate</button>
              <button class="copy-btn btn-sm" onclick="copyDraft(${idx})">Copy reply</button>
            </div>
          </div>`
-      : config.apikey
-        ? `<button class="btn-sm" onclick="generateOne(${idx})">✦ Generate AI draft</button>`
-        : `<button class="btn-sm" onclick="generateOne(${idx})">✦ Generate AI draft</button>`;
+      : `<button class="btn-sm" onclick="generateOne(${idx})">✦ Generate AI draft</button>`;
+
+  // Status action buttons
+  const statusButtons = `
+    <div class="status-actions">
+      <span class="status-actions-label">Mark as:</span>
+      <button class="status-btn ${status==='replied' ? 'replied' : ''}"
+        onclick="saveStatus(${idx},'replied')">✓ Replied</button>
+      <button class="status-btn ${status==='spam' ? 'spam' : ''}"
+        onclick="saveStatus(${idx},'spam')">✕ Spam</button>
+      <button class="status-btn ${status==='deleted' ? 'deleted' : ''}"
+        onclick="saveStatus(${idx},'deleted')">⊘ Deleted</button>
+      <button class="status-btn ${status==='skipped' ? 'skipped' : ''}"
+        onclick="saveStatus(${idx},'skipped')">→ Skip</button>
+      ${status ? `<button class="btn-sm" style="margin-left:4px;font-size:11px;opacity:.5"
+        onclick="clearStatus(${idx})">✕ Clear</button>` : ''}
+    </div>`;
+
+  const cardClass = status ? ` status-${status}` : '';
 
   return `
-  <div class="thread-card">
+  <div class="thread-card${cardClass}">
     <div class="thread-head">
       <div style="flex:1;min-width:0">
         <div class="thread-meta">
           <span class="subreddit-tag">r/${t.subreddit}</span>
           ${oppLabel(t.opportunity)}
+          ${statusBadge}
           <span class="score-tag">▲ ${t.score.toLocaleString()}</span>
           <span class="score-tag">💬 ${t.num_comments}</span>
         </div>
@@ -736,9 +791,10 @@ function renderCard(t, i) {
       </div>
     </div>
     <div class="draft-section">
-      <div class="draft-label">AI-drafted reply <span class="ai-badge">Claude</span></div>
+      <div class="draft-label">AI reply draft <span class="ai-badge">on demand</span></div>
       ${draftContent}
     </div>
+    ${statusButtons}
   </div>`;
 }
 
