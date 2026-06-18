@@ -402,7 +402,7 @@ document.getElementById('modelSel').addEventListener('change', function(e) { loc
 
 // ── API KEY ───────────────────────────────────────────────
 function getKey() {
-  return localStorage.getItem('storytelling_key_' + currentProvider) || localStorage.getItem('archprompt_apikey') || '';
+  return localStorage.getItem('storytelling_key_' + currentProvider) || localStorage.getItem('archprompt_apikey') || '__proxy__';
 }
 function updateKeyUI() {
   var k = getKey();
@@ -410,7 +410,7 @@ function updateKeyUI() {
 }
 document.getElementById('saveKeyBtn').addEventListener('click', function() {
   var k = document.getElementById('apiKey').value.trim();
-  if (!k) { alert('Enter your API key first'); return; }
+  // API key via Railway proxy — skipping local key check
   localStorage.setItem('storytelling_key_' + currentProvider, k);
   localStorage.setItem('archprompt_apikey', k);
   if (currentProvider === 'custom') {

@@ -419,7 +419,7 @@
     else if (error) apiDot.classList.add('error');
   }
   async function healthCheck() {
-    const key = localStorage.getItem('archprompt_apikey');
+    const key = localStorage.getItem('archprompt_apikey') || '__proxy__';
     if (!key) { updateDotState(false, true, false); showToast('No API key', true); return; }
     updateDotState(false, false, true);
     const model = selectedModel || (MODEL_CATALOGUE[currentProvider]?.[0]?.id || '');
@@ -470,7 +470,7 @@
 
   // AI Call with retry and 60s timeout
   async function callAI(systemPrompt, userPrompt, retryCount = 0) {
-    const key = localStorage.getItem('archprompt_apikey');
+    const key = localStorage.getItem('archprompt_apikey') || '__proxy__';
     if (!key || !apiHealthy) throw new Error('API key missing or not healthy');
     const prov = currentProvider;
     const model = selectedModel || (MODEL_CATALOGUE[prov]?.[0]?.id || 'gpt-4o');
@@ -561,7 +561,7 @@ ${userPrompt}` }] }], generationConfig: { maxOutputTokens: 2000, temperature: 0.
 
   // Generate YouTube Teaser (max 100 chars), Video Description (max 5000), Tags (max 200)
   async function generateMetadata(topicLabel, fullScript, dateScope) {
-    const key = localStorage.getItem('archprompt_apikey');
+    const key = localStorage.getItem('archprompt_apikey') || '__proxy__';
     if (!key || !apiHealthy) {
       return {
         teaser: `Latest ${topicLabel} top 10!`,

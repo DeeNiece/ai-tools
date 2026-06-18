@@ -1959,8 +1959,8 @@
 // Live Environment Key Injector and API Utilities
 // API key — reads from localStorage (set via the key input below)
 // ── Unified key getters ─────────────────────────────────────────
-function getGeminiKey()   { return localStorage.getItem('ap_gemini_key') || localStorage.getItem('archprompt_studio_gemini_key') || ''; }
-function getDeepSeekKey() { return localStorage.getItem('ap_deepseek_key') || ''; }
+function getGeminiKey()   { return localStorage.getItem('ap_gemini_key') || localStorage.getItem('archprompt_studio_gemini_key') || '__proxy__'; }
+function getDeepSeekKey() { return localStorage.getItem('ap_deepseek_key') || '__proxy__'; }
 function getApiKey()      { return getGeminiKey(); } // legacy alias
 const apiKey = ""; // legacy — runtime functions use getGeminiKey()
 
@@ -2572,7 +2572,7 @@ function buildCreatorPrompt() {
     // Try models in order
     const modelsToTry = ['gemini-3.1-flash-image', 'gemini-2.5-flash-image', 'gemini-2.0-flash-preview-image-generation'];
     const rndKey = getGeminiKey();
-    if (!rndKey) { setStatus('No Gemini API key saved. Enter it in the panel on the right.', 'error'); rndGenerating=false; btn.disabled=false; btn.innerHTML='▶ Render Architectural Draft'; return; }
+    // rndKey handled by Railway proxy — no local key check needed
     let rndData = null, rndLastErr = '';
     for (const modelName of modelsToTry) {
       const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${rndKey}`;
@@ -3339,7 +3339,7 @@ function setWorkflowMode(mode) {
     // Save
     document.getElementById('unifiedSaveBtn')?.addEventListener('click', () => {
       const k = document.getElementById('unifiedApiKeyInput').value.trim();
-      if (!k) { showToast('Paste an API key first', 'error'); return; }
+      // Key via Railway proxy
       const p = PROVIDERS[activeProvider];
       // Warn if key format looks wrong
       if (activeProvider === 'gemini' && !k.startsWith('AIza')) {

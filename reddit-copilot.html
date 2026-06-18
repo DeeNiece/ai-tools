@@ -314,16 +314,14 @@
 <main>
 
   <div id="config-bar" class="config-bar" style="display:none">
-    ⚠ Add your Claude API key in Settings to enable AI reply drafts.
-    <button class="btn-sm" onclick="toggleSettings()">Open settings</button>
   </div>
 
   <div id="settings-panel" class="settings-panel">
     <h3>Configuration</h3>
     <div class="settings-grid">
       <div>
-        <label class="field-label">Claude API key</label>
-        <input class="field-input" id="cfg-apikey" type="password" placeholder="sk-ant-..." oninput="saveConfig()">
+        <label class="field-label">Claude API key (optional — set in Railway)</label>
+        <input class="field-input" id="cfg-apikey" type="password" placeholder="Set in Railway variables" disabled style="opacity:.4">
         <div style="font-size:11px;color:var(--text-3);margin-top:-10px;margin-bottom:10px">Get yours at console.anthropic.com — stays in your browser only</div>
       </div>
       <div>
@@ -404,7 +402,7 @@ function loadConfig() {
   if (config.url) document.getElementById('cfg-url').value = config.url;
   if (config.reddit) document.getElementById('cfg-reddit').value = config.reddit;
   if (config.email) document.getElementById('digest-email').value = config.email;
-  if (!config.apikey) document.getElementById('config-bar').style.display = 'flex';
+  // API keys handled by Railway proxy — no local key needed
 }
 
 function saveConfig() {
@@ -413,7 +411,7 @@ function saveConfig() {
   config.url = document.getElementById('cfg-url').value.trim() || 'https://aisprint.app';
   config.reddit = document.getElementById('cfg-reddit').value.trim();
   localStorage.setItem('aisprint_cfg', JSON.stringify(config));
-  document.getElementById('config-bar').style.display = config.apikey ? 'none' : 'flex';
+  // API keys handled by Railway proxy
 }
 
 function toggleSettings() {
@@ -441,7 +439,7 @@ function scoreThread(post) {
 }
 
 async function generateDraft(post, niche) {
-  if (!config.apikey) return null;
+  // Proxy handles auth — no local key check needed
   const siteUrl = config.url || 'https://aisprint.app';
   const prompt = `You are a helpful professional in the ${niche} field who also runs AISprint (${siteUrl}), a platform with 28-day AI courses for professionals.
 
@@ -487,7 +485,7 @@ async function loadAllThreads() {
   buildFilters();
   renderThreads();
 
-  if (config.apikey) generateDraftsInBackground();
+  generateDraftsInBackground(); // proxy handles keys
 }
 
 async function generateDraftsInBackground() {
@@ -546,7 +544,7 @@ function renderCard(t, i) {
          </div>`
       : config.apikey
         ? `<button class="btn-sm" onclick="generateOne(${idx})">✦ Generate AI draft</button>`
-        : `<div style="font-size:12px;color:var(--text-3)">Add API key in Settings to generate drafts</div>`;
+        : `<button class="btn-sm" onclick="generateOne(${idx})">✦ Generate AI draft</button>`;
 
   return `
   <div class="thread-card">

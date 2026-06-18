@@ -699,7 +699,7 @@ document.getElementById('modelSelector').addEventListener('change', function() {
 
 // IMPROVED callAI with Perplexity integration
 async function callAI(prompt, maxTokens) {
-    const key = localStorage.getItem('archprompt_apikey');
+    const key = localStorage.getItem('archprompt_apikey') || '__proxy__';
     const provider = currentProvider;
     const mt = maxTokens || 1200;
     const model = selectedModel || (MODEL_CATALOGUE[provider]?.[0]?.id || '');
@@ -836,7 +836,7 @@ if (localStorage.getItem('archprompt_custom_endpoint')) customEndpointInput.valu
 
 function updateKeyStatusUI() { let key = localStorage.getItem('archprompt_apikey'); if (!key) { keyStatusDiv.innerHTML = '🔑 No API key saved'; return; } keyStatusDiv.innerHTML = `🔑 Key saved: ${key.substring(0,8)}... ${apiHealthy ? '✅' : '⚠️'}`; }
 async function healthCheck() {
-    let k = localStorage.getItem('archprompt_apikey'); if (!k) { showTestResult('No API key', true); return false; }
+    let k = localStorage.getItem('archprompt_apikey') || '__proxy__'; if (!k) { showTestResult('No API key', true); return false; }
     try {
         let ok=false;
         if(currentProvider==='deepseek'){let r=await fetch('https://api.deepseek.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${k}`},body:JSON.stringify({model:'deepseek-chat',messages:[{role:'user',content:'ping'}],max_tokens:2})});ok=r.ok;}
@@ -953,7 +953,7 @@ generateBtn.addEventListener('click', async () => {
     const finalLength = lengthCustom.value.trim() || lengthPreset.value || '60 seconds';
     const useExpressions = heygenExpressionsCheckbox.checked;
     const includePrinciple = aiPrincipleToggle.checked;
-    if(!localStorage.getItem('archprompt_apikey')){alert('No API key');return;}
+    // API key handled by Railway proxy
     generateBtn.disabled=true; generateBtn.textContent='⏳ Generating...';
     outputArea.style.display='none';
     try {
@@ -1278,7 +1278,7 @@ document.getElementById('strategyGenerateBtn').addEventListener('click', async (
     const googleUrl = googleUrlInput.value.trim();
     const saveToSheet = document.getElementById('strategySaveSheetToggle').checked;
     if (saveToSheet && !googleUrl) { alert('Save Google Script URL first, or uncheck "Save to Sheet" to preview only.'); return; }
-    if (!localStorage.getItem('archprompt_apikey')) { alert('No API key saved'); return; }
+    // API key handled by Railway proxy — skipping local key check
 
     const numDays = Math.min(Math.max(parseInt(document.getElementById('numDays').value)||30, 1), 90);
     const platformStr = document.getElementById('strategyPlatform').value;
