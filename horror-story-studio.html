@@ -411,7 +411,7 @@ Return a JSON object with exactly these keys:
   try {
     var text = await window.AS_callAI(
       [{role:'user', content: userPrompt}],
-      4000,
+      8000,
       systemPrompt
     );
 
@@ -770,7 +770,7 @@ function showToast(msg) {
         provider:   AS.provider,
         model:      AS.model || document.getElementById('as-model-sel').value,
         messages:   Array.isArray(messages) ? messages : [{role:'user',content:messages}],
-        max_tokens: maxTokens || 4000
+        max_tokens: maxTokens || 8000
       };
       if (system) body.system = system;
       var r = await fetch(AS.proxyUrl, {
