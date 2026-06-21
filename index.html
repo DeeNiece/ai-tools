@@ -196,6 +196,10 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14
           <div class="tool-icon" style="background:rgba(43,191,178,0.12)">⬡</div>
           <div class="tool-label">Avatar News Forge<span class="tool-sublabel">News scripts</span></div>
         </button>
+        <button class="tool-btn" id="nav-horror" onclick="openTool('horror')">
+          <div class="tool-icon" style="background:rgba(232,64,64,0.12)">🎭</div>
+          <div class="tool-label">Horror Story Studio<span class="tool-sublabel">Finance · Legal · Drama</span></div>
+        </button>
       </div>
 
       <div class="sidebar-divider"></div>
@@ -256,6 +260,12 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14
               <div class="tool-card-name">Avatar News Forge</div>
               <div class="tool-card-desc">Generate no-pause, full-sentence news scripts for avatar-based video content.</div>
               <span class="tool-card-tag" style="background:rgba(43,191,178,0.1);color:#2bbfb2">Claude · DeepSeek · OpenAI</span>
+            </div>
+            <div class="tool-card" onclick="openTool('horror')">
+              <div class="tool-card-icon" style="background:rgba(232,64,64,0.1)">🎭</div>
+              <div class="tool-card-name">Horror Story Studio</div>
+              <div class="tool-card-desc">Finance horror, legal horror & revenge drama scripts for YouTube. Full 8–10 min structure with B-roll cues, thumbnails & YouTube meta.</div>
+              <span class="tool-card-tag" style="background:rgba(232,64,64,0.1);color:#e84040">DeepSeek · Gemini · Claude</span>
             </div>
             <div class="tool-card" onclick="openTool('vep')">
               <div class="tool-card-icon" style="background:rgba(255,215,0,0.08)">◬</div>
@@ -348,6 +358,22 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14
         <iframe class="tool-frame" id="frame-avatar" title="Avatar News Forge"></iframe>
       </div>
 
+      <div id="view-horror" class="tool-view">
+        <div class="tool-topbar">
+          <div class="tool-topbar-left">
+            <button class="tool-back-btn" onclick="showHome()">← Dashboard</button>
+            <div><div class="tool-current-name">Horror Story Studio</div><div class="tool-current-desc">Finance Horror · Legal Horror · Revenge &amp; Drama · YouTube scripts</div></div>
+          </div>
+          <div class="ai-selector">
+            <span class="ai-selector-label">AI provider</span>
+            <select class="ai-sel" id="sel-prov-horror" onchange="updateModelSel('horror')"></select>
+            <select class="ai-sel" id="sel-model-horror"></select>
+            <span class="ai-status" id="sel-status-horror">Ready</span>
+          </div>
+        </div>
+        <iframe class="tool-frame" id="frame-horror" title="Horror Story Studio"></iframe>
+      </div>
+
       <div id="view-vep" class="tool-view">
         <div class="tool-topbar">
           <div class="tool-topbar-left">
@@ -368,7 +394,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14
 // ── State ─────────────────────────────────────────────────────────────────
 var currentUser  = null;
 var providerData = {};   // { claude: { enabled, models }, ... }
-var TOOLS        = ['reddit','video','arch','story','avatar'];
+var TOOLS        = ['reddit','video','arch','story','avatar','horror'];
 
 var TOOL_FILES = {
   reddit: 'reddit-copilot.html',
@@ -376,7 +402,8 @@ var TOOL_FILES = {
   arch:   'archprompt-studio.html',
   story:  'storytelling-studio.html',
   avatar: 'avatar-news-forge.html',
-  vep:    'volumeedgepro.html'
+  vep:    'volumeedgepro.html',
+  horror: 'horror-story-studio.html'
 };
 
 // ── GATE ──────────────────────────────────────────────────────────────────

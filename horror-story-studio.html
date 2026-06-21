@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Horror Story Studio · AISprint</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0f0f13; --surface:#17171f; --surface2:#1e1e28;
+  --border:#2a2a3a; --border2:#3a3a52;
+  --text:#f0f0f8; --text2:#b0b0c8; --text3:#707088;
+  --red:#e84040; --red-dim:rgba(232,64,64,0.1);
+  --gold:#d4a84b; --gold-dim:rgba(212,168,75,0.1);
+  --green:#3ecf6e; --green-dim:rgba(62,207,110,0.1);
+  --blue:#4f8ef7; --blue-dim:rgba(79,142,247,0.1);
+  --purple:#9b72f7; --purple-dim:rgba(155,114,247,0.1);
+  --radius:14px; --radius-sm:8px;
+  --font:'DM Sans',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14px;line-height:1.6;padding:24px 20px 60px;min-height:100vh}
+.container{max-width:960px;margin:0 auto}
+
+/* HEADER */
+.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:12px}
+.header-left h1{font-size:22px;font-weight:700;letter-spacing:-.3px}
+.header-left h1 span{color:var(--red)}
+.header-left p{font-size:12px;color:var(--text3);margin-top:2px}
+
+/* NICHE SELECTOR */
+.niche-row{display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap}
+.niche-btn{padding:8px 18px;border-radius:99px;border:1.5px solid var(--border2);background:var(--surface);color:var(--text2);font-family:var(--font);font-size:13px;font-weight:500;cursor:pointer;transition:all .15s}
+.niche-btn:hover{border-color:var(--border2);color:var(--text)}
+.niche-btn.active-finance{border-color:var(--gold);background:var(--gold-dim);color:var(--gold)}
+.niche-btn.active-legal{border-color:var(--blue);background:var(--blue-dim);color:var(--blue)}
+.niche-btn.active-drama{border-color:var(--red);background:var(--red-dim);color:var(--red)}
+
+/* CARD */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px;margin-bottom:18px}
+.card-title{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:14px}
+
+/* INPUTS */
+label{font-size:12px;color:var(--text2);display:block;margin-bottom:5px}
+input,textarea,select{width:100%;padding:10px 14px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font);font-size:13px;margin-bottom:14px;transition:border-color .15s;resize:vertical}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--blue)}
+textarea{min-height:80px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:600px){.row2{grid-template-columns:1fr}}
+
+/* GENERATE BTN */
+.gen-btn{width:100%;padding:14px;background:var(--red);color:#fff;border:none;border-radius:var(--radius-sm);font-family:var(--font);font-size:15px;font-weight:600;cursor:pointer;transition:opacity .15s;margin-top:4px}
+.gen-btn:hover{opacity:.88}
+.gen-btn:disabled{opacity:.45;cursor:not-allowed}
+
+/* OUTPUT SECTIONS */
+.output-area{display:none;margin-top:24px}
+.section-block{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:14px;overflow:hidden}
+.section-head{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border);background:var(--surface2)}
+.section-head-left{display:flex;align-items:center;gap:10px}
+.section-badge{font-size:10px;font-weight:700;padding:2px 10px;border-radius:99px;font-family:monospace;letter-spacing:.05em}
+.badge-hook{background:var(--red-dim);color:var(--red)}
+.badge-setup{background:var(--gold-dim);color:var(--gold)}
+.badge-escalation{background:var(--blue-dim);color:var(--blue)}
+.badge-resolution{background:var(--purple-dim);color:var(--purple)}
+.badge-cta{background:var(--green-dim);color:var(--green)}
+.badge-meta{background:rgba(255,255,255,0.05);color:var(--text2)}
+.section-timing{font-size:11px;color:var(--text3)}
+.copy-btn{font-size:11px;padding:4px 12px;background:var(--surface);border:1px solid var(--border2);border-radius:99px;color:var(--text2);cursor:pointer;font-family:var(--font);transition:all .15s}
+.copy-btn:hover{color:var(--text);border-color:var(--text3)}
+.section-body{padding:16px}
+.script-text{font-size:13px;line-height:1.75;color:var(--text);white-space:pre-wrap}
+
+/* CUE TAGS */
+.cue-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
+.cue-tag{font-size:11px;padding:3px 10px;border-radius:99px;display:flex;align-items:center;gap:5px}
+.cue-broll{background:rgba(79,142,247,0.08);color:var(--blue);border:1px solid rgba(79,142,247,0.2)}
+.cue-overlay{background:rgba(232,64,64,0.08);color:var(--red);border:1px solid rgba(232,64,64,0.2)}
+.cue-avatar{background:rgba(62,207,110,0.08);color:var(--green);border:1px solid rgba(62,207,110,0.2)}
+.cue-music{background:rgba(212,168,75,0.08);color:var(--gold);border:1px solid rgba(212,168,75,0.2)}
+
+/* META GRID */
+.meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:600px){.meta-grid{grid-template-columns:1fr}}
+.meta-item label{font-size:11px;color:var(--text3);margin-bottom:4px}
+.meta-value{font-size:13px;color:var(--text);background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;line-height:1.5}
+
+/* THUMBNAIL */
+.thumb-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:4px}
+@media(max-width:600px){.thumb-grid{grid-template-columns:1fr}}
+.thumb-item label{font-size:11px;color:var(--text3);margin-bottom:4px}
+.thumb-value{font-size:13px;color:var(--text);background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;line-height:1.5;min-height:60px}
+
+/* SHEETS SECTION */
+.sheets-row{display:flex;gap:10px;align-items:flex-end;margin-top:4px}
+.sheets-row input{margin-bottom:0;flex:1}
+.save-btn{padding:10px 18px;background:var(--green);color:#fff;border:none;border-radius:var(--radius-sm);font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;transition:opacity .15s;flex-shrink:0}
+.save-btn:hover{opacity:.85}
+.save-btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* STATUS */
+.status-bar{font-size:12px;padding:8px 14px;border-radius:var(--radius-sm);margin-top:12px;display:none}
+.status-bar.info{background:var(--blue-dim);color:var(--blue);border:1px solid rgba(79,142,247,0.25)}
+.status-bar.ok{background:var(--green-dim);color:var(--green);border:1px solid rgba(62,207,110,0.25)}
+.status-bar.err{background:var(--red-dim);color:var(--red);border:1px solid rgba(232,64,64,0.25)}
+
+/* SPINNER */
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.2);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
+
+/* GOOGLE SHEET SCRIPT SECTION */
+.collapsible-head{display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:10px 0;user-select:none}
+.collapsible-head span{font-size:12px;color:var(--text3)}
+.collapsible-body{display:none}
+.collapsible-body.open{display:block}
+.code-block{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;font-family:monospace;font-size:11px;white-space:pre-wrap;overflow-x:auto;color:var(--text2);margin-top:8px;max-height:300px;overflow-y:auto}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <div class="header-left">
+      <h1>Horror Story <span>Studio</span></h1>
+      <p>Finance Horror · Legal Horror · Revenge &amp; Drama · YouTube Script Generator</p>
+    </div>
+  </div>
+
+  <!-- NICHE -->
+  <div class="niche-row">
+    <button class="niche-btn active-finance" id="btn-finance" onclick="setNiche('finance')">💰 Finance Horror</button>
+    <button class="niche-btn" id="btn-legal" onclick="setNiche('legal')">⚖️ Legal Horror</button>
+    <button class="niche-btn" id="btn-drama" onclick="setNiche('drama')">🎭 Revenge &amp; Drama</button>
+  </div>
+
+  <!-- STORY INPUT -->
+  <div class="card">
+    <div class="card-title">Story Input</div>
+    <label>Story Idea or Real Case</label>
+    <textarea id="storyIdea" placeholder="e.g. A man invested his entire retirement savings into a crypto scheme recommended by his financial advisor. He lost $1.2 million in 3 months. The advisor fled the country."></textarea>
+    <div class="row2">
+      <div>
+        <label>Target Audience</label>
+        <select id="audience">
+          <option value="general">General (English, worldwide)</option>
+          <option value="ph">Filipino audience</option>
+          <option value="hk">Hong Kong audience</option>
+          <option value="asian">Asian diaspora (US/UK/AU)</option>
+        </select>
+      </div>
+      <div>
+        <label>Video Length Target</label>
+        <select id="videoLength">
+          <option value="8-10">8–10 minutes</option>
+          <option value="10-12">10–12 minutes</option>
+          <option value="12-15">12–15 minutes</option>
+        </select>
+      </div>
+    </div>
+    <label>Extra Context (optional — real names, amounts, dates, outcome)</label>
+    <textarea id="extraContext" style="min-height:60px" placeholder="e.g. The advisor was named John Cruz, 52, a certified CFP. The case went to court in 2023. Victim eventually recovered $400k via lawsuit."></textarea>
+    <button class="gen-btn" id="genBtn" onclick="generateScript()">🎬 Generate Full Script + YouTube Meta</button>
+    <div class="status-bar" id="genStatus"></div>
+  </div>
+
+  <!-- OUTPUT -->
+  <div class="output-area" id="outputArea">
+
+    <!-- SECTION 1: HOOK -->
+    <div class="section-block">
+      <div class="section-head">
+        <div class="section-head-left">
+          <span class="section-badge badge-hook">HOOK</span>
+          <span class="section-timing">0:00 – 0:30 · Avatar on screen</span>
+        </div>
+        <button class="copy-btn" onclick="copySection('hook')">Copy</button>
+      </div>
+      <div class="section-body">
+        <div class="script-text" id="out-hook"></div>
+        <div class="cue-row">
+          <span class="cue-tag cue-avatar">🎥 Avatar full screen</span>
+          <span class="cue-tag cue-music" id="cue-hook-music"></span>
+          <span class="cue-tag cue-overlay" id="cue-hook-overlay"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 2: SETUP -->
+    <div class="section-block">
+      <div class="section-head">
+        <div class="section-head-left">
+          <span class="section-badge badge-setup">SETUP</span>
+          <span class="section-timing">0:30 – 2:00 · B-roll + Avatar corner</span>
+        </div>
+        <button class="copy-btn" onclick="copySection('setup')">Copy</button>
+      </div>
+      <div class="section-body">
+        <div class="script-text" id="out-setup"></div>
+        <div class="cue-row" id="cues-setup"></div>
+      </div>
+    </div>
+
+    <!-- SECTION 3: ESCALATION -->
+    <div class="section-block">
+      <div class="section-head">
+        <div class="section-head-left">
+          <span class="section-badge badge-escalation">ESCALATION</span>
+          <span class="section-timing">2:00 – 8:00 · B-roll + Avatar corner + Text overlays</span>
+        </div>
+        <button class="copy-btn" onclick="copySection('escalation')">Copy</button>
+      </div>
+      <div class="section-body">
+        <div class="script-text" id="out-escalation"></div>
+        <div class="cue-row" id="cues-escalation"></div>
+      </div>
+    </div>
+
+    <!-- SECTION 4: RESOLUTION -->
+    <div class="section-block">
+      <div class="section-head">
+        <div class="section-head-left">
+          <span class="section-badge badge-resolution">RESOLUTION</span>
+          <span class="section-timing">8:00 – 9:00 · B-roll + Avatar corner</span>
+        </div>
+        <button class="copy-btn" onclick="copySection('resolution')">Copy</button>
+      </div>
+      <div class="section-body">
+        <div class="script-text" id="out-resolution"></div>
+        <div class="cue-row" id="cues-resolution"></div>
+      </div>
+    </div>
+
+    <!-- SECTION 5: LESSON + CTA -->
+    <div class="section-block">
+      <div class="section-head">
+        <div class="section-head-left">
+          <span class="section-badge badge-cta">LESSON + CTA</span>
+          <span class="section-timing">9:00 – 10:00 · Avatar full screen</span>
+        </div>
+        <button class="copy-btn" onclick="copySection('cta')">Copy</button>
+      </div>
+      <div class="section-body">
+        <div class="script-text" id="out-cta"></div>
+        <div class="cue-row">
+          <span class="cue-tag cue-avatar">🎥 Avatar full screen</span>
+          <span class="cue-tag cue-music">🎵 Music: fade to silence</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- THUMBNAIL -->
+    <div class="section-block">
+      <div class="section-head">
+        <div class="section-head-left">
+          <span class="section-badge badge-meta">THUMBNAIL</span>
+        </div>
+        <button class="copy-btn" onclick="copySection('thumbnail')">Copy all</button>
+      </div>
+      <div class="section-body">
+        <div class="thumb-grid">
+          <div class="thumb-item">
+            <label>Thumbnail Text (4–7 words)</label>
+            <div class="thumb-value" id="out-thumb-text"></div>
+          </div>
+          <div class="thumb-item">
+            <label>Gemini Image Prompt (background only)</label>
+            <div class="thumb-value" id="out-thumb-prompt"></div>
+          </div>
+          <div class="thumb-item">
+            <label>Avatar Expression Suggestion</label>
+            <div class="thumb-value" id="out-thumb-avatar"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- YOUTUBE META -->
+    <div class="section-block">
+      <div class="section-head">
+        <div class="section-head-left">
+          <span class="section-badge badge-meta">YOUTUBE META</span>
+        </div>
+        <button class="copy-btn" onclick="copySection('meta')">Copy all</button>
+      </div>
+      <div class="section-body">
+        <div class="meta-grid">
+          <div class="meta-item">
+            <label>YouTube Title</label>
+            <div class="meta-value" id="out-yt-title"></div>
+          </div>
+          <div class="meta-item">
+            <label>Tags (comma separated)</label>
+            <div class="meta-value" id="out-yt-tags"></div>
+          </div>
+          <div class="meta-item" style="grid-column:1/-1">
+            <label>YouTube Description</label>
+            <div class="meta-value" id="out-yt-desc" style="min-height:80px"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SAVE TO SHEETS -->
+    <div class="card">
+      <div class="card-title">Save to Google Sheets</div>
+      <label>Apps Script URL</label>
+      <div class="sheets-row">
+        <input type="url" id="appsScriptUrl" placeholder="https://script.google.com/macros/s/YOUR_ID/exec" value="">
+        <button class="save-btn" id="saveBtn" onclick="saveToSheets()">💾 Save to Sheet</button>
+      </div>
+      <div class="status-bar" id="saveStatus"></div>
+
+      <!-- Apps Script Code -->
+      <div style="margin-top:16px">
+        <div class="collapsible-head" onclick="toggleScript()">
+          <span style="font-size:12px;color:var(--text2)">📋 Google Apps Script code (click to expand)</span>
+          <span id="script-toggle-icon">▶</span>
+        </div>
+        <div class="collapsible-body" id="scriptBody">
+          <p style="font-size:12px;color:var(--text3);margin-bottom:8px">1. Open Google Sheets → Extensions → Apps Script → paste this → Deploy as Web App → set "Anyone" access → copy URL above.</p>
+          <div class="code-block" id="appsScriptCode"></div>
+          <button class="copy-btn" style="margin-top:8px" onclick="copyAppsScript()">Copy Apps Script</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /output-area -->
+</div><!-- /container -->
+
+<script>
+// ── STATE ─────────────────────────────────────────────────────────────────
+var currentNiche = 'finance';
+var currentData  = null;
+
+// ── NICHE SELECTOR ────────────────────────────────────────────────────────
+function setNiche(n) {
+  currentNiche = n;
+  ['finance','legal','drama'].forEach(function(x){
+    var btn = document.getElementById('btn-'+x);
+    btn.className = 'niche-btn' + (x===n ? ' active-'+x : '');
+  });
+}
+
+// ── GENERATE ──────────────────────────────────────────────────────────────
+async function generateScript() {
+  var idea    = document.getElementById('storyIdea').value.trim();
+  var extra   = document.getElementById('extraContext').value.trim();
+  var audience= document.getElementById('audience').value;
+  var length  = document.getElementById('videoLength').value;
+
+  if (!idea) { showStatus('genStatus','Please enter a story idea or case.','err'); return; }
+
+  var btn = document.getElementById('genBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Generating script...';
+  showStatus('genStatus','Calling AI — this may take 20–40 seconds...','info');
+
+  var nicheLabels = {finance:'Finance Horror',legal:'Legal Horror',drama:'Revenge & Drama'};
+  var audienceLabels = {general:'general worldwide English-speaking audience',ph:'Filipino audience (casual English, relatable PH context)',hk:'Hong Kong audience (professional English)',asian:'Asian diaspora audience (US/UK/AU based)'};
+
+  var systemPrompt = `You are a professional YouTube scriptwriter specializing in ${nicheLabels[currentNiche]} content. 
+You write compelling, dramatic, true-crime style scripts for a ${audienceLabels[audience]}.
+Target video length: ${length} minutes.
+You always respond in valid JSON only. No markdown, no backticks, no preamble.`;
+
+  var userPrompt = `Write a complete YouTube video script for this story:
+
+STORY IDEA: ${idea}
+${extra ? 'EXTRA CONTEXT: '+extra : ''}
+NICHE: ${nicheLabels[currentNiche]}
+
+Return a JSON object with exactly these keys:
+
+{
+  "hook": {
+    "script": "Full word-for-word script for the hook (0:00-0:30). Avatar speaks directly to camera. Open with the most shocking moment. No introduction, no 'today we'll discuss'. Pure drama.",
+    "music_mood": "short music mood description e.g. 'tense, slow pulse'",
+    "text_overlay": "dramatic 5-8 word on-screen text for CapCut"
+  },
+  "setup": {
+    "script": "Full script for setup section (0:30-2:00). Introduce the characters and situation. Include [B-ROLL: keyword] tags inline where B-roll should play and [TEXT: overlay text] tags for dramatic text overlays.",
+    "broll_keywords": ["keyword1","keyword2","keyword3"],
+    "music_mood": "music mood description"
+  },
+  "escalation": {
+    "script": "Full script for escalation (2:00-8:00). This is the main story. Use [B-ROLL: keyword] inline, [TEXT: overlay text] inline, and [AVATAR] to indicate when avatar should appear in corner. Make it dramatic paragraph by paragraph.",
+    "broll_keywords": ["keyword1","keyword2","keyword3","keyword4","keyword5"],
+    "music_mood": "music mood description",
+    "key_timestamps": ["2:30 - first major twist","4:00 - second escalation","6:00 - climax moment"]
+  },
+  "resolution": {
+    "script": "Full script for resolution (8:00-9:00). What happened in the end. Legal outcome, financial outcome, justice or injustice. Include [B-ROLL: keyword] tags.",
+    "broll_keywords": ["keyword1","keyword2"],
+    "music_mood": "music mood description"
+  },
+  "cta": {
+    "script": "Full script for lesson and call to action (9:00-10:00). Avatar speaks directly to camera. One clear lesson from the story. Ask viewers to subscribe and comment their reaction. Keep it punchy."
+  },
+  "thumbnail": {
+    "text": "4-7 word thumbnail text. Shocking, curiosity-driving. All caps. No punctuation.",
+    "gemini_prompt": "Detailed image generation prompt for a dark dramatic background image. No text in the image. Cinematic, moody, relevant to the story. Describe lighting, colors, elements.",
+    "avatar_expression": "Describe the avatar expression and pose for the thumbnail e.g. 'shocked, mouth open, hands on cheeks, eyes wide'"
+  },
+  "youtube": {
+    "title": "SEO-optimized YouTube title. Include a number or shocking claim. Under 70 characters.",
+    "description": "Full YouTube description. 150-200 words. Include the story hook, what viewers will learn, 3 relevant hashtags at the end.",
+    "tags": "15 comma-separated YouTube tags relevant to the story and niche"
+  }
+}`;
+
+  try {
+    var text = await window.AS_callAI(
+      [{role:'user', content: userPrompt}],
+      4000,
+      systemPrompt
+    );
+
+    // Clean JSON
+    var clean = text.replace(/```json/g,'').replace(/```/g,'').trim();
+    var data  = JSON.parse(clean);
+    currentData = data;
+    renderOutput(data);
+    showStatus('genStatus','Script generated successfully!','ok');
+    document.getElementById('outputArea').style.display = 'block';
+    document.getElementById('outputArea').scrollIntoView({behavior:'smooth',block:'start'});
+  } catch(e) {
+    showStatus('genStatus','Error: '+e.message,'err');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '🎬 Generate Full Script + YouTube Meta';
+  }
+}
+
+// ── RENDER OUTPUT ─────────────────────────────────────────────────────────
+function renderOutput(d) {
+  // HOOK
+  document.getElementById('out-hook').textContent = d.hook.script || '';
+  document.getElementById('cue-hook-music').textContent = '🎵 ' + (d.hook.music_mood || '');
+  document.getElementById('cue-hook-overlay').textContent = '📝 TEXT: ' + (d.hook.text_overlay || '');
+
+  // SETUP
+  document.getElementById('out-setup').textContent = d.setup.script || '';
+  renderCues('cues-setup', d.setup.broll_keywords, d.setup.music_mood, []);
+
+  // ESCALATION
+  document.getElementById('out-escalation').textContent = d.escalation.script || '';
+  renderCues('cues-escalation', d.escalation.broll_keywords, d.escalation.music_mood, d.escalation.key_timestamps || []);
+
+  // RESOLUTION
+  document.getElementById('out-resolution').textContent = d.resolution.script || '';
+  renderCues('cues-resolution', d.resolution.broll_keywords, d.resolution.music_mood, []);
+
+  // CTA
+  document.getElementById('out-cta').textContent = d.cta.script || '';
+
+  // THUMBNAIL
+  document.getElementById('out-thumb-text').textContent    = d.thumbnail.text || '';
+  document.getElementById('out-thumb-prompt').textContent  = d.thumbnail.gemini_prompt || '';
+  document.getElementById('out-thumb-avatar').textContent  = d.thumbnail.avatar_expression || '';
+
+  // YOUTUBE META
+  document.getElementById('out-yt-title').textContent = d.youtube.title || '';
+  document.getElementById('out-yt-desc').textContent  = d.youtube.description || '';
+  document.getElementById('out-yt-tags').textContent  = d.youtube.tags || '';
+
+  // Save apps script URL if stored
+  var saved = localStorage.getItem('hss_apps_script_url');
+  if (saved) document.getElementById('appsScriptUrl').value = saved;
+}
+
+function renderCues(elId, brollKeywords, musicMood, timestamps) {
+  var el = document.getElementById(elId);
+  if (!el) return;
+  var html = '';
+  if (musicMood) html += '<span class="cue-tag cue-music">🎵 ' + musicMood + '</span>';
+  if (brollKeywords && brollKeywords.length) {
+    brollKeywords.forEach(function(k){
+      html += '<span class="cue-tag cue-broll">🎬 B-roll: ' + k + '</span>';
+    });
+  }
+  if (timestamps && timestamps.length) {
+    timestamps.forEach(function(t){
+      html += '<span class="cue-tag cue-overlay">⏱ ' + t + '</span>';
+    });
+  }
+  el.innerHTML = html;
+}
+
+// ── COPY ──────────────────────────────────────────────────────────────────
+function copySection(section) {
+  var text = '';
+  if (section === 'hook')       text = document.getElementById('out-hook').textContent;
+  if (section === 'setup')      text = document.getElementById('out-setup').textContent;
+  if (section === 'escalation') text = document.getElementById('out-escalation').textContent;
+  if (section === 'resolution') text = document.getElementById('out-resolution').textContent;
+  if (section === 'cta')        text = document.getElementById('out-cta').textContent;
+  if (section === 'meta') {
+    text = 'TITLE:\n' + document.getElementById('out-yt-title').textContent +
+           '\n\nDESCRIPTION:\n' + document.getElementById('out-yt-desc').textContent +
+           '\n\nTAGS:\n' + document.getElementById('out-yt-tags').textContent;
+  }
+  if (section === 'thumbnail') {
+    text = 'THUMBNAIL TEXT:\n' + document.getElementById('out-thumb-text').textContent +
+           '\n\nGEMINI IMAGE PROMPT:\n' + document.getElementById('out-thumb-prompt').textContent +
+           '\n\nAVATAR EXPRESSION:\n' + document.getElementById('out-thumb-avatar').textContent;
+  }
+  navigator.clipboard.writeText(text).then(function(){
+    showToast('Copied!');
+  });
+}
+
+// ── SAVE TO SHEETS ────────────────────────────────────────────────────────
+async function saveToSheets() {
+  if (!currentData) { showStatus('saveStatus','No script generated yet.','err'); return; }
+  var url = document.getElementById('appsScriptUrl').value.trim();
+  if (!url) { showStatus('saveStatus','Please enter your Apps Script URL.','err'); return; }
+
+  localStorage.setItem('hss_apps_script_url', url);
+
+  var btn = document.getElementById('saveBtn');
+  btn.disabled = true;
+  btn.textContent = 'Saving...';
+  showStatus('saveStatus','Saving to Google Sheets...','info');
+
+  var d = currentData;
+  var payload = {
+    sheet:          'HorrorStoryStudio',
+    episode_number: Date.now(),
+    niche:          currentNiche,
+    story_idea:     document.getElementById('storyIdea').value.trim(),
+    yt_title:       (d.youtube && d.youtube.title) || '',
+    hook:           (d.hook && d.hook.script) || '',
+    setup:          (d.setup && d.setup.script) || '',
+    escalation:     (d.escalation && d.escalation.script) || '',
+    resolution:     (d.resolution && d.resolution.script) || '',
+    cta:            (d.cta && d.cta.script) || '',
+    broll_setup:    (d.setup && d.setup.broll_keywords ? d.setup.broll_keywords.join(', ') : ''),
+    broll_escal:    (d.escalation && d.escalation.broll_keywords ? d.escalation.broll_keywords.join(', ') : ''),
+    thumb_text:     (d.thumbnail && d.thumbnail.text) || '',
+    thumb_prompt:   (d.thumbnail && d.thumbnail.gemini_prompt) || '',
+    thumb_avatar:   (d.thumbnail && d.thumbnail.avatar_expression) || '',
+    yt_description: (d.youtube && d.youtube.description) || '',
+    yt_tags:        (d.youtube && d.youtube.tags) || '',
+    suno_hook:      (d.hook && d.hook.music_mood) || '',
+    suno_escal:     (d.escalation && d.escalation.music_mood) || '',
+    status:         'Draft',
+    timestamp:      new Date().toISOString()
+  };
+
+  try {
+    await fetch(url, {
+      method:  'POST',
+      mode:    'no-cors',
+      headers: {'Content-Type':'application/json'},
+      body:    JSON.stringify(payload)
+    });
+    showStatus('saveStatus','Saved to Google Sheets! Check HorrorStoryStudio tab.','ok');
+  } catch(e) {
+    showStatus('saveStatus','Error saving: '+e.message,'err');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '💾 Save to Sheet';
+  }
+}
+
+// ── APPS SCRIPT CODE ──────────────────────────────────────────────────────
+var APPS_SCRIPT_CODE = `function doPost(e) {
+  try {
+    var data = JSON.parse(e.postData.contents);
+    var ss   = SpreadsheetApp.getActiveSpreadsheet();
+    var sheetName = data.sheet || 'HorrorStoryStudio';
+    var sheet = ss.getSheetByName(sheetName);
+
+    if (!sheet) {
+      sheet = ss.insertSheet(sheetName);
+      sheet.appendRow([
+        'Episode#','Timestamp','Niche','Story Idea',
+        'YouTube Title',
+        'Hook Script','Setup Script','Escalation Script','Resolution Script','CTA Script',
+        'B-Roll Setup','B-Roll Escalation',
+        'Thumbnail Text','Thumbnail Gemini Prompt','Avatar Expression',
+        'YouTube Description','YouTube Tags',
+        'Suno Hook Mood','Suno Escalation Mood',
+        'Status'
+      ]);
+      sheet.setFrozenRows(1);
+    }
+
+    sheet.appendRow([
+      data.episode_number, data.timestamp, data.niche, data.story_idea,
+      data.yt_title,
+      data.hook, data.setup, data.escalation, data.resolution, data.cta,
+      data.broll_setup, data.broll_escal,
+      data.thumb_text, data.thumb_prompt, data.thumb_avatar,
+      data.yt_description, data.yt_tags,
+      data.suno_hook, data.suno_escal,
+      data.status
+    ]);
+
+    return ContentService.createTextOutput(
+      JSON.stringify({success:true})
+    ).setMimeType(ContentService.MimeType.JSON);
+
+  } catch(err) {
+    return ContentService.createTextOutput(
+      JSON.stringify({success:false, error:err.message})
+    ).setMimeType(ContentService.MimeType.JSON);
+  }
+}`;
+
+document.getElementById('appsScriptCode').textContent = APPS_SCRIPT_CODE;
+
+function toggleScript() {
+  var body = document.getElementById('scriptBody');
+  var icon = document.getElementById('script-toggle-icon');
+  var open = body.classList.toggle('open');
+  icon.textContent = open ? '▼' : '▶';
+}
+
+function copyAppsScript() {
+  navigator.clipboard.writeText(APPS_SCRIPT_CODE).then(function(){
+    showToast('Apps Script copied!');
+  });
+}
+
+// ── HELPERS ───────────────────────────────────────────────────────────────
+function showStatus(id, msg, type) {
+  var el = document.getElementById(id);
+  el.textContent = msg;
+  el.className   = 'status-bar ' + type;
+  el.style.display = 'block';
+}
+
+var _toastTimer;
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'toast';
+    t.style.cssText = 'position:fixed;bottom:20px;right:20px;background:var(--text);color:var(--bg);padding:8px 16px;border-radius:8px;font-size:13px;font-weight:500;z-index:9999;transition:opacity .2s';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.opacity = '1';
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(function(){ t.style.opacity='0'; }, 2000);
+}
+</script>
+
+<!-- ── AS PROXY (same pattern as all other tools) ─────────────────────── -->
+<script>
+(function(){
+  var AS = {
+    proxyUrl:  '/api/ai',
+    email:     localStorage.getItem('aisprint_user') || '',
+    provider:  localStorage.getItem('as_provider') || 'deepseek',
+    model:     localStorage.getItem('as_model') || '',
+    providers: {},
+    ready:     false
+  };
+
+  // Inject status bar at top
+  var bar = document.createElement('div');
+  bar.id  = 'as-bar';
+  bar.style.cssText = 'display:flex;align-items:center;gap:10px;padding:8px 20px;background:#11111a;border-bottom:1px solid #2a2a3a;font-size:12px;flex-wrap:wrap;margin-bottom:0;position:sticky;top:0;z-index:200';
+  bar.innerHTML =
+    '<span style="font-family:monospace;font-weight:700;color:#4f8ef7;font-size:13px">AS</span>' +
+    '<span style="color:#707088">AI provider</span>' +
+    '<select id="as-prov-sel" onchange="AS_onProvChange()" style="padding:4px 10px;border-radius:6px;border:1px solid #2a2a3a;background:#17171f;color:#f0f0f8;font-size:12px;margin:0"><option>Loading...</option></select>' +
+    '<select id="as-model-sel" onchange="AS_onModelChange()" style="padding:4px 10px;border-radius:6px;border:1px solid #2a2a3a;background:#17171f;color:#f0f0f8;font-size:12px;margin:0"><option>Loading...</option></select>' +
+    '<span id="as-dot" style="width:7px;height:7px;border-radius:50%;background:#3ecf6e;display:inline-block"></span>' +
+    '<span id="as-status" style="color:#707088">Connecting...</span>';
+  document.body.insertBefore(bar, document.body.firstChild);
+
+  fetch('/api/providers')
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      AS.providers = d.providers || {};
+      AS_buildProviderSel();
+      AS_setStatus('ready','Ready');
+    })
+    .catch(function(){
+      AS_setStatus('error','Server offline');
+      document.getElementById('as-prov-sel').innerHTML = '<option>Offline</option>';
+    });
+
+  window.AS_buildProviderSel = function() {
+    var sel    = document.getElementById('as-prov-sel');
+    var names  = {claude:'Claude',deepseek:'DeepSeek',gemini:'Gemini',perplexity:'Perplexity',openai:'OpenAI'};
+    var opts   = '';
+    var hasAny = false;
+    Object.keys(names).forEach(function(p){
+      var info = AS.providers[p];
+      if (!info || !info.enabled) return;
+      hasAny = true;
+      opts += '<option value="'+p+'"'+(p===AS.provider?' selected':'')+'>'+names[p]+'</option>';
+    });
+    if (!hasAny) {
+      sel.innerHTML = '<option value="">No providers</option>';
+      sel.disabled  = true;
+      AS_setStatus('error','No API keys in Railway');
+      return;
+    }
+    sel.innerHTML = opts;
+    if (!AS.providers[AS.provider] || !AS.providers[AS.provider].enabled) AS.provider = sel.value;
+    AS_buildModelSel();
+  };
+
+  window.AS_buildModelSel = function() {
+    var sel    = document.getElementById('as-model-sel');
+    var info   = AS.providers[AS.provider];
+    var models = (info && info.models) ? info.models : [];
+    sel.innerHTML = '';
+    models.forEach(function(m){
+      var opt = document.createElement('option');
+      opt.value = m.id;
+      opt.text  = m.label + (m.note ? ' — '+m.note : '');
+      if (m.id === AS.model) opt.selected = true;
+      sel.appendChild(opt);
+    });
+    AS.model = sel.value;
+    localStorage.setItem('as_model', AS.model);
+  };
+
+  window.AS_onProvChange = function() {
+    AS.provider = document.getElementById('as-prov-sel').value;
+    localStorage.setItem('as_provider', AS.provider);
+    AS_buildModelSel();
+    AS_setStatus('ready','Ready');
+  };
+
+  window.AS_onModelChange = function() {
+    AS.model = document.getElementById('as-model-sel').value;
+    localStorage.setItem('as_model', AS.model);
+  };
+
+  window.AS_setStatus = function(state, msg) {
+    var dot = document.getElementById('as-dot');
+    var txt = document.getElementById('as-status');
+    var colors = {ready:'#3ecf6e',busy:'#d4a84b',error:'#e84040'};
+    dot.style.background = colors[state] || '#707088';
+    txt.textContent = msg;
+    txt.style.color = state==='error' ? '#e84040' : '#707088';
+    AS.ready = (state==='ready');
+  };
+
+  window.addEventListener('message', function(e){
+    if (!e.data || e.data.type !== 'AISPRINT_CONFIG') return;
+    if (e.data.email)    AS.email    = e.data.email;
+    if (e.data.proxyUrl) AS.proxyUrl = e.data.proxyUrl;
+    if (e.data.provider && AS.providers[e.data.provider] && AS.providers[e.data.provider].enabled) {
+      AS.provider = e.data.provider;
+      var ps = document.getElementById('as-prov-sel');
+      if (ps) ps.value = AS.provider;
+      AS_buildModelSel();
+    }
+    if (e.data.model) {
+      AS.model = e.data.model;
+      var ms = document.getElementById('as-model-sel');
+      if (ms) ms.value = AS.model;
+    }
+  });
+
+  window.AS_callAI = async function(messages, maxTokens, system) {
+    if (!AS.email) AS.email = localStorage.getItem('aisprint_user') || '';
+    AS_setStatus('busy','Calling '+AS.provider+'...');
+    try {
+      var body = {
+        email:      AS.email,
+        provider:   AS.provider,
+        model:      AS.model || document.getElementById('as-model-sel').value,
+        messages:   Array.isArray(messages) ? messages : [{role:'user',content:messages}],
+        max_tokens: maxTokens || 4000
+      };
+      if (system) body.system = system;
+      var r = await fetch(AS.proxyUrl, {
+        method:  'POST',
+        headers: {'Content-Type':'application/json'},
+        body:    JSON.stringify(body)
+      });
+      var d = await r.json();
+      if (!r.ok) throw new Error(d.error || 'Proxy error '+r.status);
+      AS_setStatus('ready',AS.provider+' · done');
+      return d.text;
+    } catch(err) {
+      AS_setStatus('error', err.message);
+      throw err;
+    }
+  };
+
+  window.AS = AS;
+})();
+</script>
+
+</body>
+</html>
