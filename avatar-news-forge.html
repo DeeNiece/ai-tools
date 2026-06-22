@@ -450,8 +450,9 @@ function doGet() {
   // AI Call — delegates to AS proxy
   async function callAI(systemPrompt, userPrompt) {
     return await window.AS_callAI(
-      [{ role: 'user', content: `${systemPrompt}\n\n${userPrompt}` }],
-      2000
+      [{ role: 'user', content: userPrompt }],
+      2000,
+      systemPrompt
     );
   }
 
