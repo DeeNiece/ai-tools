@@ -707,14 +707,12 @@ async function saveToSheets() {
 
   try {
     const resp = await fetch(url, {
-      method:  'POST',
-      mode:    'cors',
-      headers: {'Content-Type':'application/x-www-form-urlencoded'},
-      body:    new URLSearchParams(payload)
+      method:   'POST',
+      mode:     'no-cors',
+      redirect: 'follow',
+      headers:  {'Content-Type':'application/x-www-form-urlencoded'},
+      body:     new URLSearchParams(payload)
     });
-    const raw = await resp.text();
-    let json; try { json = JSON.parse(raw); } catch(e) { throw new Error('Sheet error: ' + raw.substring(0,200)); }
-    if (json.result !== 'success') throw new Error(json.error || 'Sheet write failed');
     showStatus('saveStatus','Saved to Google Sheets! Check ' + (sheetNames[currentNiche] || 'HorrorStoryStudio') + ' tab.','ok');
   } catch(e) {
     showStatus('saveStatus','Error saving: '+e.message,'err');
