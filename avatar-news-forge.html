@@ -448,7 +448,7 @@ function doGet() {
   // API — all handled by AS proxy bar
 
   // AI Call — delegates to AS proxy
-  async function callAI(systemPrompt, userPrompt) {
+  async function fetchNewsAI(systemPrompt, userPrompt) {
     return await window.AS_callAI(
       [{ role: 'user', content: userPrompt }],
       2000,
@@ -465,7 +465,7 @@ function doGet() {
     else if (topicType === 'ai_news') userPrompt = `Top 10 AI breakthroughs for "${dateScope}". Start each with 'Did you know, ' then 2-3 sentences. No pause tags.`;
     else userPrompt = `Top 10 blind items about PH celebrities for "${dateScope}". Start each with 'Rumors have it, ' then 2-3 cryptic sentences. No real names. No pause tags.`;
     
-    let rawHtml = await callAI(systemPrompt, userPrompt);
+    let rawHtml = await fetchNewsAI(systemPrompt, userPrompt);
     rawHtml = rawHtml.replace(/```html?|```/g, '');
     rawHtml = rawHtml.replace(/\*\*(.+?)\*\*/g, '$1');
     rawHtml = rawHtml.replace(/<\/?strong[^>]*>/gi, '');
@@ -506,7 +506,7 @@ function doGet() {
 2. Video description (max 5000 characters) - detailed summary, include call to action
 3. Tags (max 200 characters) - comma separated keywords
 Return as JSON: {"teaser":"...","description":"...","tags":"..."}`;
-      const result = await callAI("Output ONLY valid JSON.", prompt + `\nScript excerpt: ${fullScript.substring(0, 1000)}`);
+      const result = await fetchNewsAI("Output ONLY valid JSON.", prompt + `\nScript excerpt: ${fullScript.substring(0, 1000)}`);
       let jsonMatch = result.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         let parsed = JSON.parse(jsonMatch[0]);
