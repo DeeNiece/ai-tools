@@ -678,12 +678,15 @@ async function saveToSheets() {
   };
 
   try {
-    await fetch(url, {
+    const resp = await fetch(url, {
       method:  'POST',
-      mode:    'no-cors',
-      headers: {'Content-Type':'application/json'},
-      body:    JSON.stringify(payload)
+      mode:    'cors',
+      headers: {'Content-Type':'application/x-www-form-urlencoded'},
+      body:    new URLSearchParams(payload)
     });
+    const raw = await resp.text();
+    let json; try { json = JSON.parse(raw); } catch(e) { throw new Error('Sheet error: ' + raw.substring(0,200)); }
+    if (json.result !== 'success') throw new Error(json.error || 'Sheet write failed');
     showStatus('saveStatus','Saved to Google Sheets! Check ' + (sheetNames[currentNiche] || 'HorrorStoryStudio') + ' tab.','ok');
   } catch(e) {
     showStatus('saveStatus','Error saving: '+e.message,'err');
@@ -694,48 +697,56 @@ async function saveToSheets() {
 }
 
 // ── APPS SCRIPT CODE ──────────────────────────────────────────────────────
-var APPS_SCRIPT_CODE = `function doPost(e) {
+var APPS_SCRIPT_CODE = `function getOrCreateSheet(ss, sheetName) {
+  var sheet = ss.getSheetByName(sheetName);
+  if (!sheet) {
+    sheet = ss.insertSheet(sheetName);
+    sheet.appendRow([
+      'Episode#','Timestamp','Niche','Story Idea',
+      'YouTube Title',
+      'Hook Script','Setup Script','Escalation Script','Resolution Script','CTA Script',
+      'B-Roll Setup','B-Roll Escalation',
+      'Thumbnail Text','Thumbnail Gemini Prompt','Avatar Expression',
+      'YouTube Description','YouTube Tags',
+      'Suno Hook Mood','Suno Escalation Mood',
+      'Status'
+    ]);
+    sheet.setFrozenRows(1);
+  }
+  return sheet;
+}
+
+function doPost(e) {
   try {
-    var data = JSON.parse(e.postData.contents);
+    var data = e.parameter;
     var ss   = SpreadsheetApp.getActiveSpreadsheet();
     var sheetName = data.sheet || 'HorrorStoryStudio';
-    var sheet = ss.getSheetByName(sheetName);
-
-    if (!sheet) {
-      sheet = ss.insertSheet(sheetName);
-      sheet.appendRow([
-        'Episode#','Timestamp','Niche','Story Idea',
-        'YouTube Title',
-        'Hook Script','Setup Script','Escalation Script','Resolution Script','CTA Script',
-        'B-Roll Setup','B-Roll Escalation',
-        'Thumbnail Text','Thumbnail Gemini Prompt','Avatar Expression',
-        'YouTube Description','YouTube Tags',
-        'Suno Hook Mood','Suno Escalation Mood',
-        'Status'
-      ]);
-      sheet.setFrozenRows(1);
-    }
-
+    var sheet = getOrCreateSheet(ss, sheetName);
     sheet.appendRow([
-      data.episode_number, data.timestamp, data.niche, data.story_idea,
-      data.yt_title,
-      data.hook, data.setup, data.escalation, data.resolution, data.cta,
-      data.broll_setup, data.broll_escal,
-      data.thumb_text, data.thumb_prompt, data.thumb_avatar,
-      data.yt_description, data.yt_tags,
-      data.suno_hook, data.suno_escal,
-      data.status
+      data.episode_number||'', data.timestamp||new Date().toISOString(), data.niche||'', data.story_idea||'',
+      data.yt_title||'',
+      data.hook||'', data.setup||'', data.escalation||'', data.resolution||'', data.cta||'',
+      data.broll_setup||'', data.broll_escal||'',
+      data.thumb_text||'', data.thumb_prompt||'', data.thumb_avatar||'',
+      data.yt_description||'', data.yt_tags||'',
+      data.suno_hook||'', data.suno_escal||'',
+      data.status||'Draft'
     ]);
-
     return ContentService.createTextOutput(
-      JSON.stringify({success:true})
+      JSON.stringify({result:'success'})
     ).setMimeType(ContentService.MimeType.JSON);
-
   } catch(err) {
     return ContentService.createTextOutput(
-      JSON.stringify({success:false, error:err.message})
+      JSON.stringify({result:'error', error:err.message})
     ).setMimeType(ContentService.MimeType.JSON);
   }
+}
+
+function doGet() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = getOrCreateSheet(ss, 'FinanceHorror');
+  sheet.appendRow([Date.now(), new Date().toISOString(), 'finance', 'Test story', 'Test Title', 'Test hook', 'Test setup', 'Test escalation', 'Test resolution', 'Test CTA', 'b-roll1', 'b-roll2', 'THUMBNAIL TEXT', 'Gemini prompt', 'shocked', 'Test description', 'tag1,tag2', 'tense', 'dramatic', 'Draft']);
+  return ContentService.createTextOutput('Horror Story Studio connected! Test row written to FinanceHorror tab.').setMimeType(ContentService.MimeType.TEXT);
 }`;
 
 document.getElementById('appsScriptCode').textContent = APPS_SCRIPT_CODE;
