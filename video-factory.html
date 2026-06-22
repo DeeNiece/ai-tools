@@ -6,8 +6,7 @@
     <title>AISprint – HeyGen Studio | YouTube Meta + Monthly Sheets + Strategy Planner</title>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #faf8f5; --surface: #ffffff; --border: #e2dbcf; --gold: #b57c1c; --text: #2c2824; --text-muted: #6b6258; --green: #4c8b6e; --red: #c95a4a; --blue: #2563eb; }
-        body.dark { --bg: #121212; --surface: #1e1e1e; --border: #3a3a3a; --gold: #d4a853; --text: #e8e4dc; --text-muted: #a8a29e; --green: #7ab896; --red: #d47a6a; --blue: #60a5fa; }
+        :root { --bg: #0f0f13; --surface: #17171f; --border: #2a2a3a; --gold: #d4a853; --text: #ffffff; --text-muted: #c0c0d8; --green: #3ecf6e; --red: #e84040; --blue: #4f8ef7; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); transition: 0.2s; padding: 30px 20px 60px; }
         .container { max-width: 1100px; margin: 0 auto; }
@@ -95,13 +94,13 @@
 <div class="container">
     <div class="header">
         <h1>AISprint<span>.app</span> · HeyGen Studio + Strategy Planner</h1>
-        <button class="theme-btn" id="themeToggle">🌙 Dark Mode</button>
     </div>
 
     <!-- TABS -->
     <div class="tabs">
         <button class="tab-btn active" data-tab="script">🎬 Script Generator</button>
         <button class="tab-btn" data-tab="strategy">📅 30-Day Strategy Planner</button>
+        <button class="tab-btn" data-tab="help">📖 Help & Guide</button>
     </div>
 
     <!-- ═══════════════════════════════════════════════════ -->
@@ -109,22 +108,19 @@
     <!-- ═══════════════════════════════════════════════════ -->
     <div class="tab-panel active" id="tab-script">
 
-        <!-- Google Script URL -->
+        <!-- Google Script URL — loaded from Railway -->
         <div class="card">
-            <label class="label">📎 Google Apps Script Web App URL</label>
-            <div class="api-row">
-                <input type="url" id="googleScriptUrl" placeholder="https://script.google.com/macros/s/.../exec">
-                <button class="btn" id="saveUrlBtn">💾 Save URL</button>
+            <label class="label">📎 Google Apps Script</label>
+            <div id="urlStatus" style="font-size:12px; padding:8px 12px; border-radius:8px; background:rgba(79,142,247,0.1); color:#4f8ef7; border:1px solid rgba(79,142,247,0.2);">Loading Apps Script URL from Railway...</div>
+            <div id="sheetTestResult" class="status-msg" style="display: none;"></div>
+            <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;">
                 <button class="btn" id="testSheetBtn">🔌 Test Connection</button>
                 <button class="btn" id="openGetBtn" style="background:#4c8b6e; color:white;">🌐 Open GET URL</button>
-                <button class="btn btn-danger" id="deleteUrlBtn">🗑️ Delete</button>
             </div>
-            <div id="urlStatus" style="font-size:11px; margin-top:4px; color: var(--text-muted);"></div>
-            <div id="sheetTestResult" class="status-msg" style="display: none;"></div>
 
             <div class="hint" style="margin-top: 12px; text-align: left;">
                 <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px; flex-wrap:wrap;">
-                    <strong>📋 Google Apps Script (monthly + Video_Strategy sheet):</strong>
+                    <strong>📋 Google Apps Script (YEAR-Month tabs + Video_Strategy sheet):</strong>
                     <button class="btn" id="toggleAppsScriptBtn" onclick="toggleAppsScript()" style="font-size:11px; padding:4px 14px; border-color:var(--gold); color:var(--gold);">▼ Show Code</button>
                 </div>
                 <div id="appsScriptWrapper" style="display:none;">
@@ -142,6 +138,7 @@ function getOrCreateMonthlySheet() {
     sheet = ss.insertSheet(sheetName);
     var headers = ["", "Timestamp", "Video_Idea", "Target_Length", "Generated_Script", "Facebook_Post", "Threads_Post", "Instagram_Post", "Twitter_Post", "Linkedln_Post", "YouTube_Video_Title", "YouTube_Video_Description", "YouTube_Tags"];
     sheet.getRange(1,1,1,headers.length).setValues([headers]);
+    sheet.setFrozenRows(1);
   }
   return sheet;
 }
@@ -153,6 +150,7 @@ function getOrCreateStrategySheet() {
     sheet = ss.insertSheet("Video_Strategy");
     var headers = ["Day", "Timestamp", "Target_Course", "Video_Topic", "Generated_Script", "Facebook_Post", "Threads_Post", "Instagram_Post", "Twitter_Post", "Linkedln_Post", "YouTube_Video_Title", "YouTube_Video_Description", "YouTube_Tags", "Thumbnail_Text", "Prompt_Thumbnail", "Prompt_AI_Scene", "Prompt_Title_Card"];
     sheet.getRange(1,1,1,headers.length).setValues([headers]);
+    sheet.setFrozenRows(1);
   }
   return sheet;
 }
@@ -208,15 +206,15 @@ function doPost(e) {
 }
 
 function doGet() {
-  return ContentService.createTextOutput("Apps Script is alive. Supports monthly sheet + Video_Strategy sheet.").setMimeType(ContentService.MimeType.TEXT);
+  return ContentService.createTextOutput("Apps Script is alive. YEAR-Month tabs + Video_Strategy sheet.").setMimeType(ContentService.MimeType.TEXT);
 }
                     </div>
                 </div>
-                </div><!-- end appsScriptWrapper -->
+                </div>
                 <div id="appsScriptDeployNote" style="display:none; margin-top:8px;">
-                <strong>📌 Deployment:</strong> Save → Deploy → New deployment → Web app → Execute as: "Me" → Access: "Anyone" → Deploy → Copy URL.<br>
-                ✅ Now handles both monthly script sheet and Video_Strategy sheet automatically.
-                </div><!-- end appsScriptDeployNote -->
+                <strong>📌 Deployment:</strong> Save → Deploy → New deployment → Web app → Execute as: "Me" → Access: "Anyone" → Deploy → Copy URL → add as APPS_SCRIPT_VIDEO_FACTORY in Railway.<br>
+                ✅ Auto-creates YEAR-Month tabs (e.g. 2026-June) and Video_Strategy tab.
+                </div>
             </div>
         </div>
 
@@ -597,6 +595,82 @@ function doGet() {
         </div>
     </div><!-- end tab-strategy -->
 
+    <!-- HELP TAB -->
+    <div class="tab-panel" id="tab-help">
+      <div style="max-width:860px">
+
+        <div style="margin-bottom:28px">
+          <h2 style="font-size:16px;font-weight:700;color:#ffffff;margin-bottom:6px">How to Use Video Factory</h2>
+          <p style="font-size:13px;color:#c0c0d8;line-height:1.7">Video Factory has two modes: Script Generator (Tab 1) for one-off videos, and 30-Day Strategy Planner (Tab 2) for bulk content planning. Both save to Google Sheets automatically via your Apps Script URL set in Railway.</p>
+        </div>
+
+        <div style="margin-bottom:28px">
+          <h2 style="font-size:15px;font-weight:700;color:#ffffff;margin-bottom:12px">Script Generator — Google Sheet Columns</h2>
+          <p style="font-size:13px;color:#c0c0d8;margin-bottom:12px">Each generated script creates a new row in a tab named <strong>YEAR-Month</strong> (e.g. 2026-June). If the tab exists it appends. A new tab is created automatically each month.</p>
+          <table style="width:100%;border-collapse:collapse;font-size:13px">
+            <thead><tr>
+              <th style="background:#1e1e28;color:#a0a0c0;font-size:11px;font-weight:600;text-transform:uppercase;padding:8px 12px;text-align:left;border-bottom:1px solid #2a2a3a">Column</th>
+              <th style="background:#1e1e28;color:#a0a0c0;font-size:11px;font-weight:600;text-transform:uppercase;padding:8px 12px;text-align:left;border-bottom:1px solid #2a2a3a">What it contains &amp; how to use it</th>
+            </tr></thead>
+            <tbody>
+              <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap">Timestamp</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff">Date and time the script was generated. Used to track production pace.</td></tr>
+              <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap">Video_Idea</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff">The topic you entered. Your master reference for what was generated.</td></tr>
+              <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap">Target_Length</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff">The length preset or custom value you selected.</td></tr>
+              <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap">Generated_Script</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff">Full HeyGen avatar script. Copy and paste directly into HeyGen text input. Includes expression tags like [[smile]], [[pause]], [[confident]] if enabled.</td></tr>
+              <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap">Facebook_Post</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff">Ready-to-post Facebook caption. Copy and post directly.</td></tr>
+              <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap">Threads_Post</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff">Ready-to-post Threads caption.</td></tr>
+              <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap">Instagram_Post</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff">Ready-to-post Instagram caption with hashtags.</td></tr>
+              <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap">Twitter_Post</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff">Under 240 characters. Ready to tweet.</td></tr>
+              <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap">Linkedln_Post</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff">Professional tone LinkedIn post.</td></tr>
+              <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap">YouTube_Video_Title</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff">SEO-optimized title under 100 characters. Copy directly to YouTube upload.</td></tr>
+              <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap">YouTube_Video_Description</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff">Full YouTube description with CTA to aisprint.app. Copy directly to YouTube upload.</td></tr>
+              <tr><td style="padding:9px 12px;color:#d4a853;font-weight:600;white-space:nowrap">YouTube_Tags</td><td style="padding:9px 12px;color:#ffffff">Comma-separated tags for YouTube. Paste into YouTube tags field during upload.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div style="margin-bottom:28px">
+          <h2 style="font-size:15px;font-weight:700;color:#ffffff;margin-bottom:12px">Strategy Planner — Google Sheet Columns</h2>
+          <p style="font-size:13px;color:#c0c0d8;margin-bottom:12px">Strategy Planner saves to a fixed tab called <strong>Video_Strategy</strong>. It never creates monthly tabs — all strategy rows go into one tab for easy 30-day planning view.</p>
+          <table style="width:100%;border-collapse:collapse;font-size:13px">
+            <thead><tr>
+              <th style="background:#1e1e28;color:#a0a0c0;font-size:11px;font-weight:600;text-transform:uppercase;padding:8px 12px;text-align:left;border-bottom:1px solid #2a2a3a">Column</th>
+              <th style="background:#1e1e28;color:#a0a0c0;font-size:11px;font-weight:600;text-transform:uppercase;padding:8px 12px;text-align:left;border-bottom:1px solid #2a2a3a">What it contains &amp; how to use it</th>
+            </tr></thead>
+            <tbody>
+              <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600">Day</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff">Day number (1–30) of the 30-day plan. Use to sequence your upload schedule.</td></tr>
+              <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600">Timestamp</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff">When this row was generated.</td></tr>
+              <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600">Target_Course</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff">Which AISprint course this video promotes.</td></tr>
+              <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600">Video_Topic</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff">The AI-generated topic title. This becomes your video concept.</td></tr>
+              <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600">Generated_Script</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff">Full script for HeyGen avatar. Paste directly into HeyGen.</td></tr>
+              <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600">Social Posts</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff">FB, Threads, IG, Twitter, LinkedIn — all ready to copy and post.</td></tr>
+              <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600">YouTube_Video_Title</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff">SEO title. Copy to YouTube upload.</td></tr>
+              <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600">YouTube_Tags</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff">Tags for YouTube. Paste into tags field.</td></tr>
+              <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600">Thumbnail_Text</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff">Bold text overlay for your thumbnail. Add in CapCut or Canva.</td></tr>
+              <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600">Prompt_Thumbnail</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff">Gemini image prompt for thumbnail background. No text in image — add text separately in CapCut.</td></tr>
+              <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600">Prompt_AI_Scene</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff">B-roll scene prompt for AI video generation tools.</td></tr>
+              <tr><td style="padding:9px 12px;color:#d4a853;font-weight:600">Prompt_Title_Card</td><td style="padding:9px 12px;color:#ffffff">Prompt for generating a title card graphic for the video.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div style="margin-bottom:28px">
+          <h2 style="font-size:15px;font-weight:700;color:#ffffff;margin-bottom:10px">Railway Setup</h2>
+          <div style="background:#17171f;border:1px solid #2a2a3a;border-left:3px solid #4f8ef7;border-radius:8px;padding:12px 16px;font-size:13px;color:#c0c0d8;line-height:1.7">
+            Add <strong style="color:#4f8ef7">APPS_SCRIPT_VIDEO_FACTORY</strong> in Railway Variables with your deployed Apps Script URL. The tool loads it automatically — no manual pasting needed.
+          </div>
+        </div>
+
+        <div style="margin-bottom:28px">
+          <h2 style="font-size:15px;font-weight:700;color:#ffffff;margin-bottom:10px">HeyGen Tips</h2>
+          <div style="background:#17171f;border:1px solid #2a2a3a;border-left:3px solid #d4a853;border-radius:8px;padding:12px 16px;font-size:13px;color:#c0c0d8;line-height:1.7">
+            Copy the Generated_Script column and paste into HeyGen. The script includes expression tags like [[smile]], [[pause:0.3s]], [[confident]] that HeyGen reads for natural delivery. Use 16:9 for YouTube, 9:16 for TikTok/Shorts. For AISprint course videos, use the same avatar consistently across all videos for brand recognition.
+          </div>
+        </div>
+
+      </div>
+    </div><!-- end tab-help -->
+
 </div><!-- end container -->
 
 <script>
@@ -758,8 +832,8 @@ function parseJSON(raw) {
 }
 
 async function postToSheet(payload) {
-    const googleUrl = googleUrlInput.value.trim();
-    if (!googleUrl) throw new Error('No Google Script URL saved');
+    const googleUrl = window._videoFactoryScriptUrl || '';
+    if (!googleUrl) throw new Error('APPS_SCRIPT_VIDEO_FACTORY not set in Railway variables');
     const resp = await fetch(googleUrl, {method:'POST', mode:'cors', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body: new URLSearchParams(payload)});
     const raw = await resp.text();
     let json; try { json = JSON.parse(raw); } catch(e) { throw new Error(`Sheet error: ${raw.substring(0,200)}`); }
@@ -781,9 +855,6 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 // ═══════════════════════════════════════════
 // PROVIDER + API KEY
 // ═══════════════════════════════════════════
-const googleUrlInput = document.getElementById('googleScriptUrl');
-const saveUrlBtn = document.getElementById('saveUrlBtn');
-const deleteUrlBtn = document.getElementById('deleteUrlBtn');
 const testSheetBtn = document.getElementById('testSheetBtn');
 const openGetBtn = document.getElementById('openGetBtn');
 const sheetTestResult = document.getElementById('sheetTestResult');
@@ -856,14 +927,36 @@ saveApiBtn.addEventListener('click', () => { let key=apiKeyInput.value.trim(); i
 deleteApiBtn.addEventListener('click', () => { if(confirm('Delete API key?')){localStorage.removeItem('archprompt_apikey');apiHealthy=false;updateKeyStatusUI();alert('Deleted.');}});
 healthCheckBtn.addEventListener('click', healthCheck);
 
-function loadGoogleUrl() { let saved=localStorage.getItem('archprompt_google_url'); if(saved){googleUrlInput.value=saved;urlStatus.innerText='✅ URL saved';}else urlStatus.innerText='📌 No URL saved'; }
-saveUrlBtn.addEventListener('click', () => { let url=googleUrlInput.value.trim(); if(!url) return alert('Enter URL'); localStorage.setItem('archprompt_google_url',url); urlStatus.innerText='✅ URL saved'; alert('Saved. Test connection now.'); });
-deleteUrlBtn.addEventListener('click', () => { localStorage.removeItem('archprompt_google_url'); googleUrlInput.value=''; urlStatus.innerText='No URL saved'; alert('Deleted.'); });
-loadGoogleUrl();
-openGetBtn.addEventListener('click', () => { let url=googleUrlInput.value.trim(); if(!url) alert('No URL saved'); else window.open(url,'_blank'); });
+// Load Apps Script URL from Railway
+window._videoFactoryScriptUrl = '';
+(function loadVFConfig() {
+    fetch('/api/config')
+        .then(function(r){ return r.json(); })
+        .then(function(d){
+            var url = d.APPS_SCRIPT_VIDEO_FACTORY || '';
+            window._videoFactoryScriptUrl = url;
+            var el = document.getElementById('urlStatus');
+            if (url) {
+                el.textContent = '✅ Apps Script URL loaded from Railway.';
+                el.style.background = 'rgba(62,207,110,0.1)';
+                el.style.color = '#3ecf6e';
+                el.style.borderColor = 'rgba(62,207,110,0.2)';
+            } else {
+                el.textContent = '⚠️ APPS_SCRIPT_VIDEO_FACTORY not set in Railway variables.';
+                el.style.background = 'rgba(232,64,64,0.1)';
+                el.style.color = '#e84040';
+                el.style.borderColor = 'rgba(232,64,64,0.2)';
+            }
+        })
+        .catch(function(){
+            document.getElementById('urlStatus').textContent = '⚠️ Could not load config from Railway.';
+        });
+})();
+
+openGetBtn.addEventListener('click', () => { if(window._videoFactoryScriptUrl) window.open(window._videoFactoryScriptUrl,'_blank'); else alert('No URL loaded from Railway'); });
 
 testSheetBtn.addEventListener('click', async () => {
-    const url = googleUrlInput.value.trim(); if(!url){alert('Please save Google Script URL first');return;}
+    const url = window._videoFactoryScriptUrl; if(!url){alert('APPS_SCRIPT_VIDEO_FACTORY not loaded from Railway');return;}
     sheetTestResult.style.display='block'; sheetTestResult.innerHTML='⏳ Sending test request...'; sheetTestResult.className='status-msg';
     try {
         const testData={Timestamp:getUserLocalTimestamp(),Video_Idea:"TEST_CONNECTION",Target_Length:"N/A",Generated_Script:"Test entry",Facebook_Post:"test",Threads_Post:"test",Instagram_Post:"test",Twitter_Post:"test",Linkedln_Post:"test",YouTube_Video_Title:"Test",YouTube_Video_Description:"desc",YouTube_Tags:"tag1,tag2"};
@@ -877,10 +970,8 @@ testSheetBtn.addEventListener('click', async () => {
 
 copyAppsScriptBtn.addEventListener('click', () => { navigator.clipboard.writeText(appsScriptCodeBlock.innerText).then(()=>alert('✅ Apps Script code copied! Paste into Google Apps Script editor.')).catch(()=>alert('Failed to copy')); });
 
-// Dark mode
-if(localStorage.getItem('darkMode')==='true') document.body.classList.add('dark');
-themeToggle.textContent = document.body.classList.contains('dark')?'☀️ Light Mode':'🌙 Dark Mode';
-themeToggle.addEventListener('click',()=>{document.body.classList.toggle('dark');localStorage.setItem('darkMode',document.body.classList.contains('dark'));themeToggle.textContent=document.body.classList.contains('dark')?'☀️ Light Mode':'🌙 Dark Mode';});
+// Force dark mode always
+document.body.classList.add('dark');
 
 if(localStorage.getItem('aiPrincipleToggle')==='true') aiPrincipleToggle.checked=true;
 aiPrincipleToggle.addEventListener('change',()=>localStorage.setItem('aiPrincipleToggle',aiPrincipleToggle.checked));
@@ -948,7 +1039,7 @@ async function generateYouTubeMeta(script, topic) {
 }
 
 generateBtn.addEventListener('click', async () => {
-    const googleUrl = googleUrlInput.value.trim(); if(!googleUrl){alert('Save Google Script URL');return;}
+    if(!window._videoFactoryScriptUrl){alert('APPS_SCRIPT_VIDEO_FACTORY not loaded from Railway');return;}
     const topic = videoTopic.value.trim(); if(!topic){alert('Enter topic');return;}
     const finalLength = lengthCustom.value.trim() || lengthPreset.value || '60 seconds';
     const useExpressions = heygenExpressionsCheckbox.checked;

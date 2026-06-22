@@ -8,31 +8,13 @@
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
-    --bg: #faf8f5; --surface: #ffffff; --surface2: #f5f2ed; --border: #e2dbcf;
-    --border-active: #b7872f; --gold: #b57c1c; --gold-dim: #c69548;
-    --text: #2c2824; --text-muted: #6b6258; --text-dim: #9b8e7e;
-    --accent: #ca9622; --red: #c95a4a; --green: #4c8b6e; --blue: #4a7c9c;
-    --tooltip-bg: #2c2824; --tooltip-text: #ffffff;
+    --bg: #0f0f13; --surface: #17171f; --surface2: #1e1e28; --border: #2a2a3a;
+    --border-active: #d4a853; --gold: #d4a853; --gold-dim: #a8895a;
+    --text: #ffffff; --text-muted: #e0e0f0; --text-dim: #a0a0c0;
+    --accent: #d4a853; --red: #e84040; --green: #3ecf6e; --blue: #4f8ef7;
+    --tooltip-bg: #2a2a3a; --tooltip-text: #ffffff;
   }
-  body.dark {
-    --bg: #121212; --surface: #1e1e1e; --surface2: #2a2a2a; --border: #3a3a3a;
-    --border-active: #c8a96e; --gold: #d4a853; --gold-dim: #a8895a;
-    --text: #e8e4dc; --text-muted: #c0bcb4; --text-dim: #a8a29e;
-    --accent: #d4a853; --red: #d47a6a; --green: #7ab896; --blue: #6a9ab8;
-    --tooltip-bg: #3a3a3a; --tooltip-text: #e8e4dc;
-  }
-  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-weight: 400; min-height: 100vh; transition: background 0.2s, color 0.2s; }
-  body.dark, body.dark .app, body.dark .news-content, body.dark .news-content *,
-  body.dark .api-section, body.dark .api-section *,
-  body.dark .date-scope, body.dark .date-scope *,
-  body.dark .key-status, body.dark .test-result,
-  body.dark .bottom-credit { color: var(--text) !important; }
-  body.dark .news-content strong, body.dark .news-content b,
-  body.dark .fetch-btn:hover, body.dark .provider-badge.selected { color: var(--gold) !important; }
-  body.dark .fetch-btn, body.dark .copy-news-btn, body.dark .btn-sm,
-  body.dark .theme-toggle, body.dark .provider-badge, body.dark .sheet-btn { color: var(--text-muted) !important; border-color: var(--border); }
-  body.dark .fetch-btn:hover, body.dark .copy-news-btn:hover, body.dark .btn-sm:hover, body.dark .sheet-btn:hover { color: var(--gold) !important; border-color: var(--gold); }
-  body.dark input, body.dark textarea { background: var(--surface2); color: var(--text) !important; border-color: var(--border); }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-weight: 400; min-height: 100vh; }
   .news-content { background: var(--surface2); border-radius: 16px; padding: 16px; font-size: 13px; line-height: 1.65; min-height: 360px; max-height: 460px; overflow-y: auto; white-space: pre-wrap; word-break: break-word; }
   .news-content li { margin-bottom: 12px; }
   .status-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 8px; background: var(--text-dim); }
@@ -101,36 +83,49 @@
       <h1>News<em>Forge</em> · AI Reporter</h1>
       <p>AI-powered top-10 lists: <strong>2+ sentences per item</strong> (no pause tags). Send to Sheets = full script + YouTube teaser (100 chars) + Video Description (5000 chars) + Tags (200 chars).</p>
     </div>
-    <button class="theme-toggle" id="themeToggleBtn">🌙 Dark Mode</button>
   </header>
+
+  <!-- TAB NAV -->
+  <div style="display:flex;gap:6px;margin-bottom:24px;border-bottom:1px solid var(--border);padding-bottom:0;">
+    <button id="tabStudio" onclick="switchMainTab('studio')" style="padding:9px 20px;border-radius:10px 10px 0 0;border:1px solid var(--border);border-bottom-color:var(--surface);background:var(--surface);color:var(--gold);font-family:'DM Mono',monospace;font-size:12px;font-weight:600;cursor:pointer;margin-bottom:-1px;">📺 Studio</button>
+    <button id="tabHelp" onclick="switchMainTab('help')" style="padding:9px 20px;border-radius:10px 10px 0 0;border:1px solid transparent;background:transparent;color:var(--text-dim);font-family:'DM Mono',monospace;font-size:12px;cursor:pointer;margin-bottom:-1px;">📖 Help</button>
+  </div>
+
+  <div id="panelStudio">
 
   <!-- GOOGLE SHEETS -->
   <div class="google-section">
-    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
-      <span style="font-family: 'DM Mono'; font-size: 12px;">📊 GOOGLE SHEETS · AvatarScriptNews (4 sheets)</span>
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;margin-bottom:10px;">
+      <span style="font-family:'DM Mono';font-size:12px;color:var(--text-muted);">📊 GOOGLE SHEETS · Tabs per news category</span>
     </div>
-    <div class="api-row">
-      <input type="url" id="googleScriptUrl" placeholder="https://script.google.com/macros/s/.../exec" style="flex:2;">
-      <button class="btn-sm" id="saveGoogleUrlBtn">💾 Save URL</button>
-      <button class="btn-sm" id="testSheetBtn">🔍 Test</button>
-      <button class="btn-sm btn-danger" id="deleteGoogleUrlBtn">🗑️ Remove</button>
+    <div id="sheetStatus" style="font-size:12px;padding:8px 12px;border-radius:8px;background:rgba(79,142,247,0.1);color:#4f8ef7;border:1px solid rgba(79,142,247,0.2);">Loading Apps Script URL from Railway...</div>
+    <div id="sheetTestResult" style="display:none;margin-top:8px;padding:8px;border-radius:12px;font-size:11px;"></div>
+    <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
+      <button class="btn-sm" id="testSheetBtn">🔍 Test Connection</button>
     </div>
-    <div id="sheetStatus" style="font-size: 11px; margin-top: 8px; color: var(--text-muted);"></div>
-    <div id="sheetTestResult" style="display: none; margin-top: 8px; padding: 8px; border-radius: 12px; font-size: 11px;"></div>
-    <div class="api-note" style="margin-top: 12px;">
-      <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:6px;">
-        <strong>📋 Apps Script (copy to Extensions → Apps Script):</strong>
-        <button id="toggleAppsScriptBtn" style="padding:3px 12px; background:var(--surface2); border:1px solid var(--border); border-radius:40px; font-family:'DM Mono',monospace; font-size:10px; cursor:pointer; color:var(--text-muted);">▼ Show Code</button>
-        <button id="copyAppsScriptBtn" style="display:none; padding:3px 12px; background:var(--surface2); border:1px solid var(--gold); border-radius:40px; font-family:'DM Mono',monospace; font-size:10px; cursor:pointer; color:var(--gold);">📄 Copy Script</button>
+    <div class="api-note" style="margin-top:12px;">
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px;">
+        <strong>📋 Apps Script (tabs per news category):</strong>
+        <button id="toggleAppsScriptBtn" style="padding:3px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:40px;font-family:'DM Mono',monospace;font-size:10px;cursor:pointer;color:var(--text-muted);">▼ Show Code</button>
+        <button id="copyAppsScriptBtn" style="display:none;padding:3px 12px;background:var(--surface2);border:1px solid var(--gold);border-radius:40px;font-family:'DM Mono',monospace;font-size:10px;cursor:pointer;color:var(--gold);">📄 Copy Script</button>
       </div>
       <div id="appsScriptWrapper" style="display:none;">
-        <div class="code-block" id="appsScriptCode">function doPost(e) {
-  try {
-    var sheetName = e.parameter.sheetName || "Sheet1";
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
-    var sheet = ss.getSheetByName(sheetName) || ss.insertSheet(sheetName);
+        <div class="code-block" id="appsScriptCode">function getOrCreateSheet(ss, sheetName) {
+  var sheet = ss.getSheetByName(sheetName);
+  if (!sheet) {
+    sheet = ss.insertSheet(sheetName);
     var headers = ["Local_Timestamp","Topic_Category","Date_Scope","Full_Script_WithPauses","Youtube_Teaser_100","Video_Description_5000","Tags_200"];
-    if(sheet.getLastRow() == 0) sheet.appendRow(headers);
+    sheet.getRange(1,1,1,headers.length).setValues([headers]);
+    sheet.setFrozenRows(1);
+  }
+  return sheet;
+}
+
+function doPost(e) {
+  try {
+    var sheetName = e.parameter.sheetName || "World Celebrity";
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var sheet = getOrCreateSheet(ss, sheetName);
     var row = [
       e.parameter.LocalTimestamp || new Date().toISOString(),
       e.parameter.Topic || "",
@@ -141,48 +136,26 @@
       (e.parameter.Tags || "").substring(0,200)
     ];
     sheet.appendRow(row);
-    return ContentService.createTextOutput(JSON.stringify({result:"success"}));
+    return ContentService.createTextOutput(JSON.stringify({result:"success"})).setMimeType(ContentService.MimeType.JSON);
   } catch(err) {
-    return ContentService.createTextOutput(JSON.stringify({result:"error", error: err.toString()}));
+    return ContentService.createTextOutput(JSON.stringify({result:"error", error: err.toString()})).setMimeType(ContentService.MimeType.JSON);
   }
+}
+
+function doGet() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = getOrCreateSheet(ss, "World Celebrity");
+  sheet.appendRow([new Date().toISOString(),"TEST","today","Test script from editor run","Test teaser","Test description","test,tags"]);
+  return ContentService.createTextOutput("Avatar News Forge connected! Test row written to World Celebrity tab.").setMimeType(ContentService.MimeType.TEXT);
 }</div>
       </div>
-      <div id="appsScriptDeployNote" style="display:none; margin-top:6px; font-size:11px;">
-        Deploy → Web app → Execute as "Me" → Access "Anyone" → Copy URL.
+      <div id="appsScriptDeployNote" style="display:none;margin-top:6px;font-size:11px;color:var(--text-muted);">
+        Deploy → Web app → Execute as "Me" → Access "Anyone" → Copy URL → add as <strong>APPS_SCRIPT_AVATAR_NEWS</strong> in Railway.
       </div>
     </div>
   </div>
 
-  <!-- API MANAGER -->
-  <div class="api-section">
-    <div class="provider-group" id="providerSelector">
-      <div class="provider-badge" data-provider="deepseek">DeepSeek</div>
-      <div class="provider-badge" data-provider="openai">OpenAI</div>
-      <div class="provider-badge" data-provider="claude">Claude</div>
-      <div class="provider-badge" data-provider="gemini">Gemini</div>
-      <div class="provider-badge" data-provider="custom">Custom</div>
-    </div>
-    <!-- Model selector — shown when provider is selected -->
-    <div id="modelSelectorWrap" style="display:none; align-items:center; gap:10px; flex-wrap:wrap; margin:8px 0 4px; padding:10px 14px; background:var(--surface2); border:1px solid var(--border); border-radius:14px;">
-      <label style="font-family:'DM Mono',monospace; font-size:11px; color:var(--text-muted); white-space:nowrap;">🤖 Model:</label>
-      <select id="modelSelector" style="flex:1; min-width:220px; padding:5px 10px; border:1px solid var(--border); border-radius:40px; background:var(--surface); color:var(--text); font-family:'DM Mono',monospace; font-size:11px;">
-        <option value="">— select provider first —</option>
-      </select>
-      <span id="modelNote" style="font-size:10px; color:var(--text-muted); font-style:italic;"></span>
-    </div>
-    <div class="api-row">
-      <span class="status-dot" id="apiDot"></span>
-      <input type="password" id="apiKeyInput" placeholder="API Key" autocomplete="off" style="flex:1;">
-      <button class="btn-sm" id="saveApiBtn">💾 Save</button>
-      <button class="btn-sm btn-danger" id="deleteApiBtn">🗑️ Delete</button>
-      <button class="btn-sm" id="healthCheckBtn">🔍 Health Check</button>
-    </div>
-    <div id="customEndpointGroup" style="display:none; margin-top: 12px;">
-      <input type="text" id="customEndpoint" placeholder="Custom endpoint URL">
-    </div>
-    <div id="keyStatus" class="key-status"></div>
-    <div id="testResult" class="test-result"></div>
-  </div>
+  <!-- API — handled by AS proxy bar at top -->
 
   <!-- NEWS DASHBOARD -->
   <div class="dashboard-header">
@@ -202,20 +175,119 @@
     </div>
   </div>
   <div class="four-col-news">
-    <div class="news-card"><h3>🌟 Celebrity Gossip</h3><button class="fetch-btn" data-topic="celebrity_world">Fetch</button><div class="news-content" id="newsCelebrityWorld">📌 Click Fetch</div><button class="copy-news-btn" data-copy="newsCelebrityWorld">📋 Copy</button><button class="sheet-btn" data-sheet-topic="celebrity_world" data-sheet-name="Sheet1">📤 Send to Sheet</button></div>
-    <div class="news-card"><h3>🇵🇭 PH Celebrity</h3><button class="fetch-btn" data-topic="celebrity_ph">Fetch</button><div class="news-content" id="newsCelebrityPh">📌 Click Fetch</div><button class="copy-news-btn" data-copy="newsCelebrityPh">📋 Copy</button><button class="sheet-btn" data-sheet-topic="celebrity_ph" data-sheet-name="Sheet2">📤 Send to Sheet</button></div>
-    <div class="news-card"><h3>🤖 AI News</h3><button class="fetch-btn" data-topic="ai_news">Fetch</button><div class="news-content" id="newsAi">📌 Click Fetch</div><button class="copy-news-btn" data-copy="newsAi">📋 Copy</button><button class="sheet-btn" data-sheet-topic="ai_news" data-sheet-name="Sheet3">📤 Send to Sheet</button></div>
-    <div class="news-card"><h3>🕵️ Blind Items</h3><button class="fetch-btn" data-topic="celebrity_ph_blind">Fetch</button><div class="news-content" id="newsBlindItems">📌 Click Fetch</div><button class="copy-news-btn" data-copy="newsBlindItems">📋 Copy</button><button class="sheet-btn" data-sheet-topic="celebrity_ph_blind" data-sheet-name="Sheet4">📤 Send to Sheet</button></div>
+    <div class="news-card"><h3>🌟 Celebrity Gossip</h3><button class="fetch-btn" data-topic="celebrity_world">Fetch</button><div class="news-content" id="newsCelebrityWorld">📌 Click Fetch</div><button class="copy-news-btn" data-copy="newsCelebrityWorld">📋 Copy</button><button class="sheet-btn" data-sheet-topic="celebrity_world" data-sheet-name="World Celebrity">📤 Send to Sheet</button></div>
+    <div class="news-card"><h3>🇵🇭 PH Celebrity</h3><button class="fetch-btn" data-topic="celebrity_ph">Fetch</button><div class="news-content" id="newsCelebrityPh">📌 Click Fetch</div><button class="copy-news-btn" data-copy="newsCelebrityPh">📋 Copy</button><button class="sheet-btn" data-sheet-topic="celebrity_ph" data-sheet-name="PH Celebrity">📤 Send to Sheet</button></div>
+    <div class="news-card"><h3>🤖 AI News</h3><button class="fetch-btn" data-topic="ai_news">Fetch</button><div class="news-content" id="newsAi">📌 Click Fetch</div><button class="copy-news-btn" data-copy="newsAi">📋 Copy</button><button class="sheet-btn" data-sheet-topic="ai_news" data-sheet-name="AI News">📤 Send to Sheet</button></div>
+    <div class="news-card"><h3>🕵️ Blind Items</h3><button class="fetch-btn" data-topic="celebrity_ph_blind">Fetch</button><div class="news-content" id="newsBlindItems">📌 Click Fetch</div><button class="copy-news-btn" data-copy="newsBlindItems">📋 Copy</button><button class="sheet-btn" data-sheet-topic="celebrity_ph_blind" data-sheet-name="PH Blind Items">📤 Send to Sheet</button></div>
   </div>
   <div class="bottom-credit">✨ 2+ sentences per item (no ⏸️). Send to Sheets includes YouTube teaser (100 chars), video description (5000 chars), and tags (200 chars).</div>
   <div id="toastMsg" class="success-toast"></div>
-</div>
+  </div><!-- /panelStudio -->
+
+  <!-- HELP TAB -->
+  <div id="panelHelp" style="display:none;">
+    <div style="max-width:860px;">
+
+      <div style="margin-bottom:24px;">
+        <h2 style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;color:#ffffff;margin-bottom:8px;">How to Use Avatar News Forge</h2>
+        <p style="font-size:13px;color:#e0e0f0;line-height:1.7;">This tool generates AI avatar news scripts for 4 categories — World Celebrity Gossip, PH Celebrity, AI News, and PH Blind Items. Each category fetches a top-10 list with 2+ sentences per item and no pause tags, ready for HeyGen avatar narration.</p>
+      </div>
+
+      <div style="margin-bottom:24px;">
+        <h2 style="font-size:15px;font-weight:700;color:#ffffff;margin-bottom:12px;">Step-by-Step Workflow</h2>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div style="display:flex;gap:12px;align-items:flex-start;"><div style="width:24px;height:24px;border-radius:50%;background:rgba(212,168,83,0.15);color:#d4a853;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;">1</div><div style="font-size:13px;color:#e0e0f0;line-height:1.6;"><strong style="color:#ffffff;">Set date range</strong> — Use the quick buttons (Today, Yesterday, This Week, This Month) or set custom dates. This tells the AI which period to cover.</div></div>
+          <div style="display:flex;gap:12px;align-items:flex-start;"><div style="width:24px;height:24px;border-radius:50%;background:rgba(212,168,83,0.15);color:#d4a853;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;">2</div><div style="font-size:13px;color:#e0e0f0;line-height:1.6;"><strong style="color:#ffffff;">Click Fetch</strong> on any news card. The AI generates 10 items, each with 2+ full sentences and no pause tags — ready for avatar reading.</div></div>
+          <div style="display:flex;gap:12px;align-items:flex-start;"><div style="width:24px;height:24px;border-radius:50%;background:rgba(212,168,83,0.15);color:#d4a853;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;">3</div><div style="font-size:13px;color:#e0e0f0;line-height:1.6;"><strong style="color:#ffffff;">Copy the script</strong> using the Copy button on each card. This copies the full formatted script including intro, numbered items with ..... separators, and outro.</div></div>
+          <div style="display:flex;gap:12px;align-items:flex-start;"><div style="width:24px;height:24px;border-radius:50%;background:rgba(212,168,83,0.15);color:#d4a853;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;">4</div><div style="font-size:13px;color:#e0e0f0;line-height:1.6;"><strong style="color:#ffffff;">Paste into HeyGen</strong> — Use a talking photo avatar. The ..... separators create natural pauses between items without formal pause tags.</div></div>
+          <div style="display:flex;gap:12px;align-items:flex-start;"><div style="width:24px;height:24px;border-radius:50%;background:rgba(212,168,83,0.15);color:#d4a853;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;">5</div><div style="font-size:13px;color:#e0e0f0;line-height:1.6;"><strong style="color:#ffffff;">Send to Sheet</strong> — Saves the full script plus AI-generated YouTube teaser, video description, and tags to the correct tab in your Google Sheet.</div></div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:24px;">
+        <h2 style="font-size:15px;font-weight:700;color:#ffffff;margin-bottom:10px;">Google Sheet Tabs</h2>
+        <p style="font-size:13px;color:#e0e0f0;margin-bottom:12px;">Each news category saves to its own dedicated tab. Tabs auto-create on first save with frozen headers.</p>
+        <table style="width:100%;border-collapse:collapse;font-size:13px;">
+          <thead><tr>
+            <th style="background:#1e1e28;color:#a0a0c0;font-size:11px;font-weight:600;text-transform:uppercase;padding:8px 12px;text-align:left;border-bottom:1px solid #2a2a3a;">Tab Name</th>
+            <th style="background:#1e1e28;color:#a0a0c0;font-size:11px;font-weight:600;text-transform:uppercase;padding:8px 12px;text-align:left;border-bottom:1px solid #2a2a3a;">News Category</th>
+            <th style="background:#1e1e28;color:#a0a0c0;font-size:11px;font-weight:600;text-transform:uppercase;padding:8px 12px;text-align:left;border-bottom:1px solid #2a2a3a;">Language / Style</th>
+          </tr></thead>
+          <tbody>
+            <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;">World Celebrity</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff;">International celebrity gossip</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#e0e0f0;">English — starts with "Wow did you know,"</td></tr>
+            <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;">PH Celebrity</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff;">Filipino showbiz news</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#e0e0f0;">Taglish — starts with "Alam mo ba,"</td></tr>
+            <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;">AI News</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff;">AI & tech breakthroughs</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#e0e0f0;">English — starts with "Did you know,"</td></tr>
+            <tr><td style="padding:9px 12px;color:#d4a853;font-weight:600;">PH Blind Items</td><td style="padding:9px 12px;color:#ffffff;">Anonymous PH celebrity rumors</td><td style="padding:9px 12px;color:#e0e0f0;">English — starts with "Rumors have it," — no real names</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="margin-bottom:24px;">
+        <h2 style="font-size:15px;font-weight:700;color:#ffffff;margin-bottom:10px;">Google Sheet Column Reference</h2>
+        <table style="width:100%;border-collapse:collapse;font-size:13px;">
+          <thead><tr>
+            <th style="background:#1e1e28;color:#a0a0c0;font-size:11px;font-weight:600;text-transform:uppercase;padding:8px 12px;text-align:left;border-bottom:1px solid #2a2a3a;">Column</th>
+            <th style="background:#1e1e28;color:#a0a0c0;font-size:11px;font-weight:600;text-transform:uppercase;padding:8px 12px;text-align:left;border-bottom:1px solid #2a2a3a;">What it contains &amp; how to use it</th>
+          </tr></thead>
+          <tbody>
+            <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap;">Local_Timestamp</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff;">Date and time the script was saved. Includes timezone offset.</td></tr>
+            <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap;">Topic_Category</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff;">News category label (e.g. "World Celebrity Gossip", "AI News").</td></tr>
+            <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap;">Date_Scope</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff;">The date range covered (e.g. "June 22, 2026" or "June 1, 2026 to June 22, 2026").</td></tr>
+            <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap;">Full_Script_WithPauses</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff;">Complete avatar narration script with intro, 10 numbered items separated by ....., and outro. Paste directly into HeyGen.</td></tr>
+            <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap;">Youtube_Teaser_100</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff;">Short hook under 100 characters. Use as your video title or opening card text.</td></tr>
+            <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap;">Video_Description_5000</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff;">Full YouTube description up to 5000 characters. Paste directly into YouTube description field during upload.</td></tr>
+            <tr><td style="padding:9px 12px;color:#d4a853;font-weight:600;white-space:nowrap;">Tags_200</td><td style="padding:9px 12px;color:#ffffff;">Comma-separated tags up to 200 characters. Paste into YouTube tags field during upload.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="margin-bottom:24px;">
+        <h2 style="font-size:15px;font-weight:700;color:#ffffff;margin-bottom:10px;">Railway Setup</h2>
+        <div style="background:#17171f;border:1px solid #2a2a3a;border-left:3px solid #4f8ef7;border-radius:8px;padding:12px 16px;font-size:13px;color:#e0e0f0;line-height:1.7;">
+          Add <strong style="color:#4f8ef7;">APPS_SCRIPT_AVATAR_NEWS</strong> in Railway Variables with your deployed Apps Script URL. AI provider is selected from the AS bar at the top — no API key needed in this tool directly.
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /panelHelp -->
+
+</div><!-- /app -->
 
 <script>
-  let apiHealthy = false;
-  let currentProvider = 'deepseek';
-  let selectedModel = '';
   let googleSheetUrl = '';
+
+  // Load Apps Script URL from Railway
+  window._avatarNewsScriptUrl = '';
+  fetch('/api/config')
+    .then(r => r.json())
+    .then(d => {
+      const url = d.APPS_SCRIPT_AVATAR_NEWS || '';
+      window._avatarNewsScriptUrl = url;
+      googleSheetUrl = url;
+      const el = document.getElementById('sheetStatus');
+      if (url) {
+        el.textContent = '✅ Apps Script URL loaded from Railway.';
+        el.style.background = 'rgba(62,207,110,0.1)';
+        el.style.color = '#3ecf6e';
+        el.style.borderColor = 'rgba(62,207,110,0.2)';
+      } else {
+        el.textContent = '⚠️ APPS_SCRIPT_AVATAR_NEWS not set in Railway variables.';
+        el.style.background = 'rgba(232,64,64,0.1)';
+        el.style.color = '#e84040';
+        el.style.borderColor = 'rgba(232,64,64,0.2)';
+      }
+    })
+    .catch(() => {
+      document.getElementById('sheetStatus').textContent = '⚠️ Could not load config from Railway.';
+    });
+
+  // Tab switcher
+  function switchMainTab(tab) {
+    document.getElementById('panelStudio').style.display = tab === 'studio' ? 'block' : 'none';
+    document.getElementById('panelHelp').style.display   = tab === 'help'   ? 'block' : 'none';
+    document.getElementById('tabStudio').style.color     = tab === 'studio' ? 'var(--gold)' : 'var(--text-dim)';
+    document.getElementById('tabHelp').style.color       = tab === 'help'   ? 'var(--gold)' : 'var(--text-dim)';
+  }
 
   // ── Model catalogue (May 2026) ─────────────────────────────────────────────
   const MODEL_CATALOGUE = {
@@ -329,9 +401,6 @@
   [dateScopeFromInput, dateScopeToInput].forEach(inp => {
     inp.addEventListener('change', () => document.querySelectorAll('.dq-btn').forEach(b => b.classList.remove('active')));
   });
-  const googleUrlInput = document.getElementById('googleScriptUrl');
-  const saveGoogleUrlBtn = document.getElementById('saveGoogleUrlBtn');
-  const deleteGoogleUrlBtn = document.getElementById('deleteGoogleUrlBtn');
   const testSheetBtn = document.getElementById('testSheetBtn');
   const sheetStatusDiv = document.getElementById('sheetStatus');
   const sheetTestResultDiv = document.getElementById('sheetTestResult');
@@ -359,162 +428,31 @@
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds} UTC${sign}${tzHours}:${tzMins}`;
   }
 
-  // Google Sheets
-  function loadGoogleUrl() {
-    const saved = localStorage.getItem('archprompt_google_news_url');
-    if (saved) { googleUrlInput.value = saved; googleSheetUrl = saved; sheetStatusDiv.innerHTML = '✅ URL saved'; }
-  }
-  saveGoogleUrlBtn.addEventListener('click', () => {
-    let url = googleUrlInput.value.trim();
-    if (!url) { showToast('Enter URL', true); return; }
-    localStorage.setItem('archprompt_google_news_url', url);
-    googleSheetUrl = url;
-    sheetStatusDiv.innerHTML = '✅ Saved';
-    showToast('Google Sheets URL saved');
-  });
-  deleteGoogleUrlBtn.addEventListener('click', () => {
-    localStorage.removeItem('archprompt_google_news_url');
-    googleUrlInput.value = '';
-    googleSheetUrl = '';
-    sheetStatusDiv.innerHTML = 'No URL';
-    showToast('URL removed', true);
-  });
+  // Google Sheets — URL from Railway
   testSheetBtn.addEventListener('click', async () => {
-    const url = googleUrlInput.value.trim();
-    if (!url) { showToast('Save URL first', true); return; }
+    const url = window._avatarNewsScriptUrl;
+    if (!url) { showToast('APPS_SCRIPT_AVATAR_NEWS not loaded from Railway', true); return; }
     sheetTestResultDiv.style.display = 'block';
     sheetTestResultDiv.innerHTML = '⏳ Testing...';
     try {
-      const testData = { sheetName: 'Sheet1', LocalTimestamp: getLocalTimestamp(), Topic: 'TEST', DateScope: 'test', FullScript: 'test', YoutubeTeaser: 'test', VideoDescription: 'desc', Tags: 'tag1,tag2' };
+      const testData = { sheetName: 'World Celebrity', LocalTimestamp: getLocalTimestamp(), Topic: 'TEST', DateScope: 'test', FullScript: 'test', YoutubeTeaser: 'test', VideoDescription: 'desc', Tags: 'tag1,tag2' };
       const response = await fetch(url, { method: 'POST', mode: 'cors', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams(testData) });
       const text = await response.text();
       let json; try { json = JSON.parse(text); } catch(e) { throw new Error('Invalid response'); }
-      if (json.result === 'success') { sheetTestResultDiv.innerHTML = '✅ Connected!'; sheetTestResultDiv.style.background = 'rgba(76,139,110,0.2)'; }
+      if (json.result === 'success') { sheetTestResultDiv.innerHTML = '✅ Connected!'; sheetTestResultDiv.style.background = 'rgba(62,207,110,0.2)'; }
       else throw new Error(json.error);
-    } catch(err) { sheetTestResultDiv.innerHTML = `❌ ${err.message}`; sheetTestResultDiv.style.background = 'rgba(201,90,74,0.2)'; }
+    } catch(err) { sheetTestResultDiv.innerHTML = `❌ ${err.message}`; sheetTestResultDiv.style.background = 'rgba(232,64,64,0.2)'; }
     setTimeout(() => { sheetTestResultDiv.style.display = 'none'; }, 4000);
   });
-  loadGoogleUrl();
 
-  // API Management
-  function updateKeyStatusDisplay() {
-    const savedKey = localStorage.getItem('archprompt_apikey');
-    if (savedKey) keyStatusDiv.innerHTML = `🔑 Key: ${savedKey.substring(0,8)}... ${apiHealthy ? '✅' : '⚠️'}`;
-    else keyStatusDiv.innerHTML = '🔑 No API key';
-  }
-  function setProvider(prov) {
-    currentProvider = prov;
-    localStorage.setItem('archprompt_provider', prov);
-    providerBadges.forEach(el => el.classList.toggle('selected', el.dataset.provider === prov));
-    customEndpointGroup.style.display = prov === 'custom' ? 'block' : 'none';
-    apiHealthy = false;
-    updateDotState(false, false, false);
-    updateKeyStatusDisplay();
-    updateModelSelector(prov);
-  }
-  function updateDotState(healthy, error, checking) {
-    apiDot.classList.remove('connected', 'error', 'checking');
-    if (checking) apiDot.classList.add('checking');
-    else if (healthy) apiDot.classList.add('connected');
-    else if (error) apiDot.classList.add('error');
-  }
-  async function healthCheck() {
-    const key = localStorage.getItem('archprompt_apikey') || '__proxy__';
-    if (!key) { updateDotState(false, true, false); showToast('No API key', true); return; }
-    updateDotState(false, false, true);
-    const model = selectedModel || (MODEL_CATALOGUE[currentProvider]?.[0]?.id || '');
-    try {
-      let ok = false;
-      if (currentProvider === 'deepseek') {
-        let r = await fetch('https://api.deepseek.com/v1/chat/completions', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` }, body: JSON.stringify({ model, messages: [{ role: 'user', content: 'OK' }], max_tokens: 5 }) });
-        ok = r.ok;
-      } else if (currentProvider === 'openai') {
-        let r = await fetch('https://api.openai.com/v1/chat/completions', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` }, body: JSON.stringify({ model, messages: [{ role: 'user', content: 'OK' }], max_tokens: 5 }) });
-        ok = r.ok;
-      } else if (currentProvider === 'claude') {
-        let r = await fetch('https://api.anthropic.com/v1/messages', { method: 'POST', headers: { 'x-api-key': key, 'anthropic-version': '2023-06-01', 'Content-Type': 'application/json' }, body: JSON.stringify({ model, max_tokens: 5, messages: [{ role: 'user', content: 'Hi' }] }) });
-        ok = r.status === 200 || r.status === 400;
-      } else if (currentProvider === 'gemini') {
-        let r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${key}`);
-        ok = r.ok;
-      } else {
-        let ep = document.getElementById('customEndpoint')?.value.trim() || localStorage.getItem('archprompt_custom_endpoint') || 'https://api.openai.com/v1/chat/completions';
-        let r = await fetch(ep, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` }, body: JSON.stringify({ model: 'gpt-4o', max_tokens: 5, messages: [{ role: 'user', content: 'test' }] }) });
-        ok = r.ok;
-      }
-      apiHealthy = ok;
-      updateDotState(ok, !ok, false);
-      showToast(ok ? 'API ready' : 'Invalid key', !ok);
-    } catch(e) { apiHealthy = false; updateDotState(false, true, false); showToast(`Error: ${e.message}`, true); }
-    updateKeyStatusDisplay();
-  }
-  function saveApiKey() {
-    const key = apiKeyInput.value.trim();
-    if (!key) { showToast('Enter API key', true); return; }
-    localStorage.setItem('archprompt_apikey', key);
-    if (currentProvider === 'custom') {
-      const ep = document.getElementById('customEndpoint').value.trim();
-      if (ep) localStorage.setItem('archprompt_custom_endpoint', ep);
-    }
-    apiHealthy = false;
-    updateDotState(false, false, false);
-    updateKeyStatusDisplay();
-    showToast('API key saved. Run Health Check.');
-    apiKeyInput.value = '';
-  }
-  function deleteApiKey() { localStorage.removeItem('archprompt_apikey'); apiHealthy = false; updateDotState(false, false, false); updateKeyStatusDisplay(); showToast('API key removed'); }
-  saveApiBtn.addEventListener('click', saveApiKey);
-  deleteApiBtn.addEventListener('click', deleteApiKey);
-  healthCheckBtn.addEventListener('click', healthCheck);
-  providerBadges.forEach(el => el.addEventListener('click', () => setProvider(el.dataset.provider)));
+  // API — all handled by AS proxy bar
 
-  // AI Call with retry and 60s timeout
-  async function callAI(systemPrompt, userPrompt, retryCount = 0) {
-    const key = localStorage.getItem('archprompt_apikey') || '__proxy__';
-    if (!key || !apiHealthy) throw new Error('API key missing or not healthy');
-    const prov = currentProvider;
-    const model = selectedModel || (MODEL_CATALOGUE[prov]?.[0]?.id || 'gpt-4o');
-    let endpoint, headers, body;
-
-    if (prov === 'deepseek') {
-      endpoint = 'https://api.deepseek.com/v1/chat/completions';
-      headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` };
-      body = { model, messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: userPrompt }], max_tokens: 2000, temperature: 0.7 };
-    } else if (prov === 'openai') {
-      endpoint = 'https://api.openai.com/v1/chat/completions';
-      headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` };
-      body = { model, messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: userPrompt }], max_tokens: 2000, temperature: 0.7 };
-    } else if (prov === 'claude') {
-      endpoint = 'https://api.anthropic.com/v1/messages';
-      headers = { 'Content-Type': 'application/json', 'x-api-key': key, 'anthropic-version': '2023-06-01' };
-      body = { model, max_tokens: 2000, system: systemPrompt, messages: [{ role: 'user', content: userPrompt }] };
-    } else if (prov === 'gemini') {
-      endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`;
-      headers = { 'Content-Type': 'application/json' };
-      body = { contents: [{ parts: [{ text: `${systemPrompt}
-
-${userPrompt}` }] }], generationConfig: { maxOutputTokens: 2000, temperature: 0.7 } };
-    } else {
-      let customEp = document.getElementById('customEndpoint')?.value.trim() || localStorage.getItem('archprompt_custom_endpoint') || 'https://api.openai.com/v1/chat/completions';
-      headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` };
-      body = { model: 'gpt-4o', max_tokens: 2000, messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: userPrompt }] };
-      endpoint = customEp;
-    }
-
-    try {
-      const response = await fetch(endpoint, { method: 'POST', headers, body: JSON.stringify(body), signal: AbortSignal.timeout(60000) });
-      const data = await response.json();
-      if (prov === 'claude' && data.content) return data.content[0].text;
-      if (prov === 'gemini' && data.candidates) return data.candidates[0].content.parts[0].text;
-      if ((prov === 'deepseek' || prov === 'openai' || prov === 'custom') && data.choices) return data.choices[0].message.content;
-      throw new Error('Invalid API response');
-    } catch(err) {
-      if (retryCount === 0 && err.message.includes('timeout')) {
-        console.log('Retrying due to timeout...');
-        return callAI(systemPrompt, userPrompt, 1);
-      }
-      throw err;
-    }
+  // AI Call — delegates to AS proxy
+  async function callAI(systemPrompt, userPrompt) {
+    return await window.AS_callAI(
+      [{ role: 'user', content: `${systemPrompt}\n\n${userPrompt}` }],
+      2000
+    );
   }
 
   // FETCH NEWS - NO PAUSE TAGS
@@ -561,14 +499,6 @@ ${userPrompt}` }] }], generationConfig: { maxOutputTokens: 2000, temperature: 0.
 
   // Generate YouTube Teaser (max 100 chars), Video Description (max 5000), Tags (max 200)
   async function generateMetadata(topicLabel, fullScript, dateScope) {
-    const key = localStorage.getItem('archprompt_apikey') || '__proxy__';
-    if (!key || !apiHealthy) {
-      return {
-        teaser: `Latest ${topicLabel} top 10!`,
-        description: `Watch our top 10 ${topicLabel} stories for ${dateScope}. Don't miss out!`,
-        tags: `${topicLabel},news,top10`
-      };
-    }
     try {
       const prompt = `Based on this script about "${topicLabel}" (${dateScope}), generate:
 1. YouTube teaser (max 100 characters) - short hook
@@ -594,8 +524,8 @@ Return as JSON: {"teaser":"...","description":"...","tags":"..."}`;
   }
 
   async function sendToSheet(topic, sheetName, contentDivId, topicLabel) {
-    const url = googleUrlInput.value.trim();
-    if (!url) { showToast('Save Google Script URL first', true); return; }
+    const url = window._avatarNewsScriptUrl || '';
+    if (!url) { showToast('APPS_SCRIPT_AVATAR_NEWS not loaded from Railway', true); return; }
     const contentDiv = document.getElementById(contentDivId);
     const rawHtml = contentDiv.innerHTML;
     if (rawHtml.includes('Click Fetch') || rawHtml.length < 100) { showToast('Fetch news first', true); return; }
@@ -665,48 +595,24 @@ Return as JSON: {"teaser":"...","description":"...","tags":"..."}`;
     document.querySelectorAll('.sheet-btn').forEach(btn => { btn.removeEventListener('click', handleSheetSend); btn.addEventListener('click', handleSheetSend); });
   }
 
-  // Theme
-  function initTheme() { if (localStorage.getItem('darkMode') === 'true') document.body.classList.add('dark'); themeToggleBtn.innerText = document.body.classList.contains('dark') ? '☀️ Light' : '🌙 Dark'; }
-  function toggleTheme() { document.body.classList.toggle('dark'); localStorage.setItem('darkMode', document.body.classList.contains('dark')); themeToggleBtn.innerText = document.body.classList.contains('dark') ? '☀️ Light' : '🌙 Dark'; }
-  themeToggleBtn.addEventListener('click', toggleTheme);
-
-  // Model selector change
-  document.getElementById('modelSelector')?.addEventListener('change', function() {
-    selectedModel = this.value;
-    localStorage.setItem('archprompt_model_' + currentProvider, selectedModel);
-    const models = MODEL_CATALOGUE[currentProvider] || [];
-    const chosen = models.find(m => m.id === selectedModel);
-    document.getElementById('modelNote').textContent = chosen ? chosen.note : '';
-    apiHealthy = false;
-    updateDotState(false, false, false);
-  });
-
-  // Apps Script collapse/expand + copy
-  document.getElementById('toggleAppsScriptBtn')?.addEventListener('click', function() {
-    const wrapper = document.getElementById('appsScriptWrapper');
-    const note    = document.getElementById('appsScriptDeployNote');
-    const copyBtn = document.getElementById('copyAppsScriptBtn');
-    const isHidden = wrapper.style.display === 'none';
-    wrapper.style.display = isHidden ? 'block' : 'none';
-    note.style.display    = isHidden ? 'block' : 'none';
-    copyBtn.style.display = isHidden ? 'inline-block' : 'none';
-    this.textContent = isHidden ? '▲ Hide Code' : '▼ Show Code';
-  });
-  document.getElementById('copyAppsScriptBtn')?.addEventListener('click', function() {
-    const code = document.getElementById('appsScriptCode')?.textContent || '';
-    navigator.clipboard.writeText(code).then(() => showToast('✅ Apps Script copied!'))
-      .catch(() => showToast('Copy failed — select code manually', true));
-  });
-
   function init() {
-    initTheme();
-    const savedProvider = localStorage.getItem('archprompt_provider') || 'deepseek';
-    setProvider(savedProvider);
-    if (localStorage.getItem('archprompt_apikey')) updateKeyStatusDisplay();
-    const savedCustomEp = localStorage.getItem('archprompt_custom_endpoint');
-    if (savedCustomEp && document.getElementById('customEndpoint')) document.getElementById('customEndpoint').value = savedCustomEp;
+    document.body.classList.add('dark');
     attachEventListeners();
-    if (localStorage.getItem('archprompt_apikey')) setTimeout(() => healthCheck(), 400);
+    document.getElementById('toggleAppsScriptBtn')?.addEventListener('click', function() {
+      const wrapper = document.getElementById('appsScriptWrapper');
+      const note    = document.getElementById('appsScriptDeployNote');
+      const copyBtn = document.getElementById('copyAppsScriptBtn');
+      const isHidden = wrapper.style.display === 'none';
+      wrapper.style.display = isHidden ? 'block' : 'none';
+      note.style.display    = isHidden ? 'block' : 'none';
+      copyBtn.style.display = isHidden ? 'inline-block' : 'none';
+      this.textContent = isHidden ? '▲ Hide Code' : '▼ Show Code';
+    });
+    document.getElementById('copyAppsScriptBtn')?.addEventListener('click', function() {
+      const code = document.getElementById('appsScriptCode')?.textContent || '';
+      navigator.clipboard.writeText(code).then(() => showToast('✅ Apps Script copied!'))
+        .catch(() => showToast('Copy failed — select code manually', true));
+    });
   }
   init();
 </script>

@@ -209,6 +209,17 @@ app.get('/api/verify-email', (req, res) => {
   res.json({ allowed: isAllowed(email) });
 });
 
+// ── GET /api/config — return non-secret config values to frontend ──────────
+app.get('/api/config', (req, res) => {
+  res.json({
+    APPS_SCRIPT_VIDEO_FACTORY:  process.env.APPS_SCRIPT_VIDEO_FACTORY  || '',
+    APPS_SCRIPT_ARCHPROMPT:     process.env.APPS_SCRIPT_ARCHPROMPT     || '',
+    APPS_SCRIPT_STORYTELLING:   process.env.APPS_SCRIPT_STORYTELLING   || '',
+    APPS_SCRIPT_AVATAR_NEWS:    process.env.APPS_SCRIPT_AVATAR_NEWS    || '',
+    APPS_SCRIPT_HORROR_STORY:   process.env.APPS_SCRIPT_HORROR_STORY   || '',
+  });
+});
+
 // ── Fallback — serve index.html for all unmatched routes ─────────────────
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));

@@ -9,7 +9,7 @@
 :root {
   --bg:#0f0f13; --surface:#17171f; --surface2:#1e1e28;
   --border:#2a2a3a; --border2:#3a3a52;
-  --text:#f0f0f8; --text2:#b0b0c8; --text3:#707088;
+  --text:#ffffff; --text2:#e0e0f0; --text3:#a0a0c0;
   --red:#e84040; --red-dim:rgba(232,64,64,0.1);
   --gold:#d4a84b; --gold-dim:rgba(212,168,75,0.1);
   --green:#3ecf6e; --green-dim:rgba(62,207,110,0.1);
@@ -27,6 +27,31 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14
 .header-left h1{font-size:22px;font-weight:700;letter-spacing:-.3px}
 .header-left h1 span{color:var(--red)}
 .header-left p{font-size:12px;color:var(--text3);margin-top:2px}
+
+/* TABS */
+.tab-nav{display:flex;gap:6px;margin-bottom:24px;border-bottom:1px solid var(--border);padding-bottom:0}
+.tab-nav-btn{padding:9px 20px;border-radius:10px 10px 0 0;border:1px solid transparent;background:transparent;color:var(--text3);font-family:var(--font);font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;margin-bottom:-1px}
+.tab-nav-btn:hover{color:var(--text2)}
+.tab-nav-btn.active{background:var(--surface);border-color:var(--border);border-bottom-color:var(--surface);color:var(--red);font-weight:600}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+/* HELP TAB */
+.help-section{margin-bottom:28px}
+.help-section h2{font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px}
+.help-section p{font-size:13px;color:var(--text2);margin-bottom:12px;line-height:1.7}
+.help-table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:8px}
+.help-table th{background:var(--surface2);color:var(--text3);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;padding:8px 12px;text-align:left;border-bottom:1px solid var(--border)}
+.help-table td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:top;line-height:1.6}
+.help-table td:first-child{color:var(--gold);font-weight:600;white-space:nowrap;width:200px}
+.help-table tr:last-child td{border-bottom:none}
+.help-table tr:hover td{background:var(--surface2)}
+.help-tip{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--blue);border-radius:var(--radius-sm);padding:12px 16px;font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.7}
+.help-tip strong{color:var(--blue)}
+.help-step{display:flex;gap:14px;margin-bottom:12px;align-items:flex-start}
+.help-step-num{width:26px;height:26px;border-radius:50%;background:var(--red-dim);color:var(--red);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.help-step-text{font-size:13px;color:var(--text2);line-height:1.6}
+.help-step-text strong{color:var(--text)}
 
 /* NICHE SELECTOR */
 .niche-row{display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap}
@@ -125,6 +150,15 @@ textarea{min-height:80px}
       <p>Finance Horror · Legal Horror · Revenge &amp; Drama · YouTube Script Generator</p>
     </div>
   </div>
+
+  <!-- TAB NAV -->
+  <div class="tab-nav">
+    <button class="tab-nav-btn active" id="tab-studio" onclick="switchTab('studio')">🎬 Studio</button>
+    <button class="tab-nav-btn" id="tab-help" onclick="switchTab('help')">📖 Help & Guide</button>
+  </div>
+
+  <!-- STUDIO TAB -->
+  <div class="tab-panel active" id="panel-studio">
 
   <!-- NICHE -->
   <div class="niche-row">
@@ -303,9 +337,8 @@ textarea{min-height:80px}
     <!-- SAVE TO SHEETS -->
     <div class="card">
       <div class="card-title">Save to Google Sheets</div>
-      <label>Apps Script URL</label>
-      <div class="sheets-row">
-        <input type="url" id="appsScriptUrl" placeholder="https://script.google.com/macros/s/YOUR_ID/exec" value="">
+      <div class="status-bar info" id="scriptUrlStatus" style="display:block">Loading Apps Script URL from Railway...</div>
+      <div style="margin-top:10px">
         <button class="save-btn" id="saveBtn" onclick="saveToSheets()">💾 Save to Sheet</button>
       </div>
       <div class="status-bar" id="saveStatus"></div>
@@ -325,9 +358,111 @@ textarea{min-height:80px}
     </div>
 
   </div><!-- /output-area -->
+  </div><!-- /panel-studio -->
+
+  <!-- HELP TAB -->
+  <div class="tab-panel" id="panel-help">
+
+    <div class="help-section">
+      <h2>How to Use Horror Story Studio</h2>
+      <p>This tool generates a complete 8–10 minute YouTube script in 5 sections, plus thumbnail assets and YouTube metadata. Everything saves to your Google Sheet for tracking and reference.</p>
+      <div class="help-tip"><strong>Workflow:</strong> Generate script → Copy each section into HeyGen → Download avatar videos → Assemble in CapCut with B-roll from Pexels → Add Suno music → Upload to YouTube.</div>
+    </div>
+
+    <div class="help-section">
+      <h2>Step-by-Step Production Workflow</h2>
+      <div class="help-step"><div class="help-step-num">1</div><div class="help-step-text"><strong>Generate the script</strong> — Enter your story idea, select niche and audience, click Generate. Takes 20–40 seconds.</div></div>
+      <div class="help-step"><div class="help-step-num">2</div><div class="help-step-text"><strong>Hook</strong> — Copy Hook script into HeyGen. Avatar full screen, 16:9. Generate talking photo video. This is your opening 30 seconds.</div></div>
+      <div class="help-step"><div class="help-step-num">3</div><div class="help-step-text"><strong>Setup, Escalation, Resolution</strong> — Copy each section into HeyGen separately. Download each avatar video. In CapCut, shrink avatar to bottom-right corner, fill main screen with B-roll footage from Pexels using the keywords shown.</div></div>
+      <div class="help-step"><div class="help-step-num">4</div><div class="help-step-text"><strong>Text overlays</strong> — In the Escalation section, add CapCut text overlays at the [TEXT:] cue points marked in the script. Bold, high-contrast font. 2–3 seconds duration each.</div></div>
+      <div class="help-step"><div class="help-step-num">5</div><div class="help-step-text"><strong>CTA</strong> — Copy CTA script into HeyGen. Avatar back to full screen. Keep energy warm and direct.</div></div>
+      <div class="help-step"><div class="help-step-num">6</div><div class="help-step-text"><strong>Suno music</strong> — Generate a background track in Suno using the mood description from each section. Layer it in CapCut at 15–20% volume under all narration.</div></div>
+      <div class="help-step"><div class="help-step-num">7</div><div class="help-step-text"><strong>Thumbnail</strong> — Generate background image in Gemini using the Gemini Image Prompt. Add the Thumbnail Text on top in CapCut or Canva. Check for AI text rendering errors.</div></div>
+      <div class="help-step"><div class="help-step-num">8</div><div class="help-step-text"><strong>Upload</strong> — Use the YouTube Title, Description and Tags directly from the tool. No editing needed. Change Status in Sheet to "Uploaded" after publishing.</div></div>
+    </div>
+
+    <div class="help-section">
+      <h2>Google Spreadsheet Column Reference</h2>
+      <p>When you click Save to Sheet, the tool creates 3 tabs automatically — <strong>FinanceHorror</strong>, <strong>LegalHorror</strong>, and <strong>DramaHorror</strong> — one per niche. Each tab has the same column structure. The correct tab is selected automatically based on your niche selection when you generate.</p>
+      <table class="help-table">
+        <thead><tr><th>Column</th><th>What it contains &amp; how to use it</th></tr></thead>
+        <tbody>
+          <tr><td>Episode#</td><td>Auto-generated timestamp number. Unique ID per script. Use this to track which video is which when you have many rows.</td></tr>
+          <tr><td>Timestamp</td><td>Date and time the script was generated. Useful for tracking your production pace and keeping episodes in chronological order.</td></tr>
+          <tr><td>Niche</td><td>Finance, Legal, or Drama. Filter this column to see only scripts of one type when planning your upload schedule.</td></tr>
+          <tr><td>Story Idea</td><td>The raw idea you entered. Keep this as your master story reference to avoid repeating the same story across future episodes.</td></tr>
+          <tr><td>YouTube Title</td><td>Copy this directly into YouTube when uploading. Already SEO-optimized and under 70 characters. Do not shorten it further.</td></tr>
+          <tr><td>Hook Script</td><td>Word-for-word script for your HeyGen avatar — the opening 30 seconds. Paste directly into HeyGen text input. Avatar should be full screen for this section.</td></tr>
+          <tr><td>Setup Script</td><td>Script for 0:30–2:00. Introduces the characters and situation. Avatar goes to corner. B-roll plays in background. Use B-Roll Setup column for footage keywords.</td></tr>
+          <tr><td>Escalation Script</td><td>The main story body (2:00–8:00). Longest section. Contains [B-ROLL:] and [TEXT:] inline cues. Follow these exactly in CapCut for maximum dramatic effect.</td></tr>
+          <tr><td>Resolution Script</td><td>What happened in the end (8:00–9:00). Legal outcome, financial outcome, justice or injustice. Keep avatar in corner with B-roll.</td></tr>
+          <tr><td>CTA Script</td><td>Lesson and call to action (9:00–10:00). Avatar returns full screen. Do not cut this short — the subscribe ask at the end is important for channel growth.</td></tr>
+          <tr><td>B-Roll Setup</td><td>Comma-separated keywords for sourcing stock footage on Pexels or Pixabay for the Setup section. Search each keyword and pick the most dramatic clip.</td></tr>
+          <tr><td>B-Roll Escalation</td><td>Keywords for the Escalation section B-roll. More keywords here because it is the longest section. Match the clip emotionally to the script moment it covers.</td></tr>
+          <tr><td>Thumbnail Text</td><td>The 4–7 word text overlay for your thumbnail. All caps. Add this in CapCut or Canva on top of your Gemini-generated background image.</td></tr>
+          <tr><td>Thumbnail Gemini Prompt</td><td>Paste this into Gemini Image Generate to create the thumbnail background. Do not include this text in the image — it is background only. Add text separately.</td></tr>
+          <tr><td>Avatar Expression</td><td>Suggested expression for your HeyGen talking photo thumbnail screenshot. Screenshot your avatar mid-script at the right expression, crop, use as thumbnail base.</td></tr>
+          <tr><td>YouTube Description</td><td>Full video description. Paste directly into YouTube description field. Already includes hashtags. You can add your channel links at the bottom.</td></tr>
+          <tr><td>YouTube Tags</td><td>15 comma-separated tags. Copy and paste into YouTube tags field during upload. Helps YouTube understand your content category.</td></tr>
+          <tr><td>Suno Hook Mood</td><td>Music mood description for the Hook section. Use this as your Suno prompt to generate the opening background music. Keep it tense and dramatic.</td></tr>
+          <tr><td>Suno Escalation Mood</td><td>Music mood for the Escalation section. Usually more intense than the hook mood. Generate a separate Suno track for this section for variety.</td></tr>
+          <tr><td>Status</td><td>Defaults to Draft. Manually update this to: In Production (when you start editing), Ready (when video is done), Uploaded (after publishing to YouTube). Use this to track your pipeline.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="help-section">
+      <h2>B-Roll Tips</h2>
+      <div class="help-tip">Search B-roll keywords on <strong>Pexels.com</strong> or <strong>Pixabay.com</strong> — both are completely free with commercial use license. Download the highest resolution available. In CapCut, layer B-roll below the avatar video. Set avatar video to picture-in-picture, resize to about 25% of screen, anchor to bottom-right corner.</div>
+    </div>
+
+    <div class="help-section">
+      <h2>HeyGen Tips</h2>
+      <div class="help-tip">For best results use a <strong>talking photo</strong> — upload a royalty-free Filipino woman photo from Pexels. Search "Filipino woman professional" or "Asian woman teacher." Photo must be front-facing, clear face, neutral background. Use 16:9 aspect ratio for YouTube. Generate each section separately — Hook, Setup, Escalation, Resolution, CTA as 5 separate HeyGen videos.</div>
+    </div>
+
+    <div class="help-section">
+      <h2>Suno Tips</h2>
+      <div class="help-tip">In Suno, use <strong>Instrumental</strong> mode only — no lyrics. Use the Suno mood descriptions from the sheet as your style prompt. Generate 2–3 variations and pick the best. In CapCut, set music track volume to 15–20% so it never competes with the avatar narration. Fade out at the end of the CTA section.</div>
+    </div>
+
+  </div><!-- /panel-help -->
+
 </div><!-- /container -->
 
 <script>
+// ── LOAD APPS SCRIPT URL FROM RAILWAY ────────────────────────────────────
+window._horrorScriptUrl = '';
+(function loadConfig() {
+  fetch('/api/config')
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      var url = d.APPS_SCRIPT_HORROR_STORY || d.apps_script_horror_story || '';
+      window._horrorScriptUrl = url;
+      var el = document.getElementById('scriptUrlStatus');
+      if (url) {
+        el.textContent = '✅ Apps Script URL loaded from Railway.';
+        el.className = 'status-bar ok';
+      } else {
+        el.textContent = '⚠️ APPS_SCRIPT_HORROR_STORY not set in Railway variables.';
+        el.className = 'status-bar err';
+      }
+    })
+    .catch(function(){
+      var el = document.getElementById('scriptUrlStatus');
+      el.textContent = '⚠️ Could not load config from Railway.';
+      el.className = 'status-bar err';
+    });
+})();
+
+// ── TAB SWITCHING ─────────────────────────────────────────────────────────
+function switchTab(tab) {
+  ['studio','help'].forEach(function(t){
+    document.getElementById('panel-'+t).classList.toggle('active', t===tab);
+    document.getElementById('tab-'+t).classList.toggle('active', t===tab);
+  });
+}
+
 // ── STATE ─────────────────────────────────────────────────────────────────
 var currentNiche = 'finance';
 var currentData  = null;
@@ -462,10 +597,6 @@ function renderOutput(d) {
   document.getElementById('out-yt-title').textContent = d.youtube.title || '';
   document.getElementById('out-yt-desc').textContent  = d.youtube.description || '';
   document.getElementById('out-yt-tags').textContent  = d.youtube.tags || '';
-
-  // Save apps script URL if stored
-  var saved = localStorage.getItem('hss_apps_script_url');
-  if (saved) document.getElementById('appsScriptUrl').value = saved;
 }
 
 function renderCues(elId, brollKeywords, musicMood, timestamps) {
@@ -512,10 +643,8 @@ function copySection(section) {
 // ── SAVE TO SHEETS ────────────────────────────────────────────────────────
 async function saveToSheets() {
   if (!currentData) { showStatus('saveStatus','No script generated yet.','err'); return; }
-  var url = document.getElementById('appsScriptUrl').value.trim();
-  if (!url) { showStatus('saveStatus','Please enter your Apps Script URL.','err'); return; }
-
-  localStorage.setItem('hss_apps_script_url', url);
+  var url = window._horrorScriptUrl || '';
+  if (!url) { showStatus('saveStatus','Apps Script URL not loaded from Railway. Check APPS_SCRIPT_HORROR_STORY variable.','err'); return; }
 
   var btn = document.getElementById('saveBtn');
   btn.disabled = true;
@@ -523,8 +652,9 @@ async function saveToSheets() {
   showStatus('saveStatus','Saving to Google Sheets...','info');
 
   var d = currentData;
+  var sheetNames = { finance:'FinanceHorror', legal:'LegalHorror', drama:'DramaHorror' };
   var payload = {
-    sheet:          'HorrorStoryStudio',
+    sheet:          sheetNames[currentNiche] || 'HorrorStoryStudio',
     episode_number: Date.now(),
     niche:          currentNiche,
     story_idea:     document.getElementById('storyIdea').value.trim(),
@@ -554,7 +684,7 @@ async function saveToSheets() {
       headers: {'Content-Type':'application/json'},
       body:    JSON.stringify(payload)
     });
-    showStatus('saveStatus','Saved to Google Sheets! Check HorrorStoryStudio tab.','ok');
+    showStatus('saveStatus','Saved to Google Sheets! Check ' + (sheetNames[currentNiche] || 'HorrorStoryStudio') + ' tab.','ok');
   } catch(e) {
     showStatus('saveStatus','Error saving: '+e.message,'err');
   } finally {

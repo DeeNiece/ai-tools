@@ -6,8 +6,7 @@
 <title>AI StoryTelling Studio</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#faf8f5;--surface:#fff;--border:#e2dbcf;--gold:#b57c1c;--text:#2c2824;--muted:#6b6258;--green:#4c8b6e;--red:#c95a4a;--accent:#c84b31;}
-body.dark{--bg:#121212;--surface:#1e1e1e;--border:#3a3a3a;--gold:#d4a853;--text:#e8e4dc;--muted:#a8a29e;--green:#7ab896;--red:#d47a6a;--accent:#e06b52;}
+:root{--bg:#0f0f13;--surface:#17171f;--border:#2a2a3a;--gold:#d4a853;--text:#ffffff;--muted:#c0c0d8;--green:#3ecf6e;--red:#e84040;--accent:#c84b31;}
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);padding:20px 18px 80px;}
 .wrap{max-width:960px;margin:0 auto;}
@@ -111,44 +110,54 @@ tr:nth-child(even) td{background:var(--bg);}
   <h1>AI StoryTelling <span>Studio</span></h1>
   <div class="hdr-btns">
     <a href="https://docs.google.com/spreadsheets/d/1Yxs9EjJq8336iTsPFJ_n3WUhtTUxOhwAUAQIyiEKF2g/edit" target="_blank" class="btn g">↗ Google Sheet</a>
-    <button class="btn" id="themeBtn">🌙 Dark</button>
   </div>
 </div>
+
+<!-- TAB NAV -->
+<div style="display:flex;gap:6px;margin-bottom:18px;border-bottom:1px solid var(--border);padding-bottom:0;">
+  <button class="btn" id="tabStudio" onclick="switchMainTab('studio')" style="border-radius:10px 10px 0 0;border-bottom-color:var(--surface);background:var(--surface);color:var(--gold);font-weight:600;margin-bottom:-1px;">🎬 Studio</button>
+  <button class="btn" id="tabHelp" onclick="switchMainTab('help')" style="border-radius:10px 10px 0 0;margin-bottom:-1px;">📖 Help & Guide</button>
+</div>
+
+<div id="panelStudio">
 
 <!-- GOOGLE SHEETS -->
 <div class="card">
   <div class="card-title">📎 Google Sheets</div>
-  <div class="row">
-    <input type="url" id="gasUrl" placeholder="https://script.google.com/macros/s/.../exec">
-    <button class="btn g" id="saveUrlBtn">💾 Save</button>
-    <button class="btn" id="testSheetBtn">🔌 Test</button>
-    <button class="btn g" id="openSheetBtn">🌐 Open</button>
-    <button class="btn r" id="delUrlBtn">🗑️</button>
-  </div>
-  <div id="urlSt" class="key-st"></div>
+  <div id="urlSt" style="font-size:12px;padding:8px 12px;border-radius:8px;background:rgba(79,142,247,0.1);color:#4f8ef7;border:1px solid rgba(79,142,247,0.2);margin-bottom:10px;">Loading Apps Script URL from Railway...</div>
   <div id="sheetTestRes" class="smsg"></div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+    <button class="btn" id="testSheetBtn">🔌 Test</button>
+    <button class="btn g" id="openSheetBtn">🌐 Open Sheet</button>
+  </div>
   <details style="margin-top:10px;">
     <summary style="cursor:pointer;font-size:12px;color:var(--gold);font-weight:600;">📋 Apps Script Setup — click to expand</summary>
     <div style="margin-top:9px;">
-      <p class="hint" style="margin-bottom:7px;"><strong>One-time setup:</strong> Open your <a href="https://docs.google.com/spreadsheets/d/1Yxs9EjJq8336iTsPFJ_n3WUhtTUxOhwAUAQIyiEKF2g/edit" target="_blank">AI StoryTelling Sheet</a> → Extensions → Apps Script → paste code → Save → Deploy → New deployment → Web App → Execute as Me → Anyone → Copy URL above.</p>
+      <p class="hint" style="margin-bottom:7px;"><strong>One-time setup:</strong> Open your Google Sheet → Extensions → Apps Script → paste code → Save → Deploy → New deployment → Web App → Execute as Me → Anyone → Copy URL → add as <strong>APPS_SCRIPT_STORYTELLING</strong> in Railway.</p>
       <div style="position:relative;">
         <button class="btn" id="copyGasBtn" style="position:absolute;top:6px;right:6px;z-index:2;">📄 Copy</button>
-        <div class="code-blk" id="gasCode">function doPost(e) {
+        <div class="code-blk" id="gasCode">function getOrCreateSheet(ss, sheetName) {
+  var sheet = ss.getSheetByName(sheetName);
+  if (!sheet) {
+    sheet = ss.insertSheet(sheetName);
+    var headers = ["Timestamp","Genre","Tone","Duration","Seed","Ending","Hook",
+      "Full_Script","Thumbnail_Text","Platforms",
+      "Facebook_Post","Instagram_Post","TikTok_Post",
+      "YouTube_Title","YouTube_Description","YouTube_Tags"];
+    sheet.getRange(1,1,1,headers.length).setValues([headers]);
+    sheet.setFrozenRows(1);
+  }
+  return sheet;
+}
+
+function doPost(e) {
   try {
     var data = e.parameter;
     var ss = SpreadsheetApp.getActiveSpreadsheet();
-    var sheetName = data.sheet_name || "Sheet1";
-    var sheet = ss.getSheetByName(sheetName);
-    if (!sheet) {
-      sheet = ss.insertSheet(sheetName);
-      var headers = ["Timestamp","Genre","Tone","Duration","Seed","Ending","Hook",
-        "Full_Script","Thumbnail_Text","Platforms",
-        "Facebook_Post","Instagram_Post","TikTok_Post",
-        "YouTube_Title","YouTube_Description","YouTube_Tags"];
-      sheet.getRange(1,1,1,headers.length).setValues([headers]);
-    }
+    var sheetName = data.sheet_name || "StoryTelling";
+    var sheet = getOrCreateSheet(ss, sheetName);
     var row = [
-      data.Timestamp||"", data.Genre||"", data.Tone||"",
+      data.Timestamp||new Date().toLocaleString(), data.Genre||"", data.Tone||"",
       data.Duration||"", data.Seed||"", data.Ending||"", data.Hook||"",
       data.Full_Script||"", data.Thumbnail_Text||"", data.Platforms||"",
       data.Facebook_Post||"", data.Instagram_Post||"", data.TikTok_Post||"",
@@ -160,44 +169,19 @@ tr:nth-child(even) td{background:var(--bg);}
     return ContentService.createTextOutput(JSON.stringify({result:"error",error:err.toString()})).setMimeType(ContentService.MimeType.JSON);
   }
 }
+
 function doGet() {
-  return ContentService.createTextOutput("AI StoryTelling Studio connected!").setMimeType(ContentService.MimeType.TEXT);
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = getOrCreateSheet(ss, "StoryTelling");
+  sheet.appendRow([new Date().toLocaleString(),"TEST","TEST","TEST","","","Test run from editor","Test script","Test thumbnail","All","","","","Test Title","Test Description","test,tags"]);
+  return ContentService.createTextOutput("AI StoryTelling Studio connected! Test row written.").setMimeType(ContentService.MimeType.TEXT);
 }</div>
       </div>
     </div>
   </details>
 </div>
 
-<!-- AI ENGINE -->
-<div class="card">
-  <div class="card-title">🧠 AI Engine</div>
-  <div class="prov-grp" id="provGrp">
-    <div class="prov" data-p="anthropic">Claude (Anthropic)</div>
-    <div class="prov" data-p="deepseek">DeepSeek</div>
-    <div class="prov" data-p="gemini">Gemini</div>
-    <div class="prov" data-p="openai">OpenAI</div>
-    <div class="prov" data-p="custom">Custom</div>
-  </div>
-  <div style="display:flex;gap:8px;align-items:center;margin-bottom:11px;flex-wrap:wrap;">
-    <label class="lbl" style="margin:0;white-space:nowrap;">Model:</label>
-    <select id="modelSel" style="flex:1;min-width:180px;margin-bottom:0;"></select>
-  </div>
-  <div class="row">
-    <input type="password" id="apiKey" placeholder="Paste API key here">
-    <button class="btn g" id="saveKeyBtn">💾 Save</button>
-    <button class="btn r" id="delKeyBtn">🗑️ Delete</button>
-    <button class="btn" id="healthBtn">🔍 Health Check</button>
-  </div>
-  <div id="epGroup" style="display:none;"><input type="text" id="customEp" placeholder="Custom endpoint URL" style="margin-bottom:0;"></div>
-  <div id="keySt" class="key-st"></div>
-  <div id="testRes" class="smsg"></div>
-  <div class="hint" style="margin-top:9px;">
-    Get keys: Claude → <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a> &nbsp;|&nbsp;
-    DeepSeek → <a href="https://platform.deepseek.com" target="_blank">platform.deepseek.com</a> (cheap) &nbsp;|&nbsp;
-    Gemini → <a href="https://aistudio.google.com/app/apikey" target="_blank">aistudio.google.com</a> (free!) &nbsp;|&nbsp;
-    OpenAI → <a href="https://platform.openai.com/api-keys" target="_blank">platform.openai.com</a>
-  </div>
-</div>
+<!-- AI ENGINE — handled by Railway proxy via AS bar -->
 
 <!-- STORY SETUP -->
 <div class="card">
@@ -314,6 +298,75 @@ function doGet() {
 
 </div>
 
+</div><!-- /panelStudio -->
+
+<!-- HELP TAB -->
+<div id="panelHelp" style="display:none;">
+  <div style="max-width:860px;">
+
+    <div style="margin-bottom:24px;">
+      <h2 style="font-size:16px;font-weight:700;color:#ffffff;margin-bottom:6px;">How to Use AI StoryTelling Studio</h2>
+      <p style="font-size:13px;color:#c0c0d8;line-height:1.7;">This tool generates multi-episode story series for short-form video platforms. It uses a two-phase approach: first building a Story Bible, then generating each episode script sequentially with continuity. All output saves to your Google Sheet automatically.</p>
+    </div>
+
+    <div style="margin-bottom:24px;">
+      <h2 style="font-size:15px;font-weight:700;color:#ffffff;margin-bottom:10px;">Step-by-Step Workflow</h2>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;gap:12px;align-items:flex-start;"><div style="width:24px;height:24px;border-radius:50%;background:rgba(212,168,83,0.15);color:#d4a853;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;">1</div><div style="font-size:13px;color:#c0c0d8;line-height:1.6;"><strong style="color:#ffffff;">Set up Google Sheets</strong> — Apps Script URL loads automatically from Railway. Expand the Apps Script Setup section to copy and deploy the code if not done yet.</div></div>
+        <div style="display:flex;gap:12px;align-items:flex-start;"><div style="width:24px;height:24px;border-radius:50%;background:rgba(212,168,83,0.15);color:#d4a853;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;">2</div><div style="font-size:13px;color:#c0c0d8;line-height:1.6;"><strong style="color:#ffffff;">Choose your story settings</strong> — Genre, Tone, Video Length, number of Episodes, and optionally a Story Seed and Ending Direction for narrative control.</div></div>
+        <div style="display:flex;gap:12px;align-items:flex-start;"><div style="width:24px;height:24px;border-radius:50%;background:rgba(212,168,83,0.15);color:#d4a853;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;">3</div><div style="font-size:13px;color:#c0c0d8;line-height:1.6;"><strong style="color:#ffffff;">Select target platforms</strong> — TikTok, YouTube Shorts, Instagram Reels, or Facebook. Social posts will be tailored per platform.</div></div>
+        <div style="display:flex;gap:12px;align-items:flex-start;"><div style="width:24px;height:24px;border-radius:50%;background:rgba(212,168,83,0.15);color:#d4a853;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;">4</div><div style="font-size:13px;color:#c0c0d8;line-height:1.6;"><strong style="color:#ffffff;">Click Generate</strong> — AI builds the Story Bible first, then each episode sequentially. Progress bar shows each step.</div></div>
+        <div style="display:flex;gap:12px;align-items:flex-start;"><div style="width:24px;height:24px;border-radius:50%;background:rgba(212,168,83,0.15);color:#d4a853;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;">5</div><div style="font-size:13px;color:#c0c0d8;line-height:1.6;"><strong style="color:#ffffff;">Copy each episode script</strong> into HeyGen as a separate talking photo video. Each episode is self-contained but references the previous cliffhanger.</div></div>
+        <div style="display:flex;gap:12px;align-items:flex-start;"><div style="width:24px;height:24px;border-radius:50%;background:rgba(212,168,83,0.15);color:#d4a853;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;">6</div><div style="font-size:13px;color:#c0c0d8;line-height:1.6;"><strong style="color:#ffffff;">Push to Google Sheets</strong> — click Push to Google Sheets in the Spreadsheet Preview section. Each episode saves as one row.</div></div>
+      </div>
+    </div>
+
+    <div style="margin-bottom:24px;">
+      <h2 style="font-size:15px;font-weight:700;color:#ffffff;margin-bottom:10px;">Google Sheet Column Reference</h2>
+      <p style="font-size:13px;color:#c0c0d8;margin-bottom:12px;">Each episode saves as one row. The sheet tab name is set automatically to the genre (e.g. <strong>urban legend</strong>, <strong>horror</strong>). If the tab exists it appends.</p>
+      <table style="width:100%;border-collapse:collapse;font-size:13px;">
+        <thead><tr>
+          <th style="background:#1e1e28;color:#a0a0c0;font-size:11px;font-weight:600;text-transform:uppercase;padding:8px 12px;text-align:left;border-bottom:1px solid #2a2a3a;">Column</th>
+          <th style="background:#1e1e28;color:#a0a0c0;font-size:11px;font-weight:600;text-transform:uppercase;padding:8px 12px;text-align:left;border-bottom:1px solid #2a2a3a;">What it contains &amp; how to use it</th>
+        </tr></thead>
+        <tbody>
+          <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap;">Timestamp</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff;">When this episode was generated.</td></tr>
+          <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap;">Genre</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff;">Story genre selected. Also used as the sheet tab name.</td></tr>
+          <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap;">Tone</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff;">Narrative tone (suspenseful, dark, heartwarming, etc.).</td></tr>
+          <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap;">Duration</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff;">Target video length. Use this to select the right HeyGen duration.</td></tr>
+          <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap;">Seed</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff;">The original story seed you entered. Useful for recreating a series later.</td></tr>
+          <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap;">Ending</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff;">The ending direction you specified. Reference this to maintain series consistency.</td></tr>
+          <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap;">Hook</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff;">The opening hook line for this episode. The first 3–5 seconds that stop viewers from scrolling. Use as your video title card text or opening overlay.</td></tr>
+          <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap;">Full_Script</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff;">Complete word-for-word avatar narration script. Paste directly into HeyGen. Includes [[expression]] tags if enabled.</td></tr>
+          <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap;">Thumbnail_Text</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff;">Shocking 4–7 word text for the video thumbnail. Add in CapCut or Canva on top of a Gemini-generated background.</td></tr>
+          <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap;">Platforms</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff;">Which platforms were selected when generating. Reference for where to post this episode.</td></tr>
+          <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap;">Facebook_Post</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff;">Ready-to-post Facebook caption. Copy and post directly.</td></tr>
+          <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap;">Instagram_Post</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff;">Instagram caption with relevant hashtags.</td></tr>
+          <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap;">TikTok_Post</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff;">Short punchy TikTok caption with trending hashtags.</td></tr>
+          <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap;">YouTube_Title</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff;">SEO-optimized episode title. Copy directly to YouTube upload field.</td></tr>
+          <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap;">YouTube_Description</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff;">Full YouTube description with episode context and series teaser. Paste directly to YouTube.</td></tr>
+          <tr><td style="padding:9px 12px;color:#d4a853;font-weight:600;white-space:nowrap;">YouTube_Tags</td><td style="padding:9px 12px;color:#ffffff;">Comma-separated tags. Paste into YouTube tags field during upload.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="margin-bottom:24px;">
+      <h2 style="font-size:15px;font-weight:700;color:#ffffff;margin-bottom:10px;">HeyGen Tips for Series Content</h2>
+      <div style="background:#17171f;border:1px solid #2a2a3a;border-left:3px solid #d4a853;border-radius:8px;padding:12px 16px;font-size:13px;color:#c0c0d8;line-height:1.7;">
+        Use the same avatar and voice across all episodes for brand consistency. Each episode ends with a cliffhanger — use the Hook from the next episode as a teaser at the end of the current video. Upload episodes as a playlist on YouTube for maximum watch time. On TikTok, post episodes daily at the same time to build anticipation.
+      </div>
+    </div>
+
+    <div style="margin-bottom:24px;">
+      <h2 style="font-size:15px;font-weight:700;color:#ffffff;margin-bottom:10px;">Railway Setup</h2>
+      <div style="background:#17171f;border:1px solid #2a2a3a;border-left:3px solid #4f8ef7;border-radius:8px;padding:12px 16px;font-size:13px;color:#c0c0d8;line-height:1.7;">
+        Add <strong style="color:#4f8ef7;">APPS_SCRIPT_STORYTELLING</strong> in Railway Variables with your deployed Apps Script URL. AI provider keys (DEEPSEEK_API_KEY, GEMINI_API_KEY, PERPLEXITY_API_KEY) are already in Railway — select provider from the AS bar at the top.
+      </div>
+    </div>
+
+  </div>
+</div><!-- /panelHelp -->
+
 </div><!-- /wrap -->
 
 <div class="sbar">
@@ -326,6 +379,16 @@ function doGet() {
 <div class="toast" id="toast"></div>
 
 <script>
+// ── TAB SWITCHER ──────────────────────────────────────────
+function switchMainTab(tab) {
+  document.getElementById('panelStudio').style.display = tab === 'studio' ? 'block' : 'none';
+  document.getElementById('panelHelp').style.display   = tab === 'help'   ? 'block' : 'none';
+  document.getElementById('tabStudio').style.color     = tab === 'studio' ? 'var(--gold)' : 'var(--muted)';
+  document.getElementById('tabHelp').style.color       = tab === 'help'   ? 'var(--gold)' : 'var(--muted)';
+  document.getElementById('tabStudio').style.fontWeight= tab === 'studio' ? '600' : '400';
+  document.getElementById('tabHelp').style.fontWeight  = tab === 'help'   ? '600' : '400';
+}
+
 // ── MODELS ────────────────────────────────────────────────
 var MODELS = {
   anthropic:[
@@ -359,121 +422,51 @@ var totalSaved      = 0;
 var apiHealthy      = false;
 
 // ── INIT ──────────────────────────────────────────────────
+window._storytellingScriptUrl = '';
 window.addEventListener('load', function() {
-  if (localStorage.getItem('darkMode') === 'true') document.body.classList.add('dark');
-  document.getElementById('themeBtn').textContent = document.body.classList.contains('dark') ? '☀️ Light' : '🌙 Dark';
-  var savedUrl = localStorage.getItem('storytelling_google_url') || localStorage.getItem('archprompt_google_url');
-  if (savedUrl) { document.getElementById('gasUrl').value = savedUrl; document.getElementById('urlSt').textContent = '✅ URL saved'; }
-  var savedEp = localStorage.getItem('archprompt_custom_endpoint');
-  if (savedEp) document.getElementById('customEp').value = savedEp;
-  setProvider(currentProvider);
-  updateKeyUI();
+  // Force dark mode
+  document.body.classList.add('dark');
+  // Load Apps Script URL from Railway
+  fetch('/api/config')
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      var url = d.APPS_SCRIPT_STORYTELLING || '';
+      window._storytellingScriptUrl = url;
+      var el = document.getElementById('urlSt');
+      if (url) {
+        el.textContent = '✅ Apps Script URL loaded from Railway.';
+        el.style.background = 'rgba(62,207,110,0.1)';
+        el.style.color = '#3ecf6e';
+        el.style.borderColor = 'rgba(62,207,110,0.2)';
+      } else {
+        el.textContent = '⚠️ APPS_SCRIPT_STORYTELLING not set in Railway variables.';
+        el.style.background = 'rgba(232,64,64,0.1)';
+        el.style.color = '#e84040';
+        el.style.borderColor = 'rgba(232,64,64,0.2)';
+      }
+    })
+    .catch(function(){
+      document.getElementById('urlSt').textContent = '⚠️ Could not load config from Railway.';
+    });
   document.querySelectorAll('.pill').forEach(function(p) {
     p.addEventListener('click', function() { p.classList.toggle('on'); updateSBar(); });
   });
   updateSBar();
 });
 
-// ── THEME ─────────────────────────────────────────────────
-document.getElementById('themeBtn').addEventListener('click', function() {
-  document.body.classList.toggle('dark');
-  localStorage.setItem('darkMode', document.body.classList.contains('dark'));
-  document.getElementById('themeBtn').textContent = document.body.classList.contains('dark') ? '☀️ Light' : '🌙 Dark';
-});
-
-// ── PROVIDER ──────────────────────────────────────────────
-function setProvider(p) {
-  currentProvider = p;
-  document.querySelectorAll('.prov').forEach(function(b) { b.classList.toggle('sel', b.dataset.p === p); });
-  document.getElementById('epGroup').style.display = p === 'custom' ? 'block' : 'none';
-  localStorage.setItem('storytelling_provider', p);
-  var sel = document.getElementById('modelSel');
-  sel.innerHTML = '';
-  (MODELS[p] || MODELS.custom).forEach(function(m) {
-    var o = document.createElement('option'); o.value = m.id; o.textContent = m.label; sel.appendChild(o);
-  });
-  var saved = localStorage.getItem('storytelling_model_' + p);
-  if (saved) sel.value = saved;
-  document.getElementById('stProv').textContent = p.charAt(0).toUpperCase() + p.slice(1);
-  apiHealthy = false; updateKeyUI();
-}
-document.querySelectorAll('.prov').forEach(function(b) { b.addEventListener('click', function() { setProvider(b.dataset.p); }); });
-document.getElementById('modelSel').addEventListener('change', function(e) { localStorage.setItem('storytelling_model_' + currentProvider, e.target.value); });
-
-// ── API KEY ───────────────────────────────────────────────
-function getKey() {
-  return localStorage.getItem('storytelling_key_' + currentProvider) || localStorage.getItem('archprompt_apikey') || '__proxy__';
-}
-function updateKeyUI() {
-  var k = getKey();
-  document.getElementById('keySt').textContent = k ? ('🔑 Key: ' + k.substring(0, 10) + '... ' + (apiHealthy ? '✅ Verified' : '⚠️ Not verified')) : '🔑 No API key saved for ' + currentProvider;
-}
-document.getElementById('saveKeyBtn').addEventListener('click', function() {
-  var k = document.getElementById('apiKey').value.trim();
-  // API key via Railway proxy — skipping local key check
-  localStorage.setItem('storytelling_key_' + currentProvider, k);
-  localStorage.setItem('archprompt_apikey', k);
-  if (currentProvider === 'custom') {
-    var ep = document.getElementById('customEp').value.trim();
-    if (ep) localStorage.setItem('archprompt_custom_endpoint', ep);
-  }
-  apiHealthy = false; updateKeyUI();
-  document.getElementById('apiKey').value = '';
-  showToast('✅ API key saved!');
-});
-document.getElementById('delKeyBtn').addEventListener('click', function() {
-  if (!confirm('Delete saved API key?')) return;
-  localStorage.removeItem('storytelling_key_' + currentProvider);
-  apiHealthy = false; updateKeyUI(); showToast('🗑️ Key deleted');
-});
-document.getElementById('healthBtn').addEventListener('click', healthCheck);
-
-async function healthCheck() {
-  var k = getKey(); if (!k) { showTestRes('No API key saved', true); return false; }
-  try {
-    var ok = false;
-    var model = document.getElementById('modelSel').value;
-    if (currentProvider === 'anthropic') {
-      var r = await fetch('https://api.anthropic.com/v1/messages', {method:'POST',headers:{'x-api-key':k,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true','Content-Type':'application/json'},body:JSON.stringify({model:model,max_tokens:1,messages:[{role:'user',content:'hi'}]})});
-      ok = r.status === 200 || r.status === 400;
-    } else if (currentProvider === 'deepseek') {
-      var r = await fetch('https://api.deepseek.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+k},body:JSON.stringify({model:model,messages:[{role:'user',content:'hi'}],max_tokens:1})});
-      ok = r.ok;
-    } else if (currentProvider === 'gemini') {
-      var r = await fetch('https://generativelanguage.googleapis.com/v1beta/models/'+model+':generateContent?key='+k,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:'hi'}]}],generationConfig:{maxOutputTokens:1}})});
-      ok = r.ok || r.status === 400;
-    } else if (currentProvider === 'openai') {
-      var r = await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+k},body:JSON.stringify({model:model,messages:[{role:'user',content:'hi'}],max_tokens:1})});
-      ok = r.ok || r.status === 400;
-    } else {
-      var ep = document.getElementById('customEp').value.trim() || localStorage.getItem('archprompt_custom_endpoint') || '';
-      var r = await fetch(ep,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+k},body:JSON.stringify({model:model,max_tokens:1,messages:[{role:'user',content:'hi'}]})});
-      ok = r.ok;
-    }
-    apiHealthy = ok; updateKeyUI(); showTestRes(ok ? '✅ API key is valid!' : '❌ Invalid key — re-save', !ok); return ok;
-  } catch(e) { showTestRes('❌ Error: ' + e.message, true); return false; }
-}
-function showTestRes(msg, isErr) {
-  var el = document.getElementById('testRes');
-  el.style.display = 'block'; el.className = 'smsg ' + (isErr ? 'err' : 'ok'); el.innerHTML = msg;
-  setTimeout(function() { el.style.display = 'none'; }, 5000);
-}
+// ── API — all handled by AS proxy ─────────────────────────
+function getKey() { return '__proxy__'; }
+function updateKeyUI() {}
+function healthCheck() { showToast('Health check handled by Railway proxy.'); }
+function showTestRes(msg, isErr) {}
 
 // ── GOOGLE SHEETS ─────────────────────────────────────────
-document.getElementById('saveUrlBtn').addEventListener('click', function() {
-  var url = document.getElementById('gasUrl').value.trim(); if (!url) return alert('Enter URL');
-  localStorage.setItem('storytelling_google_url', url); localStorage.setItem('archprompt_google_url', url);
-  document.getElementById('urlSt').textContent = '✅ URL saved'; showToast('✅ URL saved!');
-});
-document.getElementById('delUrlBtn').addEventListener('click', function() {
-  localStorage.removeItem('storytelling_google_url');
-  document.getElementById('gasUrl').value = ''; document.getElementById('urlSt').textContent = 'No URL saved';
-});
 document.getElementById('openSheetBtn').addEventListener('click', function() {
-  var url = document.getElementById('gasUrl').value.trim(); if (url) window.open(url, '_blank'); else alert('No URL saved');
+  if (window._storytellingScriptUrl) window.open(window._storytellingScriptUrl, '_blank');
+  else alert('APPS_SCRIPT_STORYTELLING not loaded from Railway');
 });
 document.getElementById('testSheetBtn').addEventListener('click', async function() {
-  var url = document.getElementById('gasUrl').value.trim(); if (!url) { alert('Save URL first'); return; }
+  var url = window._storytellingScriptUrl; if (!url) { alert('APPS_SCRIPT_STORYTELLING not loaded from Railway'); return; }
   var res = document.getElementById('sheetTestRes');
   res.style.display = 'block'; res.className = 'smsg'; res.innerHTML = '⏳ Testing...';
   try {
@@ -486,57 +479,26 @@ document.getElementById('copyGasBtn').addEventListener('click', function() {
   navigator.clipboard.writeText(document.getElementById('gasCode').innerText); showToast('✅ Apps Script copied!');
 });
 
-// ── postToSheet — same as AIVideoFactory (iframe, works from local HTML) ──
-function postToSheet(googleUrl, payload) {
-  return new Promise(function(resolve, reject) {
-    var iframeName = 'gas_' + Date.now();
-    var iframe = document.createElement('iframe');
-    iframe.name = iframeName; iframe.style.display = 'none';
-    document.body.appendChild(iframe);
-    var form = document.createElement('form');
-    form.method = 'POST'; form.action = googleUrl; form.target = iframeName; form.style.display = 'none';
-    Object.keys(payload).forEach(function(k) {
-      var inp = document.createElement('input'); inp.type = 'hidden'; inp.name = k;
-      inp.value = payload[k] == null ? '' : String(payload[k]); form.appendChild(inp);
-    });
-    document.body.appendChild(form);
-    var done = false;
-    iframe.onload = function() {
-      if (done) return; done = true;
-      setTimeout(function() {
-        try { document.body.removeChild(form); document.body.removeChild(iframe); } catch(e) {}
-      }, 800);
-      resolve(true);
-    };
-    // Timeout fallback — same as AIVideoFactory
-    setTimeout(function() { if (!done) { done = true; resolve(true); } }, 7000);
-    form.submit();
+// ── postToSheet — fetch with URLSearchParams (same as Video Factory) ──
+async function postToSheet(googleUrl, payload) {
+  const resp = await fetch(googleUrl, {
+    method: 'POST',
+    mode: 'cors',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams(payload)
   });
+  const raw = await resp.text();
+  let json;
+  try { json = JSON.parse(raw); } catch(e) { throw new Error('Sheet error: ' + raw.substring(0, 200)); }
+  if (json.result !== 'success') throw new Error(json.error || 'Sheet write failed');
 }
 
-// ── callAI ────────────────────────────────────────────────
+// ── callAI — delegates to AS proxy ────────────────────────
 async function callAI(prompt, maxTokens) {
-  var k = getKey(); if (!k) throw new Error('No API key saved');
-  var mt = maxTokens || 2000;
-  var model = document.getElementById('modelSel').value;
-  if (currentProvider === 'anthropic') {
-    var r = await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'x-api-key':k,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true','Content-Type':'application/json'},body:JSON.stringify({model:model,max_tokens:mt,messages:[{role:'user',content:prompt}]})});
-    var d = await r.json(); if (!r.ok) throw new Error((d.error && d.error.message) || 'Anthropic error'); return d.content[0].text;
-  } else if (currentProvider === 'deepseek') {
-    var r = await fetch('https://api.deepseek.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+k},body:JSON.stringify({model:model,messages:[{role:'user',content:prompt}],max_tokens:mt})});
-    var d = await r.json(); if (!r.ok) throw new Error((d.error && d.error.message) || 'DeepSeek error'); return d.choices[0].message.content;
-  } else if (currentProvider === 'gemini') {
-    var r = await fetch('https://generativelanguage.googleapis.com/v1beta/models/'+model+':generateContent?key='+k,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{maxOutputTokens:mt}})});
-    var d = await r.json(); if (!r.ok) throw new Error((d.error && d.error.message) || 'Gemini error'); return d.candidates[0].content.parts[0].text;
-  } else if (currentProvider === 'openai') {
-    var r = await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+k},body:JSON.stringify({model:model,messages:[{role:'user',content:prompt}],max_tokens:mt})});
-    var d = await r.json(); if (!r.ok) throw new Error((d.error && d.error.message) || 'OpenAI error'); return d.choices[0].message.content;
-  } else {
-    var ep = document.getElementById('customEp').value.trim() || localStorage.getItem('archprompt_custom_endpoint') || '';
-    if (!ep) throw new Error('Set custom endpoint URL');
-    var r = await fetch(ep,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+k},body:JSON.stringify({model:model,messages:[{role:'user',content:prompt}],max_tokens:mt})});
-    var d = await r.json(); if (!r.ok) throw new Error((d.error && d.error.message) || 'Custom error'); return d.choices[0].message.content;
-  }
+  return await window.AS_callAI(
+    [{role:'user', content: prompt}],
+    maxTokens || 2000
+  );
 }
 
 // simple JSON extractor — same as AIVideoFactory
@@ -559,8 +521,6 @@ function logLine(msg) {
 document.getElementById('genBtn').addEventListener('click', generateAll);
 
 async function generateAll() {
-  if (!getKey()) { setNotice('No API key saved. Add one in the AI Engine section.', 'warn'); return; }
-
   var genre    = document.getElementById('genre').value;
   var tone     = document.getElementById('tone').value;
   var duration = document.getElementById('duration').value;
@@ -570,7 +530,7 @@ async function generateAll() {
   var qty      = Math.min(10, Math.max(1, parseInt(document.getElementById('qty').value) || 3));
   var platforms= getActivePlatforms();
   var useExpr  = document.getElementById('useExpr').checked;
-  var googleUrl= document.getElementById('gasUrl').value.trim();
+  var googleUrl= window._storytellingScriptUrl || '';
 
   lastSettings = {genre:genre,tone:tone,duration:duration,narrator:narrator,platforms:platforms,seed:seed,ending:ending};
 
@@ -749,11 +709,12 @@ async function generateAll() {
       generatedData.push(entry);
 
       // ── WRITE TO SHEET ─────────────────────────────────────────────────────
+      var googleUrl = window._storytellingScriptUrl || '';
       if (googleUrl) {
         logLine('  → saving to Google Sheet...');
         try {
           await postToSheet(googleUrl, {
-            sheet_name:         'Sheet1',
+            sheet_name:         genre,
             Timestamp:          new Date().toLocaleString(),
             Genre:              genre + ' (Ep.' + epNum + '/' + qty + ')',
             Tone:               tone,
@@ -890,8 +851,8 @@ function renderOutput(data) {
 
 // ── PUSH ALL (manual button) ──────────────────────────────
 async function pushAll() {
-  var googleUrl = document.getElementById('gasUrl').value.trim();
-  if (!googleUrl) { showToast('No Google Script URL saved!', '#c95a4a'); return; }
+  var googleUrl = window._storytellingScriptUrl || '';
+  if (!googleUrl) { showToast('APPS_SCRIPT_STORYTELLING not loaded from Railway', '#c95a4a'); return; }
   if (!generatedData.length) return;
   var btn = document.getElementById('sheetBtn');
   btn.textContent = 'Saving...'; btn.disabled = true;
@@ -899,7 +860,7 @@ async function pushAll() {
     var s = generatedData[i];
     try {
       await postToSheet(googleUrl, {
-        sheet_name:'Sheet1', Timestamp:new Date().toLocaleString(),
+        sheet_name: lastSettings.genre || 'StoryTelling', Timestamp:new Date().toLocaleString(),
         Genre:lastSettings.genre||'', Tone:lastSettings.tone||'',
         Duration:lastSettings.duration||'', Seed:lastSettings.seed||'', Ending:lastSettings.ending||'',
         Hook:s.hook||'', Full_Script:s.script||'', Thumbnail_Text:s.thumbnail_text||'',
