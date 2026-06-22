@@ -88,6 +88,7 @@ select{appearance:none;background-image:url("data:image/svg+xml;charset=UTF-8,%3
 table{width:100%;border-collapse:collapse;font-size:11px;}
 th{background:var(--gold);color:#fff;padding:6px 9px;text-align:left;white-space:nowrap;font-size:10px;}
 td{padding:6px 9px;border-bottom:1px solid var(--border);vertical-align:top;color:var(--text);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.help-td{max-width:none;overflow:visible;text-overflow:unset;white-space:normal;}
 tr:nth-child(even) td{background:var(--bg);}
 .act-row{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px;}
 /* code block */
@@ -136,28 +137,23 @@ tr:nth-child(even) td{background:var(--bg);}
       <p class="hint" style="margin-bottom:7px;"><strong>One-time setup:</strong> Open your Google Sheet → Extensions → Apps Script → paste code → Save → Deploy → New deployment → Web App → Execute as Me → Anyone → Copy URL → add as <strong>APPS_SCRIPT_STORYTELLING</strong> in Railway.</p>
       <div style="position:relative;">
         <button class="btn" id="copyGasBtn" style="position:absolute;top:6px;right:6px;z-index:2;">📄 Copy</button>
-        <div class="code-blk" id="gasCode">function getOrCreateSheet(ss, sheetName) {
-  var sheet = ss.getSheetByName(sheetName);
-  if (!sheet) {
-    sheet = ss.insertSheet(sheetName);
-    var headers = ["Timestamp","Genre","Tone","Duration","Seed","Ending","Hook",
-      "Full_Script","Thumbnail_Text","Platforms",
-      "Facebook_Post","Instagram_Post","TikTok_Post",
-      "YouTube_Title","YouTube_Description","YouTube_Tags"];
-    sheet.getRange(1,1,1,headers.length).setValues([headers]);
-    sheet.setFrozenRows(1);
-  }
-  return sheet;
-}
-
-function doPost(e) {
+        <div class="code-blk" id="gasCode">function doPost(e) {
   try {
     var data = e.parameter;
     var ss = SpreadsheetApp.getActiveSpreadsheet();
-    var sheetName = data.sheet_name || "StoryTelling";
-    var sheet = getOrCreateSheet(ss, sheetName);
+    var sheetName = data.sheet_name || "Sheet1";
+    var sheet = ss.getSheetByName(sheetName);
+    if (!sheet) {
+      sheet = ss.insertSheet(sheetName);
+      var headers = ["Timestamp","Genre","Tone","Duration","Seed","Ending","Hook",
+        "Full_Script","Thumbnail_Text","Platforms",
+        "Facebook_Post","Instagram_Post","TikTok_Post",
+        "YouTube_Title","YouTube_Description","YouTube_Tags"];
+      sheet.getRange(1,1,1,headers.length).setValues([headers]);
+      sheet.setFrozenRows(1);
+    }
     var row = [
-      data.Timestamp||new Date().toLocaleString(), data.Genre||"", data.Tone||"",
+      data.Timestamp||"", data.Genre||"", data.Tone||"",
       data.Duration||"", data.Seed||"", data.Ending||"", data.Hook||"",
       data.Full_Script||"", data.Thumbnail_Text||"", data.Platforms||"",
       data.Facebook_Post||"", data.Instagram_Post||"", data.TikTok_Post||"",
@@ -169,12 +165,8 @@ function doPost(e) {
     return ContentService.createTextOutput(JSON.stringify({result:"error",error:err.toString()})).setMimeType(ContentService.MimeType.JSON);
   }
 }
-
 function doGet() {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var sheet = getOrCreateSheet(ss, "StoryTelling");
-  sheet.appendRow([new Date().toLocaleString(),"TEST","TEST","TEST","","","Test run from editor","Test script","Test thumbnail","All","","","","Test Title","Test Description","test,tags"]);
-  return ContentService.createTextOutput("AI StoryTelling Studio connected! Test row written.").setMimeType(ContentService.MimeType.TEXT);
+  return ContentService.createTextOutput("AI StoryTelling Studio connected!").setMimeType(ContentService.MimeType.TEXT);
 }</div>
       </div>
     </div>
@@ -330,22 +322,22 @@ function doGet() {
           <th style="background:#1e1e28;color:#a0a0c0;font-size:11px;font-weight:600;text-transform:uppercase;padding:8px 12px;text-align:left;border-bottom:1px solid #2a2a3a;">What it contains &amp; how to use it</th>
         </tr></thead>
         <tbody>
-          <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap;">Timestamp</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff;">When this episode was generated.</td></tr>
-          <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap;">Genre</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff;">Story genre selected. Also used as the sheet tab name.</td></tr>
-          <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap;">Tone</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff;">Narrative tone (suspenseful, dark, heartwarming, etc.).</td></tr>
-          <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap;">Duration</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff;">Target video length. Use this to select the right HeyGen duration.</td></tr>
-          <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap;">Seed</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff;">The original story seed you entered. Useful for recreating a series later.</td></tr>
-          <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap;">Ending</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff;">The ending direction you specified. Reference this to maintain series consistency.</td></tr>
-          <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap;">Hook</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff;">The opening hook line for this episode. The first 3–5 seconds that stop viewers from scrolling. Use as your video title card text or opening overlay.</td></tr>
-          <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap;">Full_Script</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff;">Complete word-for-word avatar narration script. Paste directly into HeyGen. Includes [[expression]] tags if enabled.</td></tr>
-          <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap;">Thumbnail_Text</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff;">Shocking 4–7 word text for the video thumbnail. Add in CapCut or Canva on top of a Gemini-generated background.</td></tr>
-          <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap;">Platforms</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff;">Which platforms were selected when generating. Reference for where to post this episode.</td></tr>
-          <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap;">Facebook_Post</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff;">Ready-to-post Facebook caption. Copy and post directly.</td></tr>
-          <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap;">Instagram_Post</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff;">Instagram caption with relevant hashtags.</td></tr>
-          <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap;">TikTok_Post</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff;">Short punchy TikTok caption with trending hashtags.</td></tr>
-          <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap;">YouTube_Title</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff;">SEO-optimized episode title. Copy directly to YouTube upload field.</td></tr>
-          <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap;">YouTube_Description</td><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff;">Full YouTube description with episode context and series teaser. Paste directly to YouTube.</td></tr>
-          <tr><td style="padding:9px 12px;color:#d4a853;font-weight:600;white-space:nowrap;">YouTube_Tags</td><td style="padding:9px 12px;color:#ffffff;">Comma-separated tags. Paste into YouTube tags field during upload.</td></tr>
+          <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap;">Timestamp</td><td class="help-td" style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff;">When this episode was generated.</td></tr>
+          <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap;">Genre</td><td class="help-td" style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff;">Story genre selected. Also used as the sheet tab name.</td></tr>
+          <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap;">Tone</td><td class="help-td" style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff;">Narrative tone (suspenseful, dark, heartwarming, etc.).</td></tr>
+          <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap;">Duration</td><td class="help-td" style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff;">Target video length. Use this to select the right HeyGen duration.</td></tr>
+          <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap;">Seed</td><td class="help-td" style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff;">The original story seed you entered. Useful for recreating a series later.</td></tr>
+          <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap;">Ending</td><td class="help-td" style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff;">The ending direction you specified. Reference this to maintain series consistency.</td></tr>
+          <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap;">Hook</td><td class="help-td" style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff;">The opening hook line for this episode. The first 3–5 seconds that stop viewers from scrolling. Use as your video title card text or opening overlay.</td></tr>
+          <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap;">Full_Script</td><td class="help-td" style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff;">Complete word-for-word avatar narration script. Paste directly into HeyGen. Includes [[expression]] tags if enabled.</td></tr>
+          <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap;">Thumbnail_Text</td><td class="help-td" style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff;">Shocking 4–7 word text for the video thumbnail. Add in CapCut or Canva on top of a Gemini-generated background.</td></tr>
+          <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap;">Platforms</td><td class="help-td" style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff;">Which platforms were selected when generating. Reference for where to post this episode.</td></tr>
+          <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap;">Facebook_Post</td><td class="help-td" style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff;">Ready-to-post Facebook caption. Copy and post directly.</td></tr>
+          <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap;">Instagram_Post</td><td class="help-td" style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff;">Instagram caption with relevant hashtags.</td></tr>
+          <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap;">TikTok_Post</td><td class="help-td" style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff;">Short punchy TikTok caption with trending hashtags.</td></tr>
+          <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap;">YouTube_Title</td><td class="help-td" style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff;">SEO-optimized episode title. Copy directly to YouTube upload field.</td></tr>
+          <tr><td style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#d4a853;font-weight:600;white-space:nowrap;">YouTube_Description</td><td class="help-td" style="padding:9px 12px;border-bottom:1px solid #2a2a3a;color:#ffffff;">Full YouTube description with episode context and series teaser. Paste directly to YouTube.</td></tr>
+          <tr><td style="padding:9px 12px;color:#d4a853;font-weight:600;white-space:nowrap;">YouTube_Tags</td><td class="help-td" style="padding:9px 12px;color:#ffffff;">Comma-separated tags. Paste into YouTube tags field during upload.</td></tr>
         </tbody>
       </table>
     </div>
