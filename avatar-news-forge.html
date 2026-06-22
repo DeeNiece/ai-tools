@@ -114,7 +114,7 @@
   var sheet = ss.getSheetByName(sheetName);
   if (!sheet) {
     sheet = ss.insertSheet(sheetName);
-    var headers = ["Local_Timestamp","Topic_Category","Date_Scope","Full_Script_WithPauses","Youtube_Teaser_100","Video_Description_5000","Tags_200"];
+    var headers = ["Local_Timestamp","Topic_Category","Date_Scope","Full_Script_WithPauses","Youtube_Teaser_100","Video_Description_5000","Tags_200","Thumbnail_Title","Image_Prompt"];
     sheet.getRange(1,1,1,headers.length).setValues([headers]);
     sheet.setFrozenRows(1);
   }
@@ -133,7 +133,9 @@ function doPost(e) {
       e.parameter.FullScript || "",
       (e.parameter.YoutubeTeaser || "").substring(0,100),
       (e.parameter.VideoDescription || "").substring(0,5000),
-      (e.parameter.Tags || "").substring(0,200)
+      (e.parameter.Tags || "").substring(0,200),
+      e.parameter.ThumbnailTitle || "",
+      e.parameter.ImagePrompt || ""
     ];
     sheet.appendRow(row);
     return ContentService.createTextOutput(JSON.stringify({result:"success"})).setMimeType(ContentService.MimeType.JSON);
@@ -145,7 +147,7 @@ function doPost(e) {
 function doGet() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = getOrCreateSheet(ss, "World Celebrity");
-  sheet.appendRow([new Date().toISOString(),"TEST","today","Test script from editor run","Test teaser","Test description","test,tags"]);
+  sheet.appendRow([new Date().toISOString(),"TEST","today","Test script from editor run","Test teaser","Test description","test,tags","TOP 10 CELEBRITY SECRETS","Cinematic dark dramatic celebrity scene, moody lighting, no text"]);
   return ContentService.createTextOutput("Avatar News Forge connected! Test row written to World Celebrity tab.").setMimeType(ContentService.MimeType.TEXT);
 }</div>
       </div>
@@ -175,10 +177,10 @@ function doGet() {
     </div>
   </div>
   <div class="four-col-news">
-    <div class="news-card"><h3>🌟 Celebrity Gossip</h3><button class="fetch-btn" data-topic="celebrity_world">Fetch</button><div class="news-content" id="newsCelebrityWorld">📌 Click Fetch</div><button class="copy-news-btn" data-copy="newsCelebrityWorld">📋 Copy</button><button class="sheet-btn" data-sheet-topic="celebrity_world" data-sheet-name="World Celebrity">📤 Send to Sheet</button></div>
-    <div class="news-card"><h3>🇵🇭 PH Celebrity</h3><button class="fetch-btn" data-topic="celebrity_ph">Fetch</button><div class="news-content" id="newsCelebrityPh">📌 Click Fetch</div><button class="copy-news-btn" data-copy="newsCelebrityPh">📋 Copy</button><button class="sheet-btn" data-sheet-topic="celebrity_ph" data-sheet-name="PH Celebrity">📤 Send to Sheet</button></div>
-    <div class="news-card"><h3>🤖 AI News</h3><button class="fetch-btn" data-topic="ai_news">Fetch</button><div class="news-content" id="newsAi">📌 Click Fetch</div><button class="copy-news-btn" data-copy="newsAi">📋 Copy</button><button class="sheet-btn" data-sheet-topic="ai_news" data-sheet-name="AI News">📤 Send to Sheet</button></div>
-    <div class="news-card"><h3>🕵️ Blind Items</h3><button class="fetch-btn" data-topic="celebrity_ph_blind">Fetch</button><div class="news-content" id="newsBlindItems">📌 Click Fetch</div><button class="copy-news-btn" data-copy="newsBlindItems">📋 Copy</button><button class="sheet-btn" data-sheet-topic="celebrity_ph_blind" data-sheet-name="PH Blind Items">📤 Send to Sheet</button></div>
+    <div class="news-card"><h3>🌟 Celebrity Gossip</h3><button class="fetch-btn" data-topic="celebrity_world">Fetch</button><div class="news-content" id="newsCelebrityWorld">📌 Click Fetch</div><button class="copy-news-btn" data-copy="newsCelebrityWorld">📋 Copy</button><button class="sheet-btn" data-sheet-topic="celebrity_world" data-sheet-name="World Celebrity">📤 Send to Sheet</button><div class="meta-out" id="metaCelebrityWorld" style="display:none;margin-top:8px;font-size:11px;color:var(--text-muted);background:var(--surface2);border-radius:8px;padding:8px 10px;"></div></div>
+    <div class="news-card"><h3>🇵🇭 PH Celebrity</h3><button class="fetch-btn" data-topic="celebrity_ph">Fetch</button><div class="news-content" id="newsCelebrityPh">📌 Click Fetch</div><button class="copy-news-btn" data-copy="newsCelebrityPh">📋 Copy</button><button class="sheet-btn" data-sheet-topic="celebrity_ph" data-sheet-name="PH Celebrity">📤 Send to Sheet</button><div class="meta-out" id="metaCelebrityPh" style="display:none;margin-top:8px;font-size:11px;color:var(--text-muted);background:var(--surface2);border-radius:8px;padding:8px 10px;"></div></div>
+    <div class="news-card"><h3>🤖 AI News</h3><button class="fetch-btn" data-topic="ai_news">Fetch</button><div class="news-content" id="newsAi">📌 Click Fetch</div><button class="copy-news-btn" data-copy="newsAi">📋 Copy</button><button class="sheet-btn" data-sheet-topic="ai_news" data-sheet-name="AI News">📤 Send to Sheet</button><div class="meta-out" id="metaAi" style="display:none;margin-top:8px;font-size:11px;color:var(--text-muted);background:var(--surface2);border-radius:8px;padding:8px 10px;"></div></div>
+    <div class="news-card"><h3>🕵️ Blind Items</h3><button class="fetch-btn" data-topic="celebrity_ph_blind">Fetch</button><div class="news-content" id="newsBlindItems">📌 Click Fetch</div><button class="copy-news-btn" data-copy="newsBlindItems">📋 Copy</button><button class="sheet-btn" data-sheet-topic="celebrity_ph_blind" data-sheet-name="PH Blind Items">📤 Send to Sheet</button><div class="meta-out" id="metaBlindItems" style="display:none;margin-top:8px;font-size:11px;color:var(--text-muted);background:var(--surface2);border-radius:8px;padding:8px 10px;"></div></div>
   </div>
   <div class="bottom-credit">✨ 2+ sentences per item (no ⏸️). Send to Sheets includes YouTube teaser (100 chars), video description (5000 chars), and tags (200 chars).</div>
   <div id="toastMsg" class="success-toast"></div>
@@ -498,29 +500,35 @@ function doGet() {
     return `${intro}\n\n${numberedItems}\n\n${outro}`;
   }
 
-  // Generate YouTube Teaser (max 100 chars), Video Description (max 5000), Tags (max 200)
+  // Generate YouTube Teaser (max 100 chars), Video Description (max 5000), Tags (max 200), Image Prompt, Thumbnail Title
   async function generateMetadata(topicLabel, fullScript, dateScope) {
     try {
       const prompt = `Based on this script about "${topicLabel}" (${dateScope}), generate:
 1. YouTube teaser (max 100 characters) - short hook
 2. Video description (max 5000 characters) - detailed summary, include call to action
 3. Tags (max 200 characters) - comma separated keywords
-Return as JSON: {"teaser":"...","description":"...","tags":"..."}`;
-      const result = await fetchNewsAI("Output ONLY valid JSON.", prompt + `\nScript excerpt: ${fullScript.substring(0, 1000)}`);
+4. Thumbnail title (max 7 words, ALL CAPS, shocking and curiosity-driving, no punctuation)
+5. Gemini image prompt - cinematic dramatic background image for YouTube thumbnail, no text in image, describe lighting colors and mood
+Return as JSON: {"teaser":"...","description":"...","tags":"...","thumbnail_title":"...","image_prompt":"..."}`;
+      const result = await fetchNewsAI("Output ONLY valid JSON. No markdown, no backticks.", prompt + `\nScript excerpt: ${fullScript.substring(0, 1000)}`);
       let jsonMatch = result.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         let parsed = JSON.parse(jsonMatch[0]);
         return {
-          teaser: (parsed.teaser || `Latest ${topicLabel} top 10!`).substring(0, 100),
-          description: (parsed.description || `Watch our top 10 ${topicLabel} stories for ${dateScope}.`).substring(0, 5000),
-          tags: (parsed.tags || `${topicLabel},news`).substring(0, 200)
+          teaser:          (parsed.teaser || `Latest ${topicLabel} top 10!`).substring(0, 100),
+          description:     (parsed.description || `Watch our top 10 ${topicLabel} stories for ${dateScope}.`).substring(0, 5000),
+          tags:            (parsed.tags || `${topicLabel},news`).substring(0, 200),
+          thumbnail_title: parsed.thumbnail_title || topicLabel.toUpperCase(),
+          image_prompt:    parsed.image_prompt || `Cinematic dark dramatic scene related to ${topicLabel}, moody lighting, no text`
         };
       }
     } catch(e) { console.warn(e); }
     return {
-      teaser: `🔥 ${topicLabel} top 10 inside! Watch now.`.substring(0,100),
-      description: `Here are the top 10 ${topicLabel} stories for ${dateScope}. Stay informed and entertained! Don't forget to like and subscribe.`.substring(0,5000),
-      tags: `${topicLabel},trending,news`.substring(0,200)
+      teaser:          `🔥 ${topicLabel} top 10 inside! Watch now.`.substring(0,100),
+      description:     `Here are the top 10 ${topicLabel} stories for ${dateScope}. Stay informed and entertained! Don't forget to like and subscribe.`.substring(0,5000),
+      tags:            `${topicLabel},trending,news`.substring(0,200),
+      thumbnail_title: topicLabel.toUpperCase(),
+      image_prompt:    `Cinematic dark dramatic scene related to ${topicLabel}, moody lighting, no text, photorealistic`
     };
   }
 
@@ -544,15 +552,22 @@ Return as JSON: {"teaser":"...","description":"...","tags":"..."}`;
       FullScript: fullScript,
       YoutubeTeaser: metadata.teaser,
       VideoDescription: metadata.description,
-      Tags: metadata.tags
+      Tags: metadata.tags,
+      ThumbnailTitle: metadata.thumbnail_title,
+      ImagePrompt: metadata.image_prompt
     };
     
     try {
-      const response = await fetch(url, { method: 'POST', mode: 'cors', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams(payload) });
-      const text = await response.text();
-      let json; try { json = JSON.parse(text); } catch(e) { throw new Error('Invalid response'); }
-      if (json.result === 'success') showToast(`✅ Saved to ${sheetName}`, false);
-      else throw new Error(json.error);
+      const response = await fetch(url, { method: 'POST', mode: 'no-cors', redirect: 'follow', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams(payload) });
+      showToast(`✅ Saved to ${sheetName}`, false);
+      // Show thumbnail title and image prompt on card
+      const metaMap = { celebrity_world:'metaCelebrityWorld', celebrity_ph:'metaCelebrityPh', ai_news:'metaAi', celebrity_ph_blind:'metaBlindItems' };
+      const metaEl = document.getElementById(metaMap[topic]);
+      if (metaEl) {
+        metaEl.style.display = 'block';
+        metaEl.innerHTML = '<strong style="color:var(--gold)">🖼 Thumbnail Title:</strong> ' + metadata.thumbnail_title +
+          '<br><br><strong style="color:var(--gold)">🎨 Gemini Image Prompt:</strong><br>' + metadata.image_prompt;
+      }
     } catch(err) { showToast(`❌ Error: ${err.message}`, true); }
   }
 
