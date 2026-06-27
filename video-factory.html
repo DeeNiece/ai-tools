@@ -1366,9 +1366,9 @@ function buildPartedScriptPrompt(topic, platformStr, lengthStr, useExpressions, 
 }
 
 document.getElementById('strategyGenerateBtn').addEventListener('click', async () => {
-    const googleUrl = googleUrlInput.value.trim();
+    const googleUrl = (window._videoFactoryScriptUrl || '').trim();
     const saveToSheet = document.getElementById('strategySaveSheetToggle').checked;
-    if (saveToSheet && !googleUrl) { alert('Save Google Script URL first, or uncheck "Save to Sheet" to preview only.'); return; }
+    if (saveToSheet && !googleUrl) { alert('APPS_SCRIPT_VIDEO_FACTORY not loaded from Railway, or uncheck "Save to Sheet" to preview only.'); return; }
     // API key handled by Railway proxy — skipping local key check
 
     const numDays = Math.min(Math.max(parseInt(document.getElementById('numDays').value)||30, 1), 90);
