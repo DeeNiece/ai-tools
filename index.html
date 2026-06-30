@@ -200,6 +200,10 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14
           <div class="tool-icon" style="background:rgba(232,64,64,0.12)">🎭</div>
           <div class="tool-label">Horror Story Studio<span class="tool-sublabel">Finance · Legal · Drama</span></div>
         </button>
+        <button class="tool-btn" id="nav-studioflow" onclick="openTool('studioflow')">
+          <div class="tool-icon" style="background:rgba(93,202,165,0.12)">◧</div>
+          <div class="tool-label">StudioFlow<span class="tool-sublabel">Productivity · PSEi/HSI/FX</span></div>
+        </button>
       </div>
 
       <div class="sidebar-divider"></div>
@@ -266,6 +270,12 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14
               <div class="tool-card-name">Horror Story Studio</div>
               <div class="tool-card-desc">Finance horror, legal horror & revenge drama scripts for YouTube. Full 8–10 min structure with B-roll cues, thumbnails & YouTube meta.</div>
               <span class="tool-card-tag" style="background:rgba(232,64,64,0.1);color:#e84040">DeepSeek · Gemini · Claude</span>
+            </div>
+            <div class="tool-card" onclick="openTool('studioflow')">
+              <div class="tool-card-icon" style="background:rgba(93,202,165,0.1)">◧</div>
+              <div class="tool-card-name">StudioFlow</div>
+              <div class="tool-card-desc">Task management, Google Calendar sync, video production tracker, and PSEi/HSI/FX fundamental intelligence with AI analysis.</div>
+              <span class="tool-card-tag" style="background:rgba(93,202,165,0.1);color:#5DCAA5">Perplexity · Multi-account Calendar</span>
             </div>
             <div class="tool-card" onclick="openTool('vep')">
               <div class="tool-card-icon" style="background:rgba(255,215,0,0.08)">◬</div>
@@ -374,6 +384,16 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14
         <iframe class="tool-frame" id="frame-horror" title="Horror Story Studio"></iframe>
       </div>
 
+      <div id="view-studioflow" class="tool-view">
+        <div class="tool-topbar">
+          <div class="tool-topbar-left">
+            <button class="tool-back-btn" onclick="showHome()">← Dashboard</button>
+            <div><div class="tool-current-name">StudioFlow</div><div class="tool-current-desc">Productivity dashboard · Calendar · Video tracker · PSEi/HSI/FX intel</div></div>
+          </div>
+        </div>
+        <iframe class="tool-frame" id="frame-studioflow" title="StudioFlow" src="https://studioflow.aisprint.app"></iframe>
+      </div>
+
       <div id="view-vep" class="tool-view">
         <div class="tool-topbar">
           <div class="tool-topbar-left">
@@ -394,7 +414,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14
 // ── State ─────────────────────────────────────────────────────────────────
 var currentUser  = null;
 var providerData = {};   // { claude: { enabled, models }, ... }
-var TOOLS        = ['reddit','video','arch','story','avatar','horror'];
+var TOOLS        = ['reddit','video','arch','story','avatar','horror']; // local file-based tools only
 
 var TOOL_FILES = {
   reddit: 'reddit-copilot.html',
@@ -405,6 +425,11 @@ var TOOL_FILES = {
   vep:    'volumeedgepro.html',
   horror: 'horror-story-studio.html'
 };
+
+// StudioFlow is a separately deployed app with its own backend (Express + Railway).
+// It is loaded by direct URL, not a local file, and manages its own AI keys —
+// so it's excluded from TOOLS/broadcastSelection and loaded immediately on open.
+var EXTERNAL_TOOLS = ['studioflow'];
 
 // ── GATE ──────────────────────────────────────────────────────────────────
 async function checkAccess() {
@@ -585,6 +610,10 @@ function openTool(id) {
   if (view) view.classList.add('active');
   var nav = document.getElementById('nav-' + id);
   if (nav) nav.classList.add('active');
+
+  // External tools (StudioFlow) manage their own backend/keys — no broadcast needed,
+  // iframe src is already set in HTML so nothing further to load.
+  if (EXTERNAL_TOOLS.indexOf(id) !== -1) return;
 
   var frame = document.getElementById('frame-' + id);
   if (!frame) return;
