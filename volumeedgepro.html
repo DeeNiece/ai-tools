@@ -173,6 +173,7 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
 .tab-btn.t-fade.active{color:var(--accent);border-bottom-color:var(--accent)}
 .tab-btn.t-magnet.active{color:var(--teal);border-bottom-color:var(--teal)}
 .tab-btn.t-playbook.active{color:#FF9F43;border-bottom-color:#FF9F43}
+.tab-btn.t-cbot.active{color:#FF6B9D;border-bottom-color:#FF6B9D}
 /* ── PAGE WRAPPER ── */
 .tab-page{display:none}
 .tab-page.active{display:block}
@@ -188,6 +189,7 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
 .plan-nav-item.active-sniper{color:var(--green);border-left-color:var(--green);background:rgba(38,222,138,.06)}
 .plan-nav-item.active-fade{color:var(--accent);border-left-color:var(--accent);background:rgba(108,140,255,.06)}
 .plan-nav-item.active-magnet{color:var(--teal);border-left-color:var(--teal);background:rgba(38,166,154,.06)}
+.plan-nav-item.active-cbot{color:#FF6B9D;border-left-color:#FF6B9D;background:rgba(255,107,157,.06)}
 .plan-main{flex:1;padding:36px 48px 80px;max-width:840px}
 /* ── PLAN HERO ── */
 .plan-hero{margin-bottom:36px;padding-bottom:28px;border-bottom:1px solid var(--border)}
@@ -195,6 +197,7 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
 .plan-hero-badge.sniper{color:var(--green);background:rgba(38,222,138,.1);border:1px solid rgba(38,222,138,.25)}
 .plan-hero-badge.fade{color:var(--accent);background:rgba(108,140,255,.1);border:1px solid rgba(108,140,255,.25)}
 .plan-hero-badge.magnet{color:var(--teal);background:rgba(38,166,154,.1);border:1px solid rgba(38,166,154,.25)}
+.plan-hero-badge.cbot{color:#FF6B9D;background:rgba(255,107,157,.1);border:1px solid rgba(255,107,157,.25)}
 .plan-hero h1{font-size:34px;font-weight:800;letter-spacing:-1px;line-height:1.05;margin-bottom:8px}
 .hl-green{color:var(--green)}.hl-accent{color:var(--accent)}.hl-teal{color:var(--teal)}
 .plan-hero-sub{font-size:12px;color:var(--gray);font-family:var(--font-mono);margin-bottom:16px}
@@ -207,9 +210,10 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
 .plan-section-label.sniper{color:var(--green)}
 .plan-section-label.fade{color:var(--accent)}
 .plan-section-label.magnet{color:var(--teal)}
+.plan-section-label.cbot{color:#FF6B9D}
 .plan-section h2{font-size:22px;font-weight:800;letter-spacing:-.4px;margin-bottom:6px;padding-bottom:12px;border-bottom:1px solid var(--border)}
 .plan-section h3{font-size:14px;font-weight:700;margin:18px 0 8px}
-.plan-section h3.sniper{color:var(--green)}.plan-section h3.fade{color:var(--accent)}.plan-section h3.magnet{color:var(--teal)}
+.plan-section h3.sniper{color:var(--green)}.plan-section h3.fade{color:var(--accent)}.plan-section h3.magnet{color:var(--teal)}.plan-section h3.cbot{color:#FF6B9D}
 .plan-section p{color:#C8D0E0;font-size:13px;margin-bottom:10px}
 /* ── TF CARDS ── */
 .tf-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}
@@ -241,9 +245,11 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
 .chk-box.sniper{border-color:rgba(38,222,138,.4)}
 .chk-box.fade{border-color:rgba(108,140,255,.4)}
 .chk-box.magnet{border-color:rgba(38,166,154,.4)}
+.chk-box.cbot{border-color:rgba(255,107,157,.4)}
 .chk-box.checked.sniper{background:rgba(38,222,138,.15);border-color:var(--green);color:var(--green)}
 .chk-box.checked.fade{background:rgba(108,140,255,.15);border-color:var(--accent);color:var(--accent)}
 .chk-box.checked.magnet{background:rgba(38,166,154,.15);border-color:var(--teal);color:var(--teal)}
+.chk-box.checked.cbot{background:rgba(255,107,157,.15);border-color:#FF6B9D;color:#FF6B9D}
 .chk-text{color:#B8C5D6;line-height:1.5;font-size:12.5px}
 .chk-text strong{color:var(--white)}
 .chk-progress{display:flex;align-items:center;gap:10px;margin:6px 0 14px;font-family:var(--font-mono);font-size:11px;color:var(--gray)}
@@ -453,6 +459,7 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
   <button class="tab-btn t-fade" onclick="switchTab('fade',this)">📉 Session Fade</button>
   <button class="tab-btn t-magnet" onclick="switchTab('magnet',this)">🧲 POC Magnet</button>
   <button class="tab-btn t-playbook" onclick="switchTab('playbook',this)">📚 Playbook</button>
+  <button class="tab-btn t-cbot" onclick="switchTab('cbot',this)">🤖 cBot Guide</button>
 </div>
 
 <!-- ═══ TAB 1: PARAMETER GUIDE (original content) ═══ -->
@@ -2949,6 +2956,209 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
 </main>
 </div>
 </div><!-- #tab-playbook -->
+
+<!-- ═══ TAB 6: CBOT GUIDE ═══ -->
+<div class="tab-page" id="tab-cbot" style="padding-top:118px">
+<div class="plan-wrap">
+  <nav class="plan-sidebar">
+    <div class="plan-nav-label">Overview</div>
+    <a class="plan-nav-item" href="#cb-what">What is the cBot</a>
+    <a class="plan-nav-item" href="#cb-relation">cBot vs Indicator</a>
+    <div class="plan-nav-label">Entry Logic</div>
+    <a class="plan-nav-item" href="#cb-entry">EDGE EXH + PDC Entry</a>
+    <a class="plan-nav-item" href="#cb-expiry">Order Expiry</a>
+    <div class="plan-nav-label">Risk Management</div>
+    <a class="plan-nav-item" href="#cb-sizing">Position Sizing</a>
+    <a class="plan-nav-item" href="#cb-sl">Structural Stop Loss</a>
+    <a class="plan-nav-item" href="#cb-be">Break-Even &amp; Trailing</a>
+    <a class="plan-nav-item" href="#cb-circuit">Account Circuit Breakers</a>
+    <div class="plan-nav-label">Setup</div>
+    <a class="plan-nav-item" href="#cb-params">Parameter Reference</a>
+    <a class="plan-nav-item" href="#cb-discord">Discord Alerts</a>
+    <a class="plan-nav-item" href="#cb-checklist">Pre-Flight Checklist</a>
+    <a class="plan-nav-item" href="#cb-notes">Known Limitations</a>
+  </nav>
+  <main class="plan-main">
+    <div class="plan-hero">
+      <div class="plan-hero-badge cbot">CBOT · VOLUMEEDGE SNIPER v2.0</div>
+      <h1><span class="hl-cbot" style="color:#FF6B9D">VolumeEdge Sniper</span><br>Automated PDC Stop-Order Entries</h1>
+      <p class="plan-hero-sub">EDGE EXH signal + PDC cross · Percent-risk sizing · Structural SL · No fixed TP</p>
+      <div class="plan-pills">
+        <div class="plan-pill"><strong>1 trade/symbol</strong> at a time</div>
+        <div class="plan-pill"><strong>1 trade/day</strong> per symbol</div>
+        <div class="plan-pill"><strong>Max 3</strong> concurrent, all symbols</div>
+        <div class="plan-pill"><strong>2.5%</strong> risk/trade default</div>
+        <div class="plan-pill"><strong>8%</strong> daily loss cap</div>
+        <div class="plan-pill"><strong>10%</strong> drawdown kill-switch</div>
+      </div>
+    </div>
+
+    <div class="plan-section" id="cb-what">
+      <div class="plan-section-label cbot">Section 01</div>
+      <h2>What is the cBot?</h2>
+      <p>VolumeEdge Sniper is a cAlgo cBot — a fully automated trading robot, separate from the VolumeEdge Pro indicator. It watches for the same <span class="kw kw-green">EDGE EXH<span class="tooltip">Edge Exhaustion — fires when price touches the top or bottom of the FRVP profile with at least one empty volume bin at that boundary, plus a rejection wick. Signals that the move has run out of participants at that extreme.</span></span> signal you see on the indicator, then arms a pending stop order that only fills if price actually crosses the <span class="kw kw-teal">Previous Day Close (PDC)<span class="tooltip">Yesterday's daily close price. A real institutional reference level — banks and funds mark their books at the daily close, so a genuine cross of PDC signals a repricing from the prior session's settled value.</span></span> in the signal's direction.</p>
+      <div class="callout callout-tip"><div class="callout-icon">🎯</div><div class="callout-body"><strong>The core idea</strong><p>EDGE EXH alone can be too early — a reversal signal that fires before the reversal is confirmed. Waiting for a PDC cross on top of it filters out signals where the move never follows through, without waiting so long that the trade is missed entirely.</p></div></div>
+      <p>The cBot builds and calculates its own FRVP profile directly from price data. It does not read anything from the indicator — it can run with or without VolumeEdge Pro loaded on the same chart.</p>
+    </div>
+
+    <div class="plan-section" id="cb-relation">
+      <div class="plan-section-label cbot">Section 02</div>
+      <h2>cBot vs Indicator</h2>
+      <div class="phase-row">
+        <div class="phase-card"><div class="phase-num" style="color:#FF6B9D">INDICATOR</div><h4>VolumeEdge Pro</h4><p>Visual only. Draws profiles, POC/VAH/VAL, signal labels, PDC lines, and sends optional Discord/Telegram alerts. Never places an order.</p></div>
+        <div class="phase-card"><div class="phase-num" style="color:#FF6B9D">CBOT</div><h4>VolumeEdge Sniper</h4><p>No chart drawing. Computes its own profile and PDC internally, places real stop orders, manages SL via break-even and trailing, and enforces account-level risk caps.</p></div>
+      </div>
+      <div class="callout callout-note"><div class="callout-icon">💡</div><div class="callout-body"><strong>Running both together</strong><p>Loading the indicator on the same chart as the cBot is optional but useful — it gives you a visual way to confirm what the cBot's internal logic is seeing, using the same EDGE EXH pattern and gray/colored label system.</p></div></div>
+    </div>
+
+    <div class="plan-section" id="cb-entry">
+      <div class="plan-section-label cbot">Section 03</div>
+      <h2>EDGE EXH + PDC Entry Logic</h2>
+      <p>On every closed bar, the cBot checks the most recent candle against its own FRVP profile for that symbol's timeframe.</p>
+      <div class="phase-row">
+        <div class="phase-card"><div class="phase-num" style="color:var(--green)">BUY SETUP</div><h4>EDGE EXH BUY + price below PDC</h4><p>Arms a Buy Stop at PDC + entry buffer. Fills only if price later closes back above PDC.</p></div>
+        <div class="phase-card"><div class="phase-num" style="color:var(--red)">SELL SETUP</div><h4>EDGE EXH SELL + price above PDC</h4><p>Arms a Sell Stop at PDC − entry buffer. Fills only if price later closes back below PDC.</p></div>
+      </div>
+      <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>No confluence gate</strong><p>Unlike the indicator's chart display, the cBot does not check the Confluence Gate before arming. It gates purely on the EDGE EXH bin pattern plus the session filter. This was a deliberate simplification agreed on early in development — confluence and EDGE EXH validity were treated as two different things being tested.</p></div></div>
+    </div>
+
+    <div class="plan-section" id="cb-expiry">
+      <div class="plan-section-label cbot">Section 04</div>
+      <h2>Order Expiry</h2>
+      <p>A pending stop order does not stay armed forever. <span class="param-name">Stop Order Expiry (candles)</span> (default <span class="param-default">5</span>) counts closed bars from the moment the order was armed. If PDC hasn't been crossed by then, the order is cancelled — no fill, no trade.</p>
+      <p>This is tracked by comparing the current closed-bar index against the bar index recorded at arm time — not by broker-side time expiry — so it behaves consistently across symbols and timeframes.</p>
+      <div class="callout callout-note"><div class="callout-icon">💡</div><div class="callout-body"><strong>Only one order at a time</strong><p>The cBot never stacks a second pending order while one is already armed for that symbol. A fresh EDGE EXH signal appearing mid-wait is simply ignored until the first order fills or expires.</p></div></div>
+    </div>
+
+    <div class="plan-section" id="cb-sizing">
+      <div class="plan-section-label cbot">Section 05</div>
+      <h2>Position Sizing</h2>
+      <p>Lot size is calculated backward from risk, not set as a fixed number. <span class="param-name">Risk % Per Trade</span> (default <span class="param-default">2.5%</span>) defines how much of current account equity that specific trade is allowed to lose if its stop loss is hit.</p>
+      <div class="code-block" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px 16px;font-family:var(--font-mono);font-size:12px;color:var(--gray);margin:12px 0">
+riskAmount = Account.Equity × (RiskPercentPerTrade / 100)<br>
+volumeInUnits = riskAmount / (slPips × Symbol.PipValue)
+      </div>
+      <p>Because stop-loss distance is structural (see next section), it varies trade to trade and symbol to symbol. A wide structural stop gets a smaller lot size; a tight one gets a larger lot size — so dollar risk stays consistent even though pip distance doesn't.</p>
+      <div class="callout callout-tip"><div class="callout-icon">💡</div><div class="callout-body"><strong>Why this matters across symbols</strong><p>A 20-pip stop is normal for GBPJPY but far too tight for XAUUSD. Percent-risk sizing removes the need to hand-tune lot size per symbol — the math adjusts automatically to whatever that symbol's actual structure requires.</p></div></div>
+    </div>
+
+    <div class="plan-section" id="cb-sl">
+      <div class="plan-section-label cbot">Section 06</div>
+      <h2>Structural Stop Loss</h2>
+      <p>The stop loss sits at the price level that actually invalidates the trade thesis — not an arbitrary ATR multiple detached from the setup.</p>
+      <div class="phase-row">
+        <div class="phase-card"><div class="phase-num" style="color:var(--green)">BUY</div><h4>SL below profile Low</h4><p>SL = <span class="param-name">profile Low</span> − (ATR × <span class="param-name">SL Buffer</span>). If price falls back through the Low, the exhaustion read was wrong.</p></div>
+        <div class="phase-card"><div class="phase-num" style="color:var(--red)">SELL</div><h4>SL above profile High</h4><p>SL = <span class="param-name">profile High</span> + (ATR × <span class="param-name">SL Buffer</span>). If price rallies back through the High, same logic in reverse.</p></div>
+      </div>
+      <p><span class="param-name">SL Buffer (x ATR)</span> default <span class="param-default">0.1</span> adds a small cushion beyond the exact level so ordinary noise touching the boundary doesn't stop the trade out prematurely.</p>
+      <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>Sanity cap</strong><p><span class="param-name">Max SL Distance (x ATR)</span>, default <span class="param-default">2.0</span>, skips the trade entirely if the structural distance is wider than that multiple of ATR. This keeps sloppy, wide-range setups out of the system instead of forcing an oversized risk to fit them.</p></div></div>
+    </div>
+
+    <div class="plan-section" id="cb-be">
+      <div class="plan-section-label cbot">Section 07</div>
+      <h2>Break-Even &amp; Trailing</h2>
+      <p>There is no fixed take profit. EDGE EXH + PDC entries are meant to catch exhaustion reversals, which can run further than a flat reward ratio assumes — a fixed TP would cap upside on exactly the trades where the thesis is strongest.</p>
+      <div class="phase-row">
+        <div class="phase-card"><div class="phase-num" style="color:var(--yellow)">STEP 1</div><h4>Break-Even Trigger</h4><p>Once price moves in favor by <span class="param-name">Break-Even Trigger (x Risk)</span> × the initial risk distance (default <span class="param-default">1.5×</span>), SL moves to the entry price. Risk on the trade drops to zero.</p></div>
+        <div class="phase-card"><div class="phase-num" style="color:var(--green)">STEP 2</div><h4>Hand Off to Native Trailing</h4><p>Once price moves far enough that an ATR-based trail distance would sit at or past entry, the cBot calls <span class="param-name">ModifyPosition</span> once with cTrader's native trailing stop flag turned on. From that single call onward, cTrader itself moves the SL as price advances — the cBot doesn't touch it again for that trade.</p></div>
+      </div>
+      <p>The trail distance is <span class="param-name">Trailing Distance (x ATR)</span> (default <span class="param-default">1.0×</span>) multiplied by ATR frozen at the moment the trade was armed — not live ATR. Once a trade is open, later ATR changes have no effect on it. Both the initial stop loss and the trail distance are locked to entry-time volatility.</p>
+      <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>Not yet demo-tested</strong><p>The handoff to native trailing is built from cTrader's confirmed <span class="param-name">ModifyPosition</span> signature, but the exact behavior of the trailing flag on an already-open position — whether it persists correctly and updates SL as expected — hasn't been verified live. Confirm on a demo account before trusting this in production: open a trade, let it reach break-even, and watch whether the position's Trailing Stop checkbox shows enabled and the SL actually moves as price advances.</p></div></div>
+    </div>
+
+    <div class="plan-section" id="cb-circuit">
+      <div class="plan-section-label cbot">Section 08</div>
+      <h2>Account Circuit Breakers</h2>
+      <p>These operate at the account level, shared across every symbol instance of the cBot running on the same account.</p>
+      <table class="param-table">
+        <thead><tr><th>Breaker</th><th>Default</th><th>Behavior</th></tr></thead>
+        <tbody>
+          <tr><td class="param-name">Max Daily Loss %</td><td class="param-default">8.0</td><td class="param-desc">If today's equity loss from the day's starting balance reaches this, all of this cBot's open positions are force-closed and pending orders cancelled. No new entries until the next server day.</td></tr>
+          <tr><td class="param-name">Max Equity Drawdown %</td><td class="param-default">10.0</td><td class="param-desc">Measured from all-time peak equity, not a daily reset. If breached, new entries halt entirely — existing positions are left alone. Only clears when the cBot is manually restarted.</td></tr>
+          <tr><td class="param-name">Min Margin Level %</td><td class="param-default">500.0</td><td class="param-desc">Blocks new entries whenever margin level falls to or below this floor. Still well above a typical margin-call zone (~100%), so it acts as an early warning, not a last resort.</td></tr>
+          <tr><td class="param-name">Max Concurrent Trades</td><td class="param-default">3</td><td class="param-desc">Counted across every symbol sharing this cBot's Label, using cAlgo's account-wide Positions/PendingOrders collections. Blocks new entries once the cap is reached.</td></tr>
+          <tr><td class="param-name">One Trade Per Day</td><td class="param-default">true</td><td class="param-desc">Per symbol. Prevents re-entering the same pair again the same day, even after the first trade closes — designed to avoid repeated PDC crosses during range-bound price action.</td></tr>
+        </tbody>
+      </table>
+      <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>Position and pending-order checks are per-symbol</strong><p>An earlier version of this cBot checked positions account-wide without filtering by symbol name — which silently capped the entire portfolio at 1 trade total instead of 1 per symbol. This is fixed in v2.0: every check filters on <span class="param-name">SymbolName</span> explicitly.</p></div></div>
+    </div>
+
+    <div class="plan-section" id="cb-params">
+      <div class="plan-section-label cbot">Section 09</div>
+      <h2>Parameter Reference</h2>
+      <table class="param-table">
+        <thead><tr><th>Parameter</th><th>Default</th><th>Group</th></tr></thead>
+        <tbody>
+          <tr><td class="param-name">Label</td><td class="param-default">VolumeEdgeSniper</td><td class="param-desc">General</td></tr>
+          <tr><td class="param-name">Risk % Per Trade</td><td class="param-default">2.5</td><td class="param-desc">Position Sizing</td></tr>
+          <tr><td class="param-name">One Trade Per Day (per symbol)</td><td class="param-default">true</td><td class="param-desc">Position Sizing</td></tr>
+          <tr><td class="param-name">Max Concurrent Trades (all symbols)</td><td class="param-default">3</td><td class="param-desc">Position Sizing</td></tr>
+          <tr><td class="param-name">ATR Period</td><td class="param-default">14</td><td class="param-desc">Stop Loss</td></tr>
+          <tr><td class="param-name">SL Buffer (x ATR)</td><td class="param-default">0.1</td><td class="param-desc">Stop Loss</td></tr>
+          <tr><td class="param-name">Max SL Distance (x ATR)</td><td class="param-default">2.0</td><td class="param-desc">Stop Loss</td></tr>
+          <tr><td class="param-name">Break-Even Trigger (x Risk)</td><td class="param-default">1.5</td><td class="param-desc">Stop Loss</td></tr>
+          <tr><td class="param-name">Trailing Distance (x ATR)</td><td class="param-default">1.0</td><td class="param-desc">Stop Loss</td></tr>
+          <tr><td class="param-name">PDC Entry Buffer (pips)</td><td class="param-default">2.0</td><td class="param-desc">PDC Stop Order</td></tr>
+          <tr><td class="param-name">Stop Order Expiry (candles)</td><td class="param-default">5</td><td class="param-desc">PDC Stop Order</td></tr>
+          <tr><td class="param-name">Max Daily Loss %</td><td class="param-default">8.0</td><td class="param-desc">Account Risk</td></tr>
+          <tr><td class="param-name">Max Equity Drawdown %</td><td class="param-default">10.0</td><td class="param-desc">Account Risk</td></tr>
+          <tr><td class="param-name">Min Margin Level %</td><td class="param-default">500.0</td><td class="param-desc">Account Risk</td></tr>
+          <tr><td class="param-name">Auto-Detect Symbol Settings</td><td class="param-default">true</td><td class="param-desc">Symbol Profile</td></tr>
+          <tr><td class="param-name">Price Bins</td><td class="param-default">30</td><td class="param-desc">Range Settings (used if Auto-Detect off)</td></tr>
+          <tr><td class="param-name">Value Area Volume %</td><td class="param-default">40.0</td><td class="param-desc">Range Settings</td></tr>
+          <tr><td class="param-name">Use Auto Lookback</td><td class="param-default">true</td><td class="param-desc">Range Settings</td></tr>
+          <tr><td class="param-name">Bars Lookback</td><td class="param-default">24</td><td class="param-desc">Range Settings (used if Auto Lookback off)</td></tr>
+          <tr><td class="param-name">Enable Session Filter</td><td class="param-default">true</td><td class="param-desc">Session Filter</td></tr>
+          <tr><td class="param-name">Auto DST Adjustment</td><td class="param-default">true</td><td class="param-desc">Session Filter</td></tr>
+          <tr><td class="param-name">Enable Discord Alerts</td><td class="param-default">false</td><td class="param-desc">Discord Alerts</td></tr>
+          <tr><td class="param-name">Discord Webhook URL</td><td class="param-default">(empty)</td><td class="param-desc">Discord Alerts</td></tr>
+        </tbody>
+      </table>
+      <div class="callout callout-note"><div class="callout-icon">💡</div><div class="callout-body"><strong>Symbol table</strong><p>Auto-Detect Symbol Settings pulls Bins, Value Area %, active hours, and boundary-scan % from a built-in table. Only symbols added to that table get tuned values — anything else falls back to a generic config and prints a warning to the log the first time it runs.</p></div></div>
+    </div>
+
+    <div class="plan-section" id="cb-discord">
+      <div class="plan-section-label cbot">Section 10</div>
+      <h2>Discord Alerts</h2>
+      <p>Separate from the indicator's Discord/Telegram system — this is the cBot's own webhook, covering trade-lifecycle events rather than chart signals.</p>
+      <table class="param-table">
+        <thead><tr><th>Event</th><th>Fires when</th></tr></thead>
+        <tbody>
+          <tr><td class="param-name">Order Armed</td><td class="param-desc">A stop order is successfully placed. Includes direction, target price, SL in pips, volume, and risk amount.</td></tr>
+          <tr><td class="param-name">Order Expired</td><td class="param-desc">A pending order is cancelled after the expiry window with no fill.</td></tr>
+          <tr><td class="param-name">Trade Closed</td><td class="param-desc">Fires from cAlgo's own <span class="param-name">Positions.Closed</span> event — catches every close cause: SL hit, manual close, or a daily-loss force-close. Includes net P/L, pips, and close reason.</td></tr>
+          <tr><td class="param-name">Daily Loss Cap Hit</td><td class="param-desc">The 8% daily loss threshold is reached. Positions closed, no further entries that day.</td></tr>
+          <tr><td class="param-name">Max Drawdown Hit</td><td class="param-desc">The 10% peak-equity drawdown threshold is reached. New entries halted until manual restart.</td></tr>
+          <tr><td class="param-name">Margin Level Low</td><td class="param-desc">Margin level drops to or below the floor. Fires once, then stays quiet until margin recovers above the floor again — avoids spamming the channel every bar while margin stays low.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="plan-section" id="cb-checklist">
+      <div class="plan-section-label cbot">Section 11</div>
+      <h2>Pre-Flight Checklist</h2>
+      <div class="chk-list" id="cb-chk-list">
+        <div class="chk-item"><div class="chk-box cbot" onclick="toggleChk(this,'cbot')"></div><div class="chk-text"><strong>Build clean</strong> — Compile in cAlgo with zero errors. Warnings about obsolete API overloads should be resolved by hovering the warning for the exact new signature, not guessed.</div></div>
+        <div class="chk-item"><div class="chk-box cbot" onclick="toggleChk(this,'cbot')"></div><div class="chk-text"><strong>Backtest first</strong> — Run on historical data before going live. Position sizing and margin-level checks haven't been validated against a live broker feed.</div></div>
+        <div class="chk-item"><div class="chk-box cbot" onclick="toggleChk(this,'cbot')"></div><div class="chk-text"><strong>Set Risk % Per Trade</strong> deliberately — default 2.5% assumes up to 3 concurrent trades hitting SL simultaneously lands near the 8% daily cap, not past it.</div></div>
+        <div class="chk-item"><div class="chk-box cbot" onclick="toggleChk(this,'cbot')"></div><div class="chk-text"><strong>Confirm the symbol table</strong> — only symbols explicitly added get tuned Bins/VA%/session hours. Check the log for the fallback-config warning on any new pair.</div></div>
+        <div class="chk-item"><div class="chk-box cbot" onclick="toggleChk(this,'cbot')"></div><div class="chk-text"><strong>Set the Discord webhook</strong> if you want trade-lifecycle alerts — separate URL from the indicator's own alert system.</div></div>
+        <div class="chk-item"><div class="chk-box cbot" onclick="toggleChk(this,'cbot')"></div><div class="chk-text"><strong>Know the drawdown reset behavior</strong> — the 10% kill-switch does not clear automatically. Only restarting the cBot clears it, by design.</div></div>
+      </div>
+    </div>
+
+    <div class="plan-section" id="cb-notes">
+      <div class="plan-section-label cbot">Section 12</div>
+      <h2>Known Limitations</h2>
+      <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>No confluence check</strong><p>The cBot arms purely on EDGE EXH validity plus session filter — it does not weigh the Confluence Gate that the indicator's chart display uses. This was a deliberate simplification, not an oversight.</p></div></div>
+      <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>Bar-close evaluation only</strong><p>Entry signal detection runs on the last closed bar, not live tick price. The actual stop order still fills intrabar the instant price touches it — only the signal detection itself waits for the candle to close.</p></div></div>
+      <div class="callout callout-note"><div class="callout-icon">💡</div><div class="callout-body"><strong>Break-even/trailing after a restart</strong><p>If the cBot restarts while a position is already open, it has no remembered risk distance for that trade — break-even and trailing won't engage until a fresh trade is armed and filled after the restart.</p></div></div>
+      <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>Native trailing stop unverified live</strong><p>Trailing hands off to cTrader's own <span class="param-name">ModifyPosition</span> trailing flag rather than a manual per-tick loop. The parameter is confirmed to exist in this cTrader version, but its exact behavior on an already-open position hasn't been demo-tested yet.</p></div></div>
+    </div>
+
+  </main>
+</div>
+</div><!-- #tab-cbot -->
 
 
 <script>
