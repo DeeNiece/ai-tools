@@ -3086,35 +3086,98 @@ volumeInUnits = riskAmount / (slPips × Symbol.PipValue)
     <div class="plan-section" id="cb-params">
       <div class="plan-section-label cbot">Section 09</div>
       <h2>Parameter Reference</h2>
+      <p>Every parameter currently in the cBot, pulled directly from the code, grouped the same way they appear in cTrader's parameter panel.</p>
+
+      <h4 style="color:var(--gray);font-size:12px;letter-spacing:1px;text-transform:uppercase;margin:20px 0 6px">General</h4>
       <table class="param-table">
-        <thead><tr><th>Parameter</th><th>Default</th><th>Group</th></tr></thead>
+        <thead><tr><th>Parameter</th><th>Default</th><th>What it does</th></tr></thead>
         <tbody>
-          <tr><td class="param-name">Label</td><td class="param-default">VolumeEdgeSniper</td><td class="param-desc">General</td></tr>
-          <tr><td class="param-name">Risk % Per Trade</td><td class="param-default">2.5</td><td class="param-desc">Position Sizing</td></tr>
-          <tr><td class="param-name">One Trade Per Day (per symbol)</td><td class="param-default">true</td><td class="param-desc">Position Sizing</td></tr>
-          <tr><td class="param-name">Max Concurrent Trades (all symbols)</td><td class="param-default">3</td><td class="param-desc">Position Sizing</td></tr>
-          <tr><td class="param-name">ATR Period</td><td class="param-default">14</td><td class="param-desc">Stop Loss</td></tr>
-          <tr><td class="param-name">SL Buffer (x ATR)</td><td class="param-default">0.1</td><td class="param-desc">Stop Loss</td></tr>
-          <tr><td class="param-name">Max SL Distance (x ATR)</td><td class="param-default">2.0</td><td class="param-desc">Stop Loss</td></tr>
-          <tr><td class="param-name">Break-Even Trigger (x Risk)</td><td class="param-default">1.5</td><td class="param-desc">Stop Loss</td></tr>
-          <tr><td class="param-name">Trailing Distance (x ATR)</td><td class="param-default">1.0</td><td class="param-desc">Stop Loss</td></tr>
-          <tr><td class="param-name">PDC Entry Buffer (pips)</td><td class="param-default">2.0</td><td class="param-desc">PDC Stop Order</td></tr>
-          <tr><td class="param-name">Stop Order Expiry (candles)</td><td class="param-default">5</td><td class="param-desc">PDC Stop Order</td></tr>
-          <tr><td class="param-name">Max Daily Loss %</td><td class="param-default">8.0</td><td class="param-desc">Account Risk</td></tr>
-          <tr><td class="param-name">Max Equity Drawdown %</td><td class="param-default">10.0</td><td class="param-desc">Account Risk</td></tr>
-          <tr><td class="param-name">Min Margin Level %</td><td class="param-default">500.0</td><td class="param-desc">Account Risk</td></tr>
-          <tr><td class="param-name">Auto-Detect Symbol Settings</td><td class="param-default">true</td><td class="param-desc">Symbol Profile</td></tr>
-          <tr><td class="param-name">Price Bins</td><td class="param-default">30</td><td class="param-desc">Range Settings (used if Auto-Detect off)</td></tr>
-          <tr><td class="param-name">Value Area Volume %</td><td class="param-default">40.0</td><td class="param-desc">Range Settings</td></tr>
-          <tr><td class="param-name">Use Auto Lookback</td><td class="param-default">true</td><td class="param-desc">Range Settings</td></tr>
-          <tr><td class="param-name">Bars Lookback</td><td class="param-default">24</td><td class="param-desc">Range Settings (used if Auto Lookback off)</td></tr>
-          <tr><td class="param-name">Enable Session Filter</td><td class="param-default">true</td><td class="param-desc">Session Filter</td></tr>
-          <tr><td class="param-name">Auto DST Adjustment</td><td class="param-default">true</td><td class="param-desc">Session Filter</td></tr>
-          <tr><td class="param-name">Enable Discord Alerts</td><td class="param-default">false</td><td class="param-desc">Discord Alerts</td></tr>
-          <tr><td class="param-name">Discord Webhook URL</td><td class="param-default">(empty)</td><td class="param-desc">Discord Alerts</td></tr>
+          <tr><td class="param-name">Label</td><td class="param-default">VolumeEdgeSniper</td><td class="param-desc">Tags every order this cBot places. Used to tell its trades apart from manual ones or other bots on the same account.</td></tr>
         </tbody>
       </table>
-      <div class="callout callout-note"><div class="callout-icon">💡</div><div class="callout-body"><strong>Symbol table</strong><p>Auto-Detect Symbol Settings pulls Bins, Value Area %, active hours, and boundary-scan % from a built-in table. Only symbols added to that table get tuned values — anything else falls back to a generic config and prints a warning to the log the first time it runs.</p></div></div>
+
+      <h4 style="color:var(--gray);font-size:12px;letter-spacing:1px;text-transform:uppercase;margin:20px 0 6px">Position Sizing</h4>
+      <table class="param-table">
+        <thead><tr><th>Parameter</th><th>Default</th><th>What it does</th></tr></thead>
+        <tbody>
+          <tr><td class="param-name">Position Sizing Mode</td><td class="param-default">FixedLot</td><td class="param-desc">FixedLot uses the same lot size every trade. PercentRisk calculates lot size backward from Risk % Per Trade and the structural SL distance, so it varies trade to trade.</td></tr>
+          <tr><td class="param-name">Lot Size</td><td class="param-default">0.10</td><td class="param-desc">Used only in FixedLot mode. Every trade opens at this size, regardless of stop distance.</td></tr>
+          <tr><td class="param-name">Risk % Per Trade</td><td class="param-default">2.5</td><td class="param-desc">Used only in PercentRisk mode. Percent of account equity that trade risks if SL is hit.</td></tr>
+          <tr><td class="param-name">One Trade Per Day (per symbol)</td><td class="param-default">true</td><td class="param-desc">Blocks a second entry on the same symbol the same day, even after the first trade closes.</td></tr>
+          <tr><td class="param-name">Max Concurrent Trades (all symbols)</td><td class="param-default">3</td><td class="param-desc">Portfolio-wide cap, counted across every symbol sharing this cBot's Label.</td></tr>
+        </tbody>
+      </table>
+
+      <h4 style="color:var(--gray);font-size:12px;letter-spacing:1px;text-transform:uppercase;margin:20px 0 6px">Stop Loss</h4>
+      <table class="param-table">
+        <thead><tr><th>Parameter</th><th>Default</th><th>What it does</th></tr></thead>
+        <tbody>
+          <tr><td class="param-name">ATR Period</td><td class="param-default">14</td><td class="param-desc">Period for the ATR indicator that drives the SL buffer, sanity cap, and trailing distance.</td></tr>
+          <tr><td class="param-name">SL Buffer (x ATR)</td><td class="param-default">0.1</td><td class="param-desc">Small cushion added beyond the profile High/Low, so ordinary noise at that level doesn't stop the trade out early.</td></tr>
+          <tr><td class="param-name">Max SL Distance (x ATR)</td><td class="param-default">2.0</td><td class="param-desc">Sanity cap. If the structural SL distance exceeds this multiple of ATR, the trade is skipped entirely instead of risking an oversized stop.</td></tr>
+          <tr><td class="param-name">Break-Even Trigger (x Risk)</td><td class="param-default">1.5</td><td class="param-desc">Once price moves in favor by this multiple of the initial risk distance, SL moves to entry price.</td></tr>
+          <tr><td class="param-name">Trailing Distance (x ATR)</td><td class="param-default">1.0</td><td class="param-desc">Distance behind price cTrader's native trailing stop maintains, once switched on after break-even. Uses ATR frozen at entry, not live ATR.</td></tr>
+        </tbody>
+      </table>
+
+      <h4 style="color:var(--gray);font-size:12px;letter-spacing:1px;text-transform:uppercase;margin:20px 0 6px">PDC Stop Order</h4>
+      <table class="param-table">
+        <thead><tr><th>Parameter</th><th>Default</th><th>What it does</th></tr></thead>
+        <tbody>
+          <tr><td class="param-name">PDC Entry Buffer (pips)</td><td class="param-default">2.0</td><td class="param-desc">How far beyond PDC the stop order sits, so price needs to genuinely push through, not just touch the line.</td></tr>
+          <tr><td class="param-name">Stop Order Expiry (candles)</td><td class="param-default">5</td><td class="param-desc">Candles a pending order stays armed before it's cancelled if PDC isn't crossed.</td></tr>
+        </tbody>
+      </table>
+
+      <h4 style="color:var(--gray);font-size:12px;letter-spacing:1px;text-transform:uppercase;margin:20px 0 6px">Account Risk</h4>
+      <table class="param-table">
+        <thead><tr><th>Parameter</th><th>Default</th><th>What it does</th></tr></thead>
+        <tbody>
+          <tr><td class="param-name">Max Daily Loss %</td><td class="param-default">8.0</td><td class="param-desc">If today's equity loss reaches this, every open position closes and no new entries happen until the next server day.</td></tr>
+          <tr><td class="param-name">Max Equity Drawdown %</td><td class="param-default">10.0</td><td class="param-desc">Measured from all-time peak equity, not daily. Halts new entries entirely — only clears on a manual cBot restart.</td></tr>
+          <tr><td class="param-name">Min Margin Level %</td><td class="param-default">500.0</td><td class="param-desc">Blocks new entries once margin level drops to or below this floor.</td></tr>
+        </tbody>
+      </table>
+
+      <h4 style="color:var(--gray);font-size:12px;letter-spacing:1px;text-transform:uppercase;margin:20px 0 6px">Symbol Profile &amp; Range Settings</h4>
+      <table class="param-table">
+        <thead><tr><th>Parameter</th><th>Default</th><th>What it does</th></tr></thead>
+        <tbody>
+          <tr><td class="param-name">Auto-Detect Symbol Settings</td><td class="param-default">true</td><td class="param-desc">Pulls Bins, Value Area %, and active hours from the built-in symbol table. While on, it overrides Price Bins and Value Area Volume % below — they're only used when this is off.</td></tr>
+          <tr><td class="param-name">Price Bins</td><td class="param-default">30</td><td class="param-desc">Used only when Auto-Detect is off. Number of price bins in the FRVP profile.</td></tr>
+          <tr><td class="param-name">Value Area Volume %</td><td class="param-default">40.0</td><td class="param-desc">Used only when Auto-Detect is off. Percent of volume that defines the value area around POC.</td></tr>
+          <tr><td class="param-name">Use Auto Lookback</td><td class="param-default">true</td><td class="param-desc">Sets the profile's bar lookback automatically per timeframe (e.g. 48 bars on M30).</td></tr>
+          <tr><td class="param-name">Bars Lookback</td><td class="param-default">24</td><td class="param-desc">Used only when Use Auto Lookback is off. Manual bar count for the profile window.</td></tr>
+        </tbody>
+      </table>
+
+      <h4 style="color:var(--gray);font-size:12px;letter-spacing:1px;text-transform:uppercase;margin:20px 0 6px">Session Filter</h4>
+      <table class="param-table">
+        <thead><tr><th>Parameter</th><th>Default</th><th>What it does</th></tr></thead>
+        <tbody>
+          <tr><td class="param-name">Enable Session Filter</td><td class="param-default">true</td><td class="param-desc">Turns on the per-symbol active-hours check from the symbol table. Off means that check is skipped entirely.</td></tr>
+          <tr><td class="param-name">Auto DST Adjustment</td><td class="param-default">true</td><td class="param-desc">Shifts the UTC hour by 1 during UK British Summer Time, so the session table stays aligned with real market hours.</td></tr>
+          <tr><td class="param-name">Enable Custom Time Filter</td><td class="param-default">false</td><td class="param-desc">Adds a second, independent hour-window check on top of the symbol table's own hours.</td></tr>
+          <tr><td class="param-name">Trade Start Hour (UTC)</td><td class="param-default">0</td><td class="param-desc">Start of the custom trading window. Wraps past midnight correctly if start is later than end.</td></tr>
+          <tr><td class="param-name">Trade End Hour (UTC)</td><td class="param-default">23</td><td class="param-desc">End of the custom trading window.</td></tr>
+          <tr><td class="param-name">Use Local Time for Filters</td><td class="param-default">false</td><td class="param-desc">Applies the Time Zone Offset below to the custom time and day filters only. The symbol table's own hours always stay UTC-based regardless.</td></tr>
+          <tr><td class="param-name">Time Zone Offset (UTC+)</td><td class="param-default">8</td><td class="param-desc">Fixed offset used when Use Local Time for Filters is on. Default 8 matches HKT. Not auto-detected from any device — cBots can't read a PC's local clock.</td></tr>
+          <tr><td class="param-name">Enable Day Filter</td><td class="param-default">false</td><td class="param-desc">Turns on the seven day-of-week toggles below.</td></tr>
+          <tr><td class="param-name">Trade Monday – Trade Friday</td><td class="param-default">true</td><td class="param-desc">One toggle per weekday. Only used when Enable Day Filter is on.</td></tr>
+          <tr><td class="param-name">Trade Saturday / Trade Sunday</td><td class="param-default">false</td><td class="param-desc">Off by default — thin or no forex liquidity on these days for most pairs.</td></tr>
+        </tbody>
+      </table>
+
+      <h4 style="color:var(--gray);font-size:12px;letter-spacing:1px;text-transform:uppercase;margin:20px 0 6px">Discord Alerts</h4>
+      <table class="param-table">
+        <thead><tr><th>Parameter</th><th>Default</th><th>What it does</th></tr></thead>
+        <tbody>
+          <tr><td class="param-name">Enable Discord Alerts</td><td class="param-default">false</td><td class="param-desc">Turns on all six trade-lifecycle alerts: armed, filled, expired, closed, daily loss cap, drawdown halt, margin low.</td></tr>
+          <tr><td class="param-name">Discord Webhook URL</td><td class="param-default">(empty)</td><td class="param-desc">Separate from the indicator's own webhook. Needs its own URL to post anywhere.</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout callout-note"><div class="callout-icon">💡</div><div class="callout-body"><strong>Symbol table</strong><p>Auto-Detect Symbol Settings pulls Bins, Value Area %, active hours, and boundary-scan % from a built-in table covering XAUUSD, EURUSD, GBPUSD, and CADJPY. Any other symbol falls back to generic values (30 bins, 40% VA, 7-17 UTC) and prints a warning to the log the first time it runs.</p></div></div>
     </div>
 
     <div class="plan-section" id="cb-discord">
