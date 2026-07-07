@@ -3124,7 +3124,7 @@ volumeInUnits = riskAmount / (slPips × Symbol.PipValue)
       <table class="param-table">
         <thead><tr><th>Parameter</th><th>Default</th><th>What it does</th></tr></thead>
         <tbody>
-          <tr><td class="param-name">PDC Entry Buffer (pips)</td><td class="param-default">2.0</td><td class="param-desc">How far beyond PDC the stop order sits, so price needs to genuinely push through, not just touch the line.</td></tr>
+          <tr><td class="param-name">PDC Entry Buffer (x ATR)</td><td class="param-default">0.2</td><td class="param-desc">How far beyond PDC the stop order sits, as an ATR multiple rather than fixed pips, so it scales correctly across symbols with very different pip sizes (e.g. XAUUSD vs EURUSD).</td></tr>
           <tr><td class="param-name">Stop Order Expiry (candles)</td><td class="param-default">5</td><td class="param-desc">Candles a pending order stays armed before it's cancelled if PDC isn't crossed.</td></tr>
         </tbody>
       </table>
@@ -3187,14 +3187,16 @@ volumeInUnits = riskAmount / (slPips × Symbol.PipValue)
       <table class="param-table">
         <thead><tr><th>Event</th><th>Fires when</th></tr></thead>
         <tbody>
-          <tr><td class="param-name">Order Armed</td><td class="param-desc">A stop order is successfully placed. Includes direction, target price, SL in pips, volume, and risk amount.</td></tr>
+          <tr><td class="param-name">Order Armed</td><td class="param-desc">A stop order is successfully placed. Includes direction, target price, SL in pips with the raw price distance alongside it (e.g. "1622.0 pips (16.22)" on XAUUSD, so a large pip count on a small-pip symbol doesn't look alarming), volume in units with lot size alongside it, and risk amount.</td></tr>
           <tr><td class="param-name">Order Expired</td><td class="param-desc">A pending order is cancelled after the expiry window with no fill.</td></tr>
+          <tr><td class="param-name">Trade Filled</td><td class="param-desc">Fires from cAlgo's own <span class="param-name">Positions.Opened</span> event, the moment the pending stop order actually fills into a live position. Includes entry price, volume, and SL.</td></tr>
           <tr><td class="param-name">Trade Closed</td><td class="param-desc">Fires from cAlgo's own <span class="param-name">Positions.Closed</span> event — catches every close cause: SL hit, manual close, or a daily-loss force-close. Includes net P/L, pips, and close reason.</td></tr>
           <tr><td class="param-name">Daily Loss Cap Hit</td><td class="param-desc">The 8% daily loss threshold is reached. Positions closed, no further entries that day.</td></tr>
           <tr><td class="param-name">Max Drawdown Hit</td><td class="param-desc">The 10% peak-equity drawdown threshold is reached. New entries halted until manual restart.</td></tr>
           <tr><td class="param-name">Margin Level Low</td><td class="param-desc">Margin level drops to or below the floor. Fires once, then stays quiet until margin recovers above the floor again — avoids spamming the channel every bar while margin stays low.</td></tr>
         </tbody>
       </table>
+      <div class="callout callout-note"><div class="callout-icon">💡</div><div class="callout-body"><strong>Duplicate-fire guard</strong><p>Trade Filled and Trade Closed each track the last position ID they alerted on. If cAlgo's event fires more than once for the same fill or close — observed once after a quick stop/restart cycle — only the first alert goes out. The <span class="param-name">[HH:mm:ss HKT]</span>-prefixed log line still prints every time the event actually fires, so repeated firing is still visible there even though Discord only shows it once.</p></div></div>
     </div>
 
     <div class="plan-section" id="cb-checklist">
