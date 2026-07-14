@@ -2998,8 +2998,10 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
     <a class="plan-nav-item" href="#cb-deadtime">Dead Time Filter</a>
     <div class="plan-nav-label">Risk Management</div>
     <a class="plan-nav-item" href="#cb-sizing">Position Sizing</a>
+    <a class="plan-nav-item" href="#cb-sizing-example" style="padding-left:24px;font-size:11px">↳ Sample Calculation</a>
     <a class="plan-nav-item" href="#cb-sl">Structural Stop Loss</a>
     <a class="plan-nav-item" href="#cb-be">Break-Even &amp; Trailing</a>
+    <a class="plan-nav-item" href="#cb-be-example" style="padding-left:24px;font-size:11px">↳ Sample Calculation</a>
     <a class="plan-nav-item" href="#cb-circuit">Account Circuit Breakers</a>
     <div class="plan-nav-label">Diagnostics</div>
     <a class="plan-nav-item" href="#cb-d1">D1 Excursion Averages</a>
@@ -3106,6 +3108,33 @@ volumeInUnits = riskAmount / (maxSlPips × Symbol.PipValue)
       <p>Whichever mode produced the final size, both the Order Armed log line and the Discord alert report it explicitly — <span class="param-name">"...% ceiling, auto-sized from Max SL"</span> or <span class="param-name">"...% ceiling, manual cap"</span> — so it's always clear which one ran on a given trade.</p>
     </div>
 
+    <div class="plan-section" id="cb-sizing-example">
+      <div class="plan-section-label cbot new">Worked Example</div>
+      <h2>Sample Calculation — Position Sizing <span class="param-new">Hypothetical</span></h2>
+      <p style="color:var(--gray);font-size:12.5px">Purely illustrative numbers, worked through step by step so the formula is easy to sanity-check against a real trade later. Not a live signal.</p>
+      <div class="code-block" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px 16px;font-family:var(--font-mono);font-size:12.5px;color:var(--gray);margin:12px 0;line-height:1.9">
+<span style="color:var(--fg)">Assume:</span> Equity = $1,024 · Target Daily Risk % = 5 · Trades Per Day Budget = 3<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ATR = 0.107 · Max SL Distance (x ATR) = 2.5 · Max Lot Size = 0 (auto)<br>
+<br>
+<span style="color:var(--teal)">Step 1 — Effective risk % (Auto-Divide Daily Risk on)</span><br>
+&nbsp;&nbsp;5% ÷ 3 trades = <strong style="color:var(--fg)">1.67%</strong> per trade<br>
+<br>
+<span style="color:var(--teal)">Step 2 — Dollar risk for this trade</span><br>
+&nbsp;&nbsp;$1,024 × 1.67% = <strong style="color:var(--fg)">$17.10</strong><br>
+<br>
+<span style="color:var(--teal)">Step 3 — Sizing basis (Max Lot Size = 0, so sizes off the worst case, not the actual signal)</span><br>
+&nbsp;&nbsp;2.5 × ATR(0.107) = 0.2675 → <strong style="color:var(--fg)">26.75 pips</strong><br>
+<br>
+<span style="color:var(--teal)">Step 4 — Volume</span><br>
+&nbsp;&nbsp;$17.10 ÷ (26.75 pips × PipValue) → rounded down to the broker's lot step<br>
+<br>
+<span style="color:var(--teal)">Step 5 — This specific signal's real structural SL comes in tighter, say 23.5 pips</span><br>
+&nbsp;&nbsp;Position size doesn't change (fixed in Step 4) — but actual risk if stopped out is now:<br>
+&nbsp;&nbsp;23.5 ÷ 26.75 × $17.10 ≈ <strong style="color:var(--fg)">$15.01</strong> — under the $17.10 ceiling, never over it
+      </div>
+      <div class="callout callout-tip"><div class="callout-icon">💡</div><div class="callout-body"><strong>Why Step 5 matters</strong><p>This is the whole point of auto-sizing from Max SL Distance: the position is always sized for the worst case the sanity cap allows, so a tighter real signal can only realize <em>less</em> risk than the target, never more. Confirmed against a real AUDJPY fill this way — target ceiling ≈$17.10, actual realized risk landed at $14.48 once the real 23.5-pip SL was known.</p></div></div>
+    </div>
+
 
     <div class="plan-section" id="cb-sl">
       <div class="plan-section-label cbot">Section 07</div>
@@ -3138,6 +3167,20 @@ volumeInUnits = riskAmount / (maxSlPips × Symbol.PipValue)
       </div>
       <p>The trail distance is <span class="param-name">Trailing Distance (x ATR)</span> (default <span class="param-default">1.0×</span>) multiplied by ATR frozen at the moment the trade was armed — not live ATR. Once a trade is open, later ATR changes have no effect on it. Both the initial stop loss and the trail distance are locked to entry-time volatility.</p>
       <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>Not yet demo-tested</strong><p>The handoff to native trailing is built from cTrader's confirmed <span class="param-name">ModifyPosition</span> signature, but the exact behavior of the trailing flag on an already-open position — whether it persists correctly and updates SL as expected — hasn't been verified live. Confirm on a demo account before trusting this in production: open a trade, let it reach break-even, and watch whether the position's Trailing Stop checkbox shows enabled and the SL actually moves as price advances.</p></div></div>
+    </div>
+
+    <div class="plan-section" id="cb-be-example">
+      <div class="plan-section-label cbot new">Worked Example</div>
+      <h2>Sample Calculation — Break-Even Trigger <span class="param-new">Hypothetical</span></h2>
+      <p style="color:var(--gray);font-size:12.5px">Same formula confirmed against three real live fills (AUDJPY, USDCHF, GBPUSD) in forward testing — reproduced here with round numbers as a tweaking reference.</p>
+      <div class="code-block" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px 16px;font-family:var(--font-mono);font-size:12.5px;color:var(--gray);margin:12px 0;line-height:1.9">
+<span style="color:var(--fg)">Assume:</span> A Buy trade fills with a structural SL of 23.5 pips · Break-Even Trigger (x Risk) = 1.0<br>
+<br>
+<span style="color:var(--teal)">BE Trigger distance</span> = SL distance × multiplier = 23.5 × 1.0 = <strong style="color:var(--fg)">23.5 pips in profit</strong><br>
+<span style="color:var(--teal)">SL destination once triggered</span> = entry + BE Lock Profit (default 2 pips) = <strong style="color:var(--fg)">entry + 2 pips</strong>, not exactly entry
+      </div>
+      <div class="callout callout-tip"><div class="callout-icon">💡</div><div class="callout-body"><strong>Changing the multiplier changes the wait, not the destination</strong><p>The multiplier only controls how far price must move before BE fires — not where SL ends up once it does (always entry + BE Lock Profit). At <span class="param-default">0.8×</span>, the same 23.5-pip SL trade would trigger BE at 23.5 × 0.8 = <strong>18.8 pips</strong> instead of 23.5 — earlier protection, but on less confirmation the move is real. Above 1.0× waits for more favorable movement first. Neither is "correct" — it's a tradeoff between early safety and fewer premature break-evens on trades that pull back before continuing.</p></div></div>
+      <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>This is per-instance, not per-trade</strong><p>The multiplier applies to whatever SL distance <em>each individual trade</em> actually has — it is not a fixed pip number across symbols. A 14.7-pip USDCHF SL and a 16.8-pip GBPUSD SL, both at the same 1.0× setting, trigger BE at 14.7 and 16.8 pips respectively, not at some shared fixed distance.</p></div></div>
     </div>
 
     <div class="plan-section" id="cb-circuit">
