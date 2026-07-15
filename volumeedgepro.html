@@ -556,10 +556,23 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
 <!-- SECTION 0: CHANGELOG -->
 <section id="changelog">
   <div class="section-label new">Section 00 · New</div>
+  <h2>What's New This Round — License System, FTMO Mode, Dashboard Points</h2>
+  <p style="color:var(--gray);font-size:12.5px;margin-bottom:16px">Driven by preparing for real distribution and a live FTMO Swing account, plus continued forward-test findings.</p>
+  <div class="changelog">
+    <div class="changelog-item"><span class="changelog-tag tag-added">ADDED</span><span class="changelog-text"><strong>Both files — License System:</strong> Remote account-based license check at startup, fails closed on every problem. Hardcoded, not a Parameter, to prevent trivial bypass through the settings panel. See License System section.</span></div>
+    <div class="changelog-item"><span class="changelog-tag tag-fixed">FIXED</span><span class="changelog-text"><strong>Both files — License guard on lifecycle methods:</strong> A failed license didn't fully stop the cBot's OnTick / indicator's Calculate() — both are cAlgo lifecycle methods that fire regardless of what OnStart/Initialize did. Confirmed for real: market-open tracking kept running silently on a failed-license instance until both methods got their own explicit guard.</span></div>
+    <div class="changelog-item"><span class="changelog-tag tag-added">ADDED</span><span class="changelog-text"><strong>cBot v2.6 — FTMO / Prop-Firm Risk Mode:</strong> Max Daily Loss and Max Equity Drawdown can now match FTMO's exact static-floor / fixed-dollar mechanics instead of the generic trailing/growing behavior — confirmed directly against FTMO's own Trading Objectives page and in-app tooltips. See FTMO / Prop-Firm Risk Mode section.</span></div>
+    <div class="changelog-item"><span class="changelog-tag tag-added">ADDED</span><span class="changelog-text"><strong>cBot v2.6 — BE Lock Profit:</strong> Break-even now moves SL to entry + a configurable pip buffer (default 2), not exactly entry. The handoff to native trailing was also fixed to protect this locked level instead of just raw entry.</span></div>
+    <div class="changelog-item"><span class="changelog-tag tag-added">ADDED</span><span class="changelog-text"><strong>cBot v2.6 — Entry Point / SL Point dashboard rows:</strong> Real, full distances (not just the buffer sliver) — direction inferred live from price vs PDC. Surfaced and fixed a genuine grid-overflow risk and a startup-timing gap in the process.</span></div>
+    <div class="changelog-item"><span class="changelog-tag tag-fixed">FIXED</span><span class="changelog-text"><strong>cBot v2.6 — Startup gap on live profile:</strong> Entry/SL Point's underlying live profile boundary reset on every restart and only repopulated on the next bar close, up to 30 minutes later. Now also computed once immediately at startup.</span></div>
+    <div class="changelog-item"><span class="changelog-tag tag-added">ADDED</span><span class="changelog-text"><strong>cBot v2.6 — BE Trigger pips on Trade Filled alert:</strong> Both the log line and Discord alert now show exactly how many pips of favorable movement will trigger break-even on that specific trade.</span></div>
+  </div>
+  <hr class="sec">
   <h2>What's New in v2.5 (Indicator) / v2.6 (cBot)</h2>
   <p style="color:var(--gray);font-size:12.5px;margin-bottom:16px">This round of changes was driven mostly by real forward-test logs and live order tickets, not planned features — several items below are bug fixes confirmed against an actual log or chart before being called fixed.</p>
   <div class="changelog">
     <div class="changelog-item"><span class="changelog-tag tag-added">ADDED</span><span class="changelog-text"><strong>cBot v2.6 — Dead Time Filter:</strong> Blocks new watches/entries near market close/open, reading live from Symbol.MarketHours (DST-correct automatically). Confirmed on a real XAUUSD closure that this broker's actual daily gap runs later than the commonly assumed hours — chart/log data is authoritative, not assumed market hours.</span></div>
+
     <div class="changelog-item"><span class="changelog-tag tag-fixed">FIXED</span><span class="changelog-text"><strong>cBot v2.6 — Silent no-tick gap blind spot:</strong> A fully silent closure (zero ticks — confirmed for real on XAUUSD) could mean the closed state is never observed, silently breaking the after-open Dead Time check. Now inferred from a &gt;2-minute gap since the last tick seen at all, logged as MARKET OPEN (inferred).</span></div>
     <div class="changelog-item"><span class="changelog-tag tag-fixed">FIXED</span><span class="changelog-text"><strong>cBot v2.6 + Indicator v2.5 — Watch expiry restarts on skipped bars:</strong> A watch's 8-candle expiry used to silently count bars lost to a Dead Time block or a silent gap against it, sometimes expiring immediately once evaluation resumed. Now restarts fresh from the first bar back, in both the cBot and the indicator's PDC Cross Alert.</span></div>
     <div class="changelog-item"><span class="changelog-tag tag-fixed">FIXED</span><span class="changelog-text"><strong>Indicator v2.5 — PDC Cross Alert now scans backward:</strong> Previously checked only the single most-recently-closed bar — a valid EDGE EXH signal from a few candles earlier was invisible entirely. Confirmed on a live XAUUSD chart. Now scans the full expiry window for the most recent match, mirroring the cBot's own Stage 1.</span></div>
@@ -3006,6 +3019,8 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
     <div class="plan-nav-label">Diagnostics</div>
     <a class="plan-nav-item" href="#cb-d1">D1 Excursion Averages</a>
     <div class="plan-nav-label">Setup</div>
+    <a class="plan-nav-item" href="#cb-license">License System</a>
+    <a class="plan-nav-item" href="#cb-ftmo">FTMO / Prop-Firm Risk Mode</a>
     <a class="plan-nav-item" href="#cb-params">Parameter Reference</a>
     <a class="plan-nav-item" href="#cb-discord">Discord Alerts</a>
     <a class="plan-nav-item" href="#cb-checklist">Pre-Flight Checklist</a>
@@ -3162,10 +3177,11 @@ volumeInUnits = riskAmount / (maxSlPips × Symbol.PipValue)
       <h2>Break-Even &amp; Trailing</h2>
       <p>There is no fixed take profit. EDGE EXH + PDC entries are meant to catch exhaustion reversals, which can run further than a flat reward ratio assumes — a fixed TP would cap upside on exactly the trades where the thesis is strongest.</p>
       <div class="phase-row">
-        <div class="phase-card"><div class="phase-num" style="color:var(--yellow)">STEP 1</div><h4>Break-Even Trigger</h4><p>Once price moves in favor by <span class="param-name">Break-Even Trigger (x Risk)</span> × the initial risk distance (default <span class="param-default">1.5×</span>), SL moves to the entry price. Risk on the trade drops to zero.</p></div>
+        <div class="phase-card"><div class="phase-num" style="color:var(--yellow)">STEP 1</div><h4>Break-Even Trigger</h4><p>Once price moves in favor by <span class="param-name">Break-Even Trigger (x Risk)</span> × the initial risk distance (default <span class="param-default">1.5×</span>), SL moves to entry + <span class="param-name">BE Lock Profit (pips)</span> <span class="param-new">NEW</span> (default <span class="param-default">2</span>). Not exactly entry — a small genuine profit gets locked in, not just breakeven.</p></div>
         <div class="phase-card"><div class="phase-num" style="color:var(--green)">STEP 2</div><h4>Hand Off to Native Trailing</h4><p>Once price moves far enough that an ATR-based trail distance would sit at or past entry, the cBot calls <span class="param-name">ModifyPosition</span> once with cTrader's native trailing stop flag turned on. From that single call onward, cTrader itself moves the SL as price advances — the cBot doesn't touch it again for that trade.</p></div>
       </div>
       <p>The trail distance is <span class="param-name">Trailing Distance (x ATR)</span> (default <span class="param-default">1.0×</span>) multiplied by ATR frozen at the moment the trade was armed — not live ATR. Once a trade is open, later ATR changes have no effect on it. Both the initial stop loss and the trail distance are locked to entry-time volatility.</p>
+      <div class="callout callout-new"><div class="callout-icon">⭐</div><div class="callout-body"><strong>Trailing handoff protects the locked profit</strong><p>Step 2's handoff only switches on native trailing once its starting point is at least as good as the BE-locked level (entry + BE Lock Profit) - not just raw entry. Without this, trailing could theoretically plant SL back down at exactly entry, undoing part of what Step 1 just secured.</p></div></div>
       <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>Not yet demo-tested</strong><p>The handoff to native trailing is built from cTrader's confirmed <span class="param-name">ModifyPosition</span> signature, but the exact behavior of the trailing flag on an already-open position — whether it persists correctly and updates SL as expected — hasn't been verified live. Confirm on a demo account before trusting this in production: open a trade, let it reach break-even, and watch whether the position's Trailing Stop checkbox shows enabled and the SL actually moves as price advances.</p></div></div>
     </div>
 
@@ -3190,8 +3206,9 @@ volumeInUnits = riskAmount / (maxSlPips × Symbol.PipValue)
       <table class="param-table">
         <thead><tr><th>Breaker</th><th>Default</th><th>Behavior</th></tr></thead>
         <tbody>
-          <tr><td class="param-name">Max Daily Loss %</td><td class="param-default">8.0</td><td class="param-desc">If today's equity loss from the day's starting balance reaches this, all of this cBot's open positions are force-closed and pending orders cancelled. No new entries until the next server day.</td></tr>
-          <tr><td class="param-name">Max Equity Drawdown %</td><td class="param-default">10.0</td><td class="param-desc">Measured from all-time peak equity, not a daily reset. If breached, new entries halt entirely — existing positions are left alone. Only clears when the cBot is manually restarted.</td></tr>
+          <tr><td class="param-name">Max Daily Loss %</td><td class="param-default">8.0</td><td class="param-desc">Generic mode: % of today's own starting balance. FTMO mode (see below): fixed dollar amount anchored to <span class="param-name">FTMO Initial Balance</span> forever, never recalculated off a grown account.</td></tr>
+          <tr><td class="param-name">Max Equity Drawdown %</td><td class="param-default">10.0</td><td class="param-desc">Generic mode: trails the all-time equity peak upward. FTMO mode: static floor below <span class="param-name">FTMO Initial Balance</span>, never moves regardless of how high equity climbs. Only clears when the cBot is manually restarted.</td></tr>
+          <tr><td class="param-name">FTMO Initial Balance <span class="param-new">NEW</span></td><td class="param-default">0</td><td class="param-desc">0 = generic mode (both rows above use current/growing balance). Any other value = FTMO mode, anchoring both to that real starting capital permanently. See FTMO / Prop-Firm Risk Mode section.</td></tr>
           <tr><td class="param-name">Min Margin Level %</td><td class="param-default">500.0</td><td class="param-desc">Blocks new entries whenever margin level falls to or below this floor. Still well above a typical margin-call zone (~100%), so it acts as an early warning, not a last resort.</td></tr>
           <tr><td class="param-name">Max Concurrent Trades</td><td class="param-default">3</td><td class="param-desc">Counted across every symbol sharing this cBot's Label, using cAlgo's account-wide Positions/PendingOrders collections. Blocks new entries once the cap is reached.</td></tr>
           <tr><td class="param-name">One Trade Per Day</td><td class="param-default">true</td><td class="param-desc">Per symbol. Prevents re-entering the same pair again the same day, even after the first trade closes — designed to avoid repeated PDC crosses during range-bound price action.</td></tr>
@@ -3214,8 +3231,47 @@ Bear Avg = average of |Low − prevClose| on bearish D1 candles<br>
       <div class="callout callout-note"><div class="callout-icon">💡</div><div class="callout-body"><strong>Diagnostic, not a trading input</strong><p>This does not feed entry, exit, sizing, or expiry logic anywhere. It's a quick gut-check on how much daily range a symbol has typically shown recently — useful context when eyeballing whether a PDC distance or SL width looks reasonable for that symbol's current behavior.</p></div></div>
     </div>
 
+    <div class="plan-section" id="cb-license">
+      <div class="plan-section-label cbot new">Section 11</div>
+      <h2>License System <span class="param-new">NEW</span></h2>
+      <p>Both the cBot and the indicator check a remote license list once at startup, before anything else runs. The list lives at a plain-text URL, one authorized entry per line:</p>
+      <div class="code-block" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px 16px;font-family:var(--font-mono);font-size:12.5px;color:var(--gray);margin:12px 0">
+5854663,Demo,#optional note after a second comma<br>
+12345678,Live,2026-08-01
+      </div>
+      <p><span class="param-name">Mode</span> is <span class="param-default">Live</span>, <span class="param-default">Demo</span>, or <span class="param-default">Any</span> (matches both). A third field is optional: if it's a strict <span class="param-default">yyyy-MM-dd</span> date, that account expires on that date, checked against <span class="param-name">Server.Time</span> — anything else there (a note, a name) is safely ignored, so existing non-expiring entries with a trailing comment keep working. Lines starting with <span class="param-name">#</span> are full comments, skipped entirely.</p>
+      <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>Fails closed on every problem</strong><p>Unreachable URL, empty response, account not on the list, account on the list but wrong mode, or an expired date — all result in every remaining line of <span class="param-name">OnStart</span>/<span class="param-name">Initialize</span> being skipped. No trading, no dashboard, no indicators computed. The cBot's <span class="param-name">OnTick</span> and the indicator's <span class="param-name">Calculate()</span> both carry their own explicit license guard too, since these are cAlgo lifecycle methods that fire automatically regardless of what <span class="param-name">OnStart</span>/<span class="param-name">Initialize</span> did — confirmed necessary for real, after an early build let market-open tracking keep running silently on a failed-license instance.</p></div></div>
+      <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>Not a [Parameter] — deliberately</strong><p>The license URL is a hardcoded constant, not a visible settings field. A user-editable URL would let anyone point it at their own always-valid list, or (if left as a toggle) simply switch the check off. This only stops someone going through the Parameters panel — it doesn't survive someone editing the raw source file directly, which is the fundamental limit of any check shipped as readable source rather than a compiled, obfuscated binary. Building with <strong>"Build with Source Code" unchecked</strong> in cTrader keeps the distributed <span class="param-name">.algo</span> file source-free by default, closing most of that gap in practice.</p></div></div>
+      <p>On success, both files print an identification banner to the log, and the cBot's Started Discord alert leads with a shorter version (no account number/type):</p>
+      <div class="code-block" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px 16px;font-family:var(--font-mono);font-size:11.5px;color:var(--gray);margin:12px 0;line-height:1.7">
+========================================================<br>
+VolumeEdge Sniper cBot v2.6 — Initialized<br>
+Developed by AISprint.app using Claude AI<br>
+Licensed to: 5854663 (Demo)<br>
+--------------------------------------------------------<br>
+Disclaimer: Automated trading carries a substantial risk of loss...<br>
+========================================================
+      </div>
+    </div>
+
+    <div class="plan-section" id="cb-ftmo">
+      <div class="plan-section-label cbot new">Section 12</div>
+      <h2>FTMO / Prop-Firm Risk Mode <span class="param-new">NEW</span></h2>
+      <p>The generic Account Risk checks (below) assume a personal account: <span class="param-name">Max Daily Loss %</span> recalculates off <em>today's own</em> starting balance, and <span class="param-name">Max Equity Drawdown %</span> trails the equity <em>peak</em> upward as the account grows. Neither matches how FTMO — or most prop firms — actually define these limits.</p>
+      <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>Confirmed directly against FTMO's own Trading Objectives page and in-app tooltips</strong><p>FTMO's Max Loss is <strong>static</strong> — a fixed floor below the account's <em>initial</em> balance, permanently, that never moves even as the account grows. FTMO's Max Daily Loss is a <strong>fixed dollar amount</strong> based on initial capital, forever — not a percentage that grows with the account. The generic checks get both of these backwards for a funded challenge: drawdown would tighten unnecessarily as the account grows, while daily loss allowance would loosen — the dangerous direction, since it could let the cBot allow more daily loss than the account is actually permitted.</p></div></div>
+      <p><span class="param-name">FTMO Initial Balance (0 = generic mode)</span> is the single switch. Set it to the account's real, original starting capital — <strong>not current balance</strong> — and both checks switch to FTMO's exact mechanics:</p>
+      <div class="code-block" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px 16px;font-family:var(--font-mono);font-size:12.5px;color:var(--gray);margin:12px 0">
+Daily loss floor  = TodayStartBalance − (FtmoInitialBalance × MaxDailyLossPercent / 100)<br>
+Drawdown floor    = FtmoInitialBalance × (1 − MaxDrawdownPercent / 100)  <span style="color:var(--gray)">// static, never moves</span>
+      </div>
+      <p>Left at <span class="param-default">0</span>, both checks keep their original generic behavior — correct for a personal account, not for a funded challenge.</p>
+      <div class="callout callout-tip"><div class="callout-icon">💡</div><div class="callout-body"><strong>Build in a buffer below FTMO's actual numbers</strong><p>Real-world example from setup: FTMO's own limits were 5% daily / 10% max loss, but the settings actually used were <span class="param-default">4%</span> / <span class="param-default">8%</span> — a deliberate cushion so normal execution slippage on a force-close can't let real equity slip past FTMO's line before the safeguard finishes acting. The daily buffer was kept smaller (1%) since a false trigger only costs the rest of that day; the drawdown buffer was kept larger (2%) since a false trigger there is far less costly than an actual breach, which can end the account permanently.</p></div></div>
+      <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>Max Concurrent Trades ≠ trades per day</strong><p>Reducing <span class="param-name">Max Concurrent Trades</span> to 1 (as done for a 1:30-leverage FTMO Swing account) means never more than one position open at once across all symbols — it does not stop a symbol from closing a trade and opening a fresh one later the same day. If you want a genuine one-shot-per-symbol-per-day rule too, that's the separate <span class="param-name">One Trade Per Day (per symbol)</span> setting.</p></div></div>
+    </div>
+
+
     <div class="plan-section" id="cb-params">
-      <div class="plan-section-label cbot">Section 11</div>
+      <div class="plan-section-label cbot">Section 13</div>
       <h2>Parameter Reference</h2>
       <p>Every parameter currently in the cBot, pulled directly from the code, grouped the same way they appear in cTrader's parameter panel.</p>
 
@@ -3252,6 +3308,7 @@ Bear Avg = average of |Low − prevClose| on bearish D1 candles<br>
           <tr><td class="param-name">SL Buffer (x ATR) / (pips) <span class="param-new">NEW pips variant</span></td><td class="param-default">0.15 / 5.0</td><td class="param-desc">Small cushion added beyond the profile High/Low, so ordinary noise at that level doesn't stop the trade out early.</td></tr>
           <tr><td class="param-name">Max SL Distance (x ATR) / (pips) <span class="param-new">NEW pips variant</span></td><td class="param-default">2.0 / 100.0</td><td class="param-desc">Sanity cap. If the structural SL distance exceeds this, the trade is skipped entirely instead of risking an oversized stop. Also the sizing basis for Max Lot Size = 0 (auto mode).</td></tr>
           <tr><td class="param-name">Break-Even Trigger (x Risk) / (pips) <span class="param-new">NEW pips variant</span></td><td class="param-default">1.0 / 15.0</td><td class="param-desc">ATR mode: multiple of that trade's own risk distance. Pips mode: same flat distance for every trade regardless of its own SL size — a real behavior difference, not just a unit swap.</td></tr>
+          <tr><td class="param-name">BE Lock Profit (pips) <span class="param-new">NEW</span></td><td class="param-default">2.0</td><td class="param-desc">Where SL actually lands once Break-Even triggers: entry + this many pips, not exactly entry. Locks in a small real profit instead of pure breakeven.</td></tr>
           <tr><td class="param-name">Trailing Distance (x ATR) / (pips) <span class="param-new">NEW pips variant</span></td><td class="param-default">1.0 / 15.0</td><td class="param-desc">Distance behind price cTrader's native trailing stop maintains, once switched on after break-even. ATR mode uses ATR frozen at entry, not live ATR.</td></tr>
         </tbody>
       </table>
@@ -3284,12 +3341,29 @@ Bear Avg = average of |Low − prevClose| on bearish D1 candles<br>
         </tbody>
       </table>
 
+      <h4 style="color:var(--gray);font-size:12px;letter-spacing:1px;text-transform:uppercase;margin:20px 0 6px">Dashboard Rows <span class="param-new">NEW</span></h4>
+      <p style="color:var(--gray);font-size:12.5px">Four rows added to make tuning easier, all pips-based, all in the bottom half of the panel. Not parameters — computed live every bar.</p>
+      <table class="param-table">
+        <thead><tr><th>Row</th><th>Shows</th><th>Colored</th></tr></thead>
+        <tbody>
+          <tr><td class="param-name">Entry Buffer</td><td class="param-desc">Just the PDC Entry Buffer distance itself — the small cushion added past PDC. Not the full distance from current price to trigger.</td><td class="param-desc">White (neutral)</td></tr>
+          <tr><td class="param-name">SL Buffer</td><td class="param-desc">Just the SL Buffer cushion — the small distance added past the profile boundary. Not the full stop distance.</td><td class="param-desc">White (neutral)</td></tr>
+          <tr><td class="param-name">Entry Point <span class="param-new">NEW</span></td><td class="param-desc">The real, full distance from current price to where a trade would trigger — same formula as a live armed order, direction inferred from current price vs PDC (below PDC = BUY side, above = SELL side).</td><td class="param-desc">Green (BUY) / Red (SELL)</td></tr>
+          <tr><td class="param-name">SL Point <span class="param-new">NEW</span></td><td class="param-desc">The real, full stop distance for that same inferred direction — distance to the live profile boundary plus SL Buffer, exactly matching <span class="param-name">ArmStopOrder</span>'s actual formula.</td><td class="param-desc">Green (BUY) / Red (SELL)</td></tr>
+        </tbody>
+      </table>
+      <div class="callout callout-tip"><div class="callout-icon">💡</div><div class="callout-body"><strong>Buffer rows are neutral on purpose</strong><p>Entry/SL Buffer are symmetric distances — the same number whichever direction eventually fires — so they're colored white, not green/red, specifically to avoid being misread as a live buy/sell signal the way Trade Watch or PDC are. Entry/SL Point genuinely are direction-specific (they show "if BUY" or "if SELL" depending on current price), so green/red is accurate there, not misleading.</p></div></div>
+      <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>XAUUSD numbers look enormous — confirmed correct, not a bug</strong><p>IC Markets defines XAUUSD's pip at the 2nd decimal (<span class="param-name">Pip position: 2</span> in the symbol specification) — a genuinely small unit relative to gold's large dollar moves. A real $11.10 stop distance reports as ~1110 pips under this convention. Verified directly against a live XAUUSD fill's log line before trusting it: <span class="param-name">"armed Sell stop ... SL 1109.9p"</span> matched an actual 11.10 price-unit stop exactly. Every FX pair uses the familiar 0.0001 (or 0.01 for JPY pairs) convention — this is specific to gold.</p></div></div>
+      <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>Startup gap, fixed</strong><p>Entry/SL Point depend on the live profile boundary, which resets to unset on every restart and only repopulates on the next bar close — up to 30 minutes later on M30. Confirmed for real: a restart at 14:12 HKT left these two rows blank until the 14:30 bar closed. Fixed by also computing the live profile once immediately at startup, alongside the existing EDGE EXH history backfill.</p></div></div>
+
+
       <h4 style="color:var(--gray);font-size:12px;letter-spacing:1px;text-transform:uppercase;margin:20px 0 6px">Account Risk</h4>
       <table class="param-table">
         <thead><tr><th>Parameter</th><th>Default</th><th>What it does</th></tr></thead>
         <tbody>
-          <tr><td class="param-name">Max Daily Loss %</td><td class="param-default">8.0</td><td class="param-desc">If today's equity loss reaches this, every open position closes and no new entries happen until the next server day. The only setting that enforces a real daily loss ceiling regardless of trade count.</td></tr>
-          <tr><td class="param-name">Max Equity Drawdown %</td><td class="param-default">10.0</td><td class="param-desc">Measured from all-time peak equity, not daily. Halts new entries entirely — only clears on a manual cBot restart.</td></tr>
+          <tr><td class="param-name">Max Daily Loss %</td><td class="param-default">8.0</td><td class="param-desc">Generic mode: % of today's own starting balance, recalculated fresh each day. FTMO mode: fixed dollar amount off FTMO Initial Balance, forever.</td></tr>
+          <tr><td class="param-name">Max Equity Drawdown %</td><td class="param-default">10.0</td><td class="param-desc">Generic mode: trails the equity peak. FTMO mode: static floor below FTMO Initial Balance, never moves. Only clears on a manual cBot restart.</td></tr>
+          <tr><td class="param-name">FTMO Initial Balance <span class="param-new">NEW</span></td><td class="param-default">0</td><td class="param-desc">0 = generic mode. Any other value = FTMO's exact static/fixed-dollar mechanics for both rows above. Use the account's true original starting capital, not current balance.</td></tr>
           <tr><td class="param-name">Min Margin Level %</td><td class="param-default">500.0</td><td class="param-desc">Blocks new entries once margin level drops to or below this floor.</td></tr>
         </tbody>
       </table>
@@ -3337,7 +3411,7 @@ Bear Avg = average of |Low − prevClose| on bearish D1 candles<br>
     </div>
 
     <div class="plan-section" id="cb-discord">
-      <div class="plan-section-label cbot">Section 12</div>
+      <div class="plan-section-label cbot">Section 14</div>
       <h2>Discord Alerts</h2>
       <p>Separate from the indicator's Discord/Telegram system — this is the cBot's own webhook, covering trade-lifecycle events rather than chart signals.</p>
       <table class="param-table">
@@ -3346,7 +3420,7 @@ Bear Avg = average of |Low − prevClose| on bearish D1 candles<br>
           <tr><td class="param-name">Started <span class="param-new">NEW</span></td><td class="param-desc">The cBot instance starts, once all state recovery finishes. Summarizes trading mode (live/visual), sizing mode, unit mode, Max Lot Size setting, Dead Time config, and whether an already-open position was recovered.</td></tr>
           <tr><td class="param-name">Order Armed</td><td class="param-desc">A stop order is successfully placed. Includes direction, target price, SL in pips with the raw price distance alongside it (e.g. "1622.0 pips (16.22)" on XAUUSD, so a large pip count on a small-pip symbol doesn't look alarming), volume in units with lot size alongside it, risk amount, and — in PercentRisk mode — which sizing path produced it ("auto-sized from Max SL" or "manual cap").</td></tr>
           <tr><td class="param-name">Order Expired</td><td class="param-desc">A pending order is cancelled after the expiry window with no fill.</td></tr>
-          <tr><td class="param-name">Trade Filled</td><td class="param-desc">Fires from cAlgo's own <span class="param-name">Positions.Opened</span> event, the moment the pending stop order actually fills into a live position. Includes entry price, volume, and SL.</td></tr>
+          <tr><td class="param-name">Trade Filled</td><td class="param-desc">Fires from cAlgo's own <span class="param-name">Positions.Opened</span> event, the moment the pending stop order actually fills into a live position. Includes entry price, volume, SL, and <span class="param-name">BE Trigger = X pips</span> <span class="param-new">NEW</span> — how far price needs to move in favor before break-even fires on this specific trade, computed from its own frozen risk distance.</td></tr>
           <tr><td class="param-name">Trade Closed</td><td class="param-desc">Fires from cAlgo's own <span class="param-name">Positions.Closed</span> event — catches every close cause: SL hit, manual close, or a daily-loss force-close. Includes net P/L, pips, and close reason.</td></tr>
           <tr><td class="param-name">Missing SL Escalation <span class="param-new">NEW</span></td><td class="param-desc">A position is found without a stop loss attached and the retry loop hasn't succeeded within 5 minutes. Retries are throttled to once per 15 seconds — an earlier version retried every tick for hours on one real incident, flooding the broker and delaying other Discord sends behind it in the queue.</td></tr>
           <tr><td class="param-name">Daily Loss Cap Hit</td><td class="param-desc">The 8% daily loss threshold is reached. Positions closed, no further entries that day.</td></tr>
@@ -3360,7 +3434,7 @@ Bear Avg = average of |Low − prevClose| on bearish D1 candles<br>
     </div>
 
     <div class="plan-section" id="cb-checklist">
-      <div class="plan-section-label cbot">Section 13</div>
+      <div class="plan-section-label cbot">Section 15</div>
       <h2>Pre-Flight Checklist</h2>
       <div class="chk-list" id="cb-chk-list">
         <div class="chk-item"><div class="chk-box cbot" onclick="toggleChk(this,'cbot')"></div><div class="chk-text"><strong>Build clean</strong> — Compile in cAlgo with zero errors. Warnings about obsolete API overloads should be resolved by hovering the warning for the exact new signature, not guessed.</div></div>
@@ -3376,7 +3450,7 @@ Bear Avg = average of |Low − prevClose| on bearish D1 candles<br>
     </div>
 
     <div class="plan-section" id="cb-notes">
-      <div class="plan-section-label cbot">Section 14</div>
+      <div class="plan-section-label cbot">Section 16</div>
       <h2>Known Limitations</h2>
       <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>No confluence check</strong><p>The cBot arms purely on EDGE EXH validity plus session filter — it does not weigh the Confluence Gate that the indicator's chart display uses. This was a deliberate simplification, not an oversight.</p></div></div>
       <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>Bar-close evaluation only</strong><p>Entry signal detection runs on the last closed bar, not live tick price. The actual stop order still fills intrabar the instant price touches it — only the signal detection itself waits for the candle to close.</p></div></div>
