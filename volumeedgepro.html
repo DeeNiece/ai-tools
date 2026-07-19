@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VolumeEdge Pro v2.5 &amp; Sniper v2.6 — Parameter Guide &amp; Trading Tips</title>
+<title>VolumeEdgePro Parameter Guide — Indicator, Sniper &amp; EXH cBots</title>
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="favicon.png">
 <meta name="description" content="VolumeEdge Pro v2.5 &amp; VolumeEdge Sniper v2.6 — Complete parameter guide, bin-based signal engine, Edge Exhaustion logic, Dead Time filter, Discord alerts, and trading workflow for cTrader.">
@@ -454,12 +454,14 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
   <div class="tab-bar-brand">
     <div><div class="b-name">VolumeEdge Pro</div><div class="b-ver">v2.4 · cTrader · May 2026</div></div>
   </div>
-  <button class="tab-btn active" onclick="switchTab('guide',this)">📖 Parameter Guide</button>
-  <button class="tab-btn t-sniper" onclick="switchTab('sniper',this)">🎯 The Sniper</button>
+  <button class="tab-btn active" onclick="switchTab('guide',this)">📖 VolumeEdgePro Parameter Guide</button>
+  <button class="tab-btn t-cbot" onclick="switchTab('cbot',this)">🎯 VolumeEdgePro Sniper cBot Guide</button>
+  <button class="tab-btn t-vepx" onclick="switchTab('vepx',this)">⚡ VolumeEdgePro EXH cBot Guide</button>
+  <button class="tab-btn t-compare" onclick="switchTab('compare',this)">⚖️ Comparison Tables</button>
+  <button class="tab-btn t-sniper" onclick="switchTab('sniper',this)">🏹 The Sniper</button>
   <button class="tab-btn t-fade" onclick="switchTab('fade',this)">📉 Session Fade</button>
   <button class="tab-btn t-magnet" onclick="switchTab('magnet',this)">🧲 POC Magnet</button>
   <button class="tab-btn t-playbook" onclick="switchTab('playbook',this)">📚 Playbook</button>
-  <button class="tab-btn t-cbot" onclick="switchTab('cbot',this)">🤖 cBot Guide</button>
 </div>
 
 <!-- ═══ TAB 1: PARAMETER GUIDE (original content) ═══ -->
@@ -3045,7 +3047,7 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
   </nav>
   <main class="plan-main">
     <div class="plan-hero">
-      <div class="plan-hero-badge cbot">CBOT · VOLUMEEDGE SNIPER v2.6</div>
+      <div class="plan-hero-badge cbot">CBOT · VOLUMEEDGEPRO SNIPER v2.6</div>
       <h1><span class="hl-cbot" style="color:#FF6B9D">VolumeEdge Sniper</span><br>Automated PDC Stop-Order Entries</h1>
       <p class="plan-hero-sub">EDGE EXH signal + PDC cross · Percent-risk sizing · Structural SL · No fixed TP</p>
       <div class="plan-pills">
@@ -3505,6 +3507,625 @@ IsOurTrade(label, comment) = (label == OrderLabel) || (comment == OrderLabel)
   </main>
 </div>
 </div><!-- #tab-cbot -->
+
+<div class="tab-page" id="tab-vepx" style="padding-top:118px">
+<div class="plan-wrap">
+  <nav class="plan-sidebar">
+    <div class="plan-nav-label">Overview</div>
+    <a class="plan-nav-item" href="#vx-what">What is the cBot</a>
+    <a class="plan-nav-item" href="#vx-relation">cBot vs Indicator</a>
+    <div class="plan-nav-label">Entry Logic</div>
+    <a class="plan-nav-item" href="#vx-entry">EDGE EXH Entry</a>
+    <a class="plan-nav-item" href="#vx-expiry">Order Expiry</a>
+    <a class="plan-nav-item" href="#vx-deadtime">Dead Time Filter</a>
+    <a class="plan-nav-item" href="#vx-visual">Empty Bin Boundary Line</a>
+    <div class="plan-nav-label">Risk Management</div>
+    <a class="plan-nav-item" href="#vx-sizing">Position Sizing</a>
+    <a class="plan-nav-item" href="#vx-sizing-example" style="padding-left:24px;font-size:11px">↳ Sample Calculation</a>
+    <a class="plan-nav-item" href="#vx-sl">Structural Stop Loss</a>
+    <a class="plan-nav-item" href="#vx-be">Break-Even &amp; Trailing</a>
+    <a class="plan-nav-item" href="#vx-be-example" style="padding-left:24px;font-size:11px">↳ Sample Calculation</a>
+    <a class="plan-nav-item" href="#vx-circuit">Account Circuit Breakers</a>
+    <div class="plan-nav-label">Diagnostics</div>
+    <a class="plan-nav-item" href="#vx-d1">D1 Excursion Averages</a>
+    <div class="plan-nav-label">Setup</div>
+    <a class="plan-nav-item" href="#vx-license">License System</a>
+    <a class="plan-nav-item" href="#vx-ftmo">FTMO / Prop-Firm Risk Mode</a>
+    <a class="plan-nav-item" href="#vx-manual">Manual Trade Integration</a>
+    <a class="plan-nav-item" href="#vx-params">Parameter Reference</a>
+    <a class="plan-nav-item" href="#vx-discord">Discord Alerts</a>
+    <a class="plan-nav-item" href="#vx-checklist">Pre-Flight Checklist</a>
+    <a class="plan-nav-item" href="#vx-notes">Known Limitations</a>
+  </nav>
+  <main class="plan-main">
+    <div class="plan-hero">
+      <div class="plan-hero-badge cbot">CBOT · VOLUMEEDGEPRO EXH v1.0</div>
+      <h1><span class="hl-cbot" style="color:#FF6B9D">VolumeEdgePro EXH</span><br>Immediate EDGE EXH Stop-Order Entries</h1>
+      <p class="plan-hero-sub">EDGE EXH signal only, no PDC · Single-pass detection · Percent-risk sizing · Structural SL · No fixed TP</p>
+      <div class="plan-pills">
+        <div class="plan-pill"><strong>1 trade/symbol</strong> at a time</div>
+        <div class="plan-pill"><strong>Max 3</strong> concurrent, all symbols</div>
+        <div class="plan-pill"><strong>1.60%</strong> risk/trade default (example, live-tuned)</div>
+        <div class="plan-pill"><strong>8%</strong> daily loss cap</div>
+        <div class="plan-pill"><strong>10%</strong> drawdown kill-switch</div>
+        <div class="plan-pill"><strong>3 candles</strong> expiry default</div>
+        <div class="plan-pill" style="border-color:rgba(38,166,154,.3);color:var(--teal)"><strong>NEW</strong> No PDC dependency</div>
+        <div class="plan-pill" style="border-color:rgba(38,166,154,.3);color:var(--teal)"><strong>NEW</strong> Empty bin boundary line</div>
+      </div>
+    </div>
+
+    <div class="plan-section" id="vx-what">
+      <div class="plan-section-label cbot">Section 01</div>
+      <h2>What is the cBot?</h2>
+      <p>VolumeEdgePro EXH is a cAlgo cBot — a fully automated trading robot, a sibling to VolumeEdgePro Sniper sharing roughly 90% of its code (sizing, structural SL, BE/trailing, expiry logic, Dead Time, license, Discord, dashboard). It watches for the same <span class="kw kw-green">EDGE EXH<span class="tooltip">Edge Exhaustion — fires when price touches the top or bottom of the FRVP profile with at least the configured minimum number of empty volume bins at that boundary, plus a rejection wick. Signals that the move has run out of participants at that extreme.</span></span> signal you see on the indicator, but reacts to it completely differently: no <span class="kw kw-teal">Previous Day Close (PDC)<span class="tooltip">Yesterday's daily close price. VEPX doesn't use this at all — it plays no role anywhere in this cBot's logic.</span></span> involved anywhere. A real stop (or stop-limit) order is placed immediately, buffered off the signal bar's own close price.</p>
+      <div class="callout callout-tip"><div class="callout-icon">🎯</div><div class="callout-body"><strong>The core idea</strong><p>The Sniper cBot treats EDGE EXH as a first hint that needs a second, independent confirmation (a later PDC cross) before committing capital. VEPX treats a genuinely strong EDGE EXH signal — meeting the configured empty-bin threshold — as sufficient on its own, and reacts to it immediately. The placed order itself, via the broker, is the only remaining confirmation gate.</p></div></div>
+      <p>The cBot builds and calculates its own FRVP profile directly from price data. It does not read anything from the indicator — it can run with or without VolumeEdge Pro loaded on the same chart.</p>
+    </div>
+
+    <div class="plan-section" id="vx-relation">
+      <div class="plan-section-label cbot">Section 02</div>
+      <h2>cBot vs Indicator</h2>
+      <div class="phase-row">
+        <div class="phase-card"><div class="phase-num" style="color:#FF6B9D">INDICATOR</div><h4>VolumeEdge Pro</h4><p>Visual only. Draws profiles, POC/VAH/VAL, signal labels, PDC lines, and sends optional Discord/Telegram alerts. Never places an order.</p></div>
+        <div class="phase-card"><div class="phase-num" style="color:#FF6B9D">CBOT</div><h4>VolumeEdgePro EXH</h4><p>Minimal chart drawing — EDGE EXH label history, the raw profile High/Low line, and the empty-bin boundary line — no full profile rendering. Computes its own profile internally, places real stop orders immediately on signal, manages SL via break-even and trailing, enforces account-level risk caps.</p></div>
+      </div>
+      <div class="callout callout-note"><div class="callout-icon">💡</div><div class="callout-body"><strong>Running both together</strong><p>Loading the indicator on the same chart as the cBot is optional but useful — it gives you a visual way to confirm what the cBot's internal logic is seeing, using the same EDGE EXH pattern and gray/colored label system. Note the indicator's general EDGE EXH alert (independent of its own PDC Cross Alert) is the closest match to VEPX's own trigger condition.</p></div></div>
+    </div>
+
+    <div class="plan-section" id="vx-entry">
+      <div class="plan-section-label cbot">Section 03</div>
+      <h2>EDGE EXH Entry Logic <span class="param-new">No PDC involved</span></h2>
+      <p>On every closed bar, the cBot checks that single most-recently-closed candle against its own FRVP profile for that symbol's timeframe — deliberately no backward scan, since this design reacts to a fresh signal, not one from several bars ago where price may have already moved well past the entry point.</p>
+      <div class="phase-row">
+        <div class="phase-card"><div class="phase-num" style="color:var(--green)">BUY SETUP</div><h4>EDGE EXH BUY (Min Empty Bins met)</h4><p>A real Buy Stop is placed <strong>immediately</strong> — no waiting phase — at the signal bar's own close price + Entry Buffer.</p></div>
+        <div class="phase-card"><div class="phase-num" style="color:var(--red)">SELL SETUP</div><h4>EDGE EXH SELL (Min Empty Bins met)</h4><p>A real Sell Stop is placed <strong>immediately</strong> at the signal bar's own close price − Entry Buffer.</p></div>
+      </div>
+      <div class="callout callout-new"><div class="callout-icon">⭐</div><div class="callout-body"><strong>The core difference from the Sniper cBot</strong><p>The Sniper requires a second, independent condition — price later closing back across PDC — before any order exists at all. VEPX has one gate only: the EDGE EXH pattern match itself. There is no internal "watch" state anywhere in this cBot's code — detection and placement happen in the same pass, on the same bar. The placed stop order (or stop-limit order) is itself the confirmation mechanism, via the broker, not a candle-close check.</p></div></div>
+      <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>No confluence gate</strong><p>Same as the Sniper cBot — gates purely on the EDGE EXH bin pattern plus the session filter, not the indicator's Confluence Gate. Confluence and EDGE EXH validity are treated as two different things being tested independently.</p></div></div>
+    </div>
+
+    <div class="plan-section" id="vx-expiry">
+      <div class="plan-section-label cbot">Section 04</div>
+      <h2>Order Expiry <span class="param-new">One window, not two</span></h2>
+      <p>Since there's no pre-order watch phase, there's only one waiting period to configure: how long the real placed order is allowed to sit unfilled before being cancelled.</p>
+      <div class="phase-row">
+        <div class="phase-card"><div class="phase-num" style="color:var(--green)">EXPIRY BARS</div><h4>Expiry Bars</h4><p>Default <span class="param-default">3</span> — deliberately lower than the Sniper cBot's defaults, since VEPX has no separate watch-phase budget to spend first; the full window goes to the order itself. If price never reaches the buffered level within this many candles, the signal is treated as false, or the market reacted the other way.</p></div>
+      </div>
+      <p>Tracked by comparing the current closed-bar index against the bar index recorded when the order was placed — not by broker-side time expiry — so it behaves consistently across symbols and timeframes.</p>
+      <div class="callout callout-note"><div class="callout-icon">💡</div><div class="callout-body"><strong>Only one order at a time</strong><p>Same as the Sniper cBot — never stacks a second pending order while one is already live for that symbol. A fresh EDGE EXH signal appearing while an order is pending is simply ignored until the first one fills or expires — and since Stage 1 only checks the single latest bar with no backward scan, that fresh signal isn't retroactively caught once the slot frees up either.</p></div></div>
+      <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>Doesn't yet have the Dead Time skip-restart protection</strong><p>The Sniper cBot's pending-order expiry has this same open gap (see its own Known Limitations) — if Dead Time or a silent gap happens while a real order is sitting live, this counter keeps advancing through it uninterrupted, on both cBots equally.</p></div></div>
+    </div>
+
+    <div class="plan-section" id="vx-deadtime">
+      <div class="plan-section-label cbot new">Section 05</div>
+      <h2>Dead Time Filter</h2>
+      <p><span class="param-name">Enable Dead Time Filter</span> (default <span class="param-default">off</span>) blocks a new EDGE EXH detection pass entirely within a window around a symbol's actual market close/open, reading directly from cTrader's own <span class="param-name">Symbol.MarketHours</span> — the broker's real schedule, not a hand-maintained UTC guess. DST-correct automatically, since it follows the broker's own calendar rather than a fixed offset. Identical implementation to the Sniper cBot, copied unchanged.</p>
+      <div class="phase-row">
+        <div class="phase-card"><div class="phase-num" style="color:var(--yellow)">BEFORE CLOSE</div><h4>Dead Time Before Close (min)</h4><p>Default <span class="param-default">120</span>. Reads <span class="param-name">TimeTillClose()</span> fresh on every check — no memory involved, so this side is unaffected by any tick-gap issue below.</p></div>
+        <div class="phase-card"><div class="phase-num" style="color:var(--green)">AFTER OPEN</div><h4>Dead Time After Open (min)</h4><p>Default <span class="param-default">30</span>. Measured from the last detected open transition — this side depends on actually observing the market reopen.</p></div>
+      </div>
+      <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>Silent no-tick gaps — confirmed for real (on the Sniper cBot; same code here)</strong><p>A closure with genuinely zero ticks (confirmed on XAUUSD — two full M30 bars never formed at all during a broker closure) means the closed state might never be directly observed, since transition detection only runs inside <span class="param-name">OnTick</span>. Fixed by also tracking the gap since the <em>last tick seen at all</em>, regardless of open state — an unusually large gap (&gt;2 minutes) is itself treated as proof a close-then-reopen happened. Logged as <span class="param-name">MARKET OPEN (inferred)</span> when this path catches it.</p></div></div>
+      <div class="callout callout-note"><div class="callout-icon">💡</div><div class="callout-body"><strong>Simpler consequence here than on the Sniper cBot</strong><p>Since VEPX has no multi-bar watch phase to protect, a Dead Time block just means that bar's detection pass is skipped entirely — nothing to restart, since nothing was waiting. The next non-blocked bar evaluates fresh, checking only that bar's own candle for a signal, same as always.</p></div></div>
+    </div>
+
+    <div class="plan-section" id="vx-visual">
+      <div class="plan-section-label cbot new">Section 06</div>
+      <h2>Empty Bin Boundary Line <span class="param-new">NEW — VEPX only</span></h2>
+      <p>The Sniper cBot draws only its EDGE EXH label and a PDC line — minimal, by design. VEPX has no PDC at all, so it draws something more useful instead: two distinct reference lines, both fully configurable.</p>
+      <div class="phase-row">
+        <div class="phase-card"><div class="phase-num" style="color:var(--gray)">RAW EXTREME</div><h4>Profile High/Low Line</h4><p><span class="param-name">Show Profile High/Low Line</span> (default on). Gray dotted line at the raw profile High/Low, with a "High: X.XXXXX" / "Low: X.XXXXX" label — same style as the indicator's own boundary lines. Shows where the candle actually touched.</p></div>
+        <div class="phase-card"><div class="phase-num" style="color:var(--yellow)">REAL VOID</div><h4>Empty Bin Boundary Line</h4><p><span class="param-name">Show Empty Bin Boundary Line</span> (default on). Yellow line at the innermost edge of the empty-bin cluster — walking inward from each extreme until the first non-empty bin. Shows where real trading activity actually stopped, not just the candle's tip.</p></div>
+      </div>
+      <p>Both lines are computed from the exact same live profile the entry logic itself evaluates each bar — what's drawn on the chart is guaranteed to match what's actually being checked for a signal, not a separately-approximated visual.</p>
+      <div class="callout callout-tip"><div class="callout-icon">💡</div><div class="callout-body"><strong>Why two lines, not one</strong><p>The gap between the raw extreme and the empty-bin boundary is itself informative — a wide gap means a long, thin wick with real volume nowhere near it (classic exhaustion); a narrow gap means the candle's extreme and the real void sit almost together (a cleaner, more decisive rejection). Both fully independently configurable — color, width, and line style — so you can visually distinguish them however you prefer.</p></div></div>
+    </div>
+
+    <div class="plan-section" id="vx-sizing">
+      <div class="plan-section-label cbot">Section 07</div>
+      <h2>Position Sizing</h2>
+      <p>Lot size is calculated backward from risk, not set as a fixed number. <span class="param-name">Risk % Per Trade</span> (default <span class="param-default">2.5%</span>) defines how much of current account equity that specific trade is allowed to lose if its stop loss is hit.</p>
+      <div class="code-block" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px 16px;font-family:var(--font-mono);font-size:12px;color:var(--gray);margin:12px 0">
+riskAmount = Account.Equity × (RiskPercentPerTrade / 100)<br>
+volumeInUnits = riskAmount / (slPips × Symbol.PipValue)
+      </div>
+      <p>Because stop-loss distance is structural (see next section), it varies trade to trade and symbol to symbol. A wide structural stop gets a smaller lot size; a tight one gets a larger lot size — so dollar risk stays consistent even though pip distance doesn't.</p>
+      <div class="callout callout-tip"><div class="callout-icon">💡</div><div class="callout-body"><strong>Why this matters across symbols</strong><p>A 20-pip stop is normal for GBPJPY but far too tight for XAUUSD. Percent-risk sizing removes the need to hand-tune lot size per symbol — the math adjusts automatically to whatever that symbol's actual structure requires.</p></div></div>
+
+      <h3 class="new">Auto-Divide Daily Risk <span class="param-new">NEW</span></h3>
+      <p>Turning on <span class="param-name">Auto-Divide Daily Risk</span> replaces <span class="param-name">Risk % Per Trade</span> entirely with a value computed live from two easier-to-reason-about inputs: <span class="param-name">Target Daily Risk %</span> and <span class="param-name">Trades Per Day Budget</span>.</p>
+      <div class="code-block" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px 16px;font-family:var(--font-mono);font-size:12px;color:var(--gray);margin:12px 0">
+effectiveRiskPercent = TargetDailyRiskPercent / TradesPerDayBudget<br>
+<span style="color:var(--gray)">// e.g. 5% ÷ 3 trades = 1.67% per trade — computed automatically, never typed in by hand</span>
+      </div>
+      <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>This is a sizing input, not an enforced daily cap</strong><p><span class="param-name">Trades Per Day Budget</span> only feeds the division above — it does not limit how many trades actually happen. <span class="param-name">One Trade Per Day (per symbol)</span> caps each individual symbol to 1 trade/day; <span class="param-name">Max Concurrent Trades</span> caps simultaneous open positions portfolio-wide, not total trades across the day. Across 10 symbols each independently eligible for 1 trade, more than 3 trades can genuinely fire in a single day if enough signals occur and slots free up as earlier trades close. The only setting that actually enforces a hard daily loss ceiling regardless of trade count is <span class="param-name">Max Daily Loss %</span> — use both together: this for sizing math, that for the real backstop.</p></div></div>
+
+      <h3 class="new">Max Lot Size <span class="param-new">NEW</span></h3>
+      <p>Percent-risk sizing has a failure mode: an unusually tight structural SL forces the position larger to hit the same dollar-risk target, with no upper bound. Confirmed for real on a live AUDUSD order ticket — a 1.7-pip SL sized to a full 1.00 lot (100,000 units) on a $1,024 account. The dollar-risk math was technically correct, but the position was extremely exposed to even mild slippage, since a stop that tight can be blown through entirely by a fast move.</p>
+      <p><span class="param-name">Max Lot Size</span> defaults to <span class="param-default">0</span>, which means <strong>auto-derive from Max SL Distance</strong> — every trade sizes as if the SL were the worst-case width the sanity cap allows, not the actual (possibly much tighter) signal SL:</p>
+      <div class="code-block" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px 16px;font-family:var(--font-mono);font-size:12px;color:var(--gray);margin:12px 0">
+maxSlPips = MaxSlDistance (x ATR) → pips<br>
+volumeInUnits = riskAmount / (maxSlPips × Symbol.PipValue)
+      </div>
+      <p>Setting it to any value greater than 0 switches to a flat manual ceiling instead — sizing runs normally off the trade's actual SL, then gets capped down if it would exceed that number.</p>
+      <div class="callout callout-tip"><div class="callout-icon">💡</div><div class="callout-body"><strong>Only ever caps down</strong><p>Both modes can only make a trade's real risk lower than the target percent, never higher. In auto mode, most real signals will be tighter than the worst-case max, so realized average risk per trade typically runs noticeably below the target % — "target %" becomes a ceiling to plan around, not a reliable per-trade average.</p></div></div>
+      <p>Whichever mode produced the final size, both the Order Armed log line and the Discord alert report it explicitly — <span class="param-name">"...% ceiling, auto-sized from Max SL"</span> or <span class="param-name">"...% ceiling, manual cap"</span> — so it's always clear which one ran on a given trade.</p>
+    </div>
+
+    <div class="plan-section" id="vx-sizing-example">
+      <div class="plan-section-label cbot new">Worked Example</div>
+      <h2>Sample Calculation — Position Sizing <span class="param-new">Hypothetical</span></h2>
+      <p style="color:var(--gray);font-size:12.5px">Purely illustrative numbers, worked through step by step so the formula is easy to sanity-check against a real trade later. Not a live signal.</p>
+      <div class="code-block" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px 16px;font-family:var(--font-mono);font-size:12.5px;color:var(--gray);margin:12px 0;line-height:1.9">
+<span style="color:var(--fg)">Assume:</span> Equity = $1,024 · Target Daily Risk % = 5 · Trades Per Day Budget = 3<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ATR = 0.107 · Max SL Distance (x ATR) = 2.5 · Max Lot Size = 0 (auto)<br>
+<br>
+<span style="color:var(--teal)">Step 1 — Effective risk % (Auto-Divide Daily Risk on)</span><br>
+&nbsp;&nbsp;5% ÷ 3 trades = <strong style="color:var(--fg)">1.67%</strong> per trade<br>
+<br>
+<span style="color:var(--teal)">Step 2 — Dollar risk for this trade</span><br>
+&nbsp;&nbsp;$1,024 × 1.67% = <strong style="color:var(--fg)">$17.10</strong><br>
+<br>
+<span style="color:var(--teal)">Step 3 — Sizing basis (Max Lot Size = 0, so sizes off the worst case, not the actual signal)</span><br>
+&nbsp;&nbsp;2.5 × ATR(0.107) = 0.2675 → <strong style="color:var(--fg)">26.75 pips</strong><br>
+<br>
+<span style="color:var(--teal)">Step 4 — Volume</span><br>
+&nbsp;&nbsp;$17.10 ÷ (26.75 pips × PipValue) → rounded down to the broker's lot step<br>
+<br>
+<span style="color:var(--teal)">Step 5 — This specific signal's real structural SL comes in tighter, say 23.5 pips</span><br>
+&nbsp;&nbsp;Position size doesn't change (fixed in Step 4) — but actual risk if stopped out is now:<br>
+&nbsp;&nbsp;23.5 ÷ 26.75 × $17.10 ≈ <strong style="color:var(--fg)">$15.01</strong> — under the $17.10 ceiling, never over it
+      </div>
+      <div class="callout callout-tip"><div class="callout-icon">💡</div><div class="callout-body"><strong>Why Step 5 matters</strong><p>This is the whole point of auto-sizing from Max SL Distance: the position is always sized for the worst case the sanity cap allows, so a tighter real signal can only realize <em>less</em> risk than the target, never more. Confirmed against a real AUDJPY fill this way — target ceiling ≈$17.10, actual realized risk landed at $14.48 once the real 23.5-pip SL was known.</p></div></div>
+    </div>
+
+
+    <div class="plan-section" id="vx-sl">
+      <div class="plan-section-label cbot">Section 08</div>
+      <h2>Structural Stop Loss</h2>
+      <p>The stop loss sits at the price level that actually invalidates the trade thesis — not an arbitrary ATR multiple detached from the setup.</p>
+      <div class="phase-row">
+        <div class="phase-card"><div class="phase-num" style="color:var(--green)">BUY</div><h4>SL below profile Low</h4><p>SL = <span class="param-name">profile Low</span> − (ATR × <span class="param-name">SL Buffer</span>). If price falls back through the Low, the exhaustion read was wrong.</p></div>
+        <div class="phase-card"><div class="phase-num" style="color:var(--red)">SELL</div><h4>SL above profile High</h4><p>SL = <span class="param-name">profile High</span> + (ATR × <span class="param-name">SL Buffer</span>). If price rallies back through the High, same logic in reverse.</p></div>
+      </div>
+      <p><span class="param-name">SL Buffer (x ATR)</span> default <span class="param-default">0.1</span> adds a small cushion beyond the exact level so ordinary noise touching the boundary doesn't stop the trade out prematurely.</p>
+      <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>Sanity cap</strong><p><span class="param-name">Max SL Distance (x ATR)</span>, default <span class="param-default">2.0</span>, skips the trade entirely if the structural distance is wider than that multiple of ATR. This keeps sloppy, wide-range setups out of the system instead of forcing an oversized risk to fit them.</p></div></div>
+
+      <h3 class="new">Distance Unit Mode <span class="param-new">NEW</span></h3>
+      <p><span class="param-name">Distance Unit Mode</span> switches all five distance-based risk parameters — SL Buffer, Max SL Distance, Break-Even Trigger, Trailing Distance, and Entry Buffer — between two ways of expressing the same kind of distance:</p>
+      <div class="phase-row">
+        <div class="phase-card"><div class="phase-num" style="color:var(--accent)">ATR MULTIPLE</div><h4>Default</h4><p>Every distance scales with that symbol's current volatility. No behavior change from earlier versions unless this is switched.</p></div>
+        <div class="phase-card"><div class="phase-num" style="color:var(--yellow)">FIXED PIPS</div><h4>Alternate</h4><p>Every distance becomes a flat pip value, regardless of current ATR.</p></div>
+      </div>
+      <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>Not just a relabeling</strong><p>In ATR mode, Break-Even Trigger is a multiple of <em>that trade's own risk distance</em> — a wide-SL trade needs more favorable movement to reach break-even than a tight-SL trade. In Fixed Pips mode, it becomes the same flat distance for every trade regardless of that trade's own SL size. Switching modes is a genuine change in behavior, not a unit conversion.</p></div></div>
+    </div>
+
+
+    <div class="plan-section" id="vx-be">
+      <div class="plan-section-label cbot">Section 09</div>
+      <h2>Break-Even &amp; Trailing</h2>
+      <p>There is no fixed take profit. EDGE EXH entries are meant to catch exhaustion reversals, which can run further than a flat reward ratio assumes — a fixed TP would cap upside on exactly the trades where the thesis is strongest.</p>
+      <div class="phase-row">
+        <div class="phase-card"><div class="phase-num" style="color:var(--yellow)">STEP 1</div><h4>Break-Even Trigger</h4><p>Once price moves in favor by <span class="param-name">Break-Even Trigger (x Risk)</span> × the initial risk distance (default <span class="param-default">1.5×</span>), SL moves to entry + <span class="param-name">BE Lock Profit (pips)</span> <span class="param-new">NEW</span> (default <span class="param-default">2</span>). Not exactly entry — a small genuine profit gets locked in, not just breakeven.</p></div>
+        <div class="phase-card"><div class="phase-num" style="color:var(--green)">STEP 2</div><h4>Hand Off to Native Trailing</h4><p>Once price moves far enough that an ATR-based trail distance would sit at or past entry, the cBot calls <span class="param-name">ModifyPosition</span> once with cTrader's native trailing stop flag turned on. From that single call onward, cTrader itself moves the SL as price advances — the cBot doesn't touch it again for that trade.</p></div>
+      </div>
+      <p>The trail distance is <span class="param-name">Trailing Distance (x ATR)</span> (default <span class="param-default">1.0×</span>) multiplied by ATR frozen at the moment the trade was armed — not live ATR. Once a trade is open, later ATR changes have no effect on it. Both the initial stop loss and the trail distance are locked to entry-time volatility.</p>
+      <div class="callout callout-new"><div class="callout-icon">⭐</div><div class="callout-body"><strong>Trailing handoff protects the locked profit</strong><p>Step 2's handoff only switches on native trailing once its starting point is at least as good as the BE-locked level (entry + BE Lock Profit) - not just raw entry. Without this, trailing could theoretically plant SL back down at exactly entry, undoing part of what Step 1 just secured.</p></div></div>
+      <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>Not yet demo-tested</strong><p>The handoff to native trailing is built from cTrader's confirmed <span class="param-name">ModifyPosition</span> signature, but the exact behavior of the trailing flag on an already-open position — whether it persists correctly and updates SL as expected — hasn't been verified live. Confirm on a demo account before trusting this in production: open a trade, let it reach break-even, and watch whether the position's Trailing Stop checkbox shows enabled and the SL actually moves as price advances.</p></div></div>
+    </div>
+
+    <div class="plan-section" id="vx-be-example">
+      <div class="plan-section-label cbot new">Worked Example</div>
+      <h2>Sample Calculation — Break-Even Trigger <span class="param-new">Hypothetical</span></h2>
+      <p style="color:var(--gray);font-size:12.5px">Same formula confirmed against three real live fills (AUDJPY, USDCHF, GBPUSD) in forward testing — reproduced here with round numbers as a tweaking reference.</p>
+      <div class="code-block" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px 16px;font-family:var(--font-mono);font-size:12.5px;color:var(--gray);margin:12px 0;line-height:1.9">
+<span style="color:var(--fg)">Assume:</span> A Buy trade fills with a structural SL of 23.5 pips · Break-Even Trigger (x Risk) = 1.0<br>
+<br>
+<span style="color:var(--teal)">BE Trigger distance</span> = SL distance × multiplier = 23.5 × 1.0 = <strong style="color:var(--fg)">23.5 pips in profit</strong><br>
+<span style="color:var(--teal)">SL destination once triggered</span> = entry + BE Lock Profit (default 2 pips) = <strong style="color:var(--fg)">entry + 2 pips</strong>, not exactly entry
+      </div>
+      <div class="callout callout-tip"><div class="callout-icon">💡</div><div class="callout-body"><strong>Changing the multiplier changes the wait, not the destination</strong><p>The multiplier only controls how far price must move before BE fires — not where SL ends up once it does (always entry + BE Lock Profit). At <span class="param-default">0.8×</span>, the same 23.5-pip SL trade would trigger BE at 23.5 × 0.8 = <strong>18.8 pips</strong> instead of 23.5 — earlier protection, but on less confirmation the move is real. Above 1.0× waits for more favorable movement first. Neither is "correct" — it's a tradeoff between early safety and fewer premature break-evens on trades that pull back before continuing.</p></div></div>
+      <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>This is per-instance, not per-trade</strong><p>The multiplier applies to whatever SL distance <em>each individual trade</em> actually has — it is not a fixed pip number across symbols. A 14.7-pip USDCHF SL and a 16.8-pip GBPUSD SL, both at the same 1.0× setting, trigger BE at 14.7 and 16.8 pips respectively, not at some shared fixed distance.</p></div></div>
+    </div>
+
+    <div class="plan-section" id="vx-circuit">
+      <div class="plan-section-label cbot">Section 10</div>
+      <h2>Account Circuit Breakers</h2>
+      <p>These operate at the account level, shared across every symbol instance of the cBot running on the same account.</p>
+      <table class="param-table">
+        <thead><tr><th>Breaker</th><th>Default</th><th>Behavior</th></tr></thead>
+        <tbody>
+          <tr><td class="param-name">Max Daily Loss %</td><td class="param-default">8.0</td><td class="param-desc">Generic mode: % of today's own starting balance. FTMO mode (see below): fixed dollar amount anchored to <span class="param-name">FTMO Initial Balance</span> forever, never recalculated off a grown account.</td></tr>
+          <tr><td class="param-name">Max Equity Drawdown %</td><td class="param-default">10.0</td><td class="param-desc">Generic mode: trails the all-time equity peak upward. FTMO mode: static floor below <span class="param-name">FTMO Initial Balance</span>, never moves regardless of how high equity climbs. Only clears when the cBot is manually restarted.</td></tr>
+          <tr><td class="param-name">FTMO Initial Balance <span class="param-new">NEW</span></td><td class="param-default">0</td><td class="param-desc">0 = generic mode (both rows above use current/growing balance). Any other value = FTMO mode, anchoring both to that real starting capital permanently. See FTMO / Prop-Firm Risk Mode section.</td></tr>
+          <tr><td class="param-name">Min Margin Level %</td><td class="param-default">500.0</td><td class="param-desc">Blocks new entries whenever margin level falls to or below this floor. Still well above a typical margin-call zone (~100%), so it acts as an early warning, not a last resort.</td></tr>
+          <tr><td class="param-name">Max Concurrent Trades</td><td class="param-default">3</td><td class="param-desc">Counted across every symbol sharing this cBot's Label, using cAlgo's account-wide Positions/PendingOrders collections. Blocks new entries once the cap is reached.</td></tr>
+          <tr><td class="param-name">One Trade Per Day</td><td class="param-default">true</td><td class="param-desc">Per symbol. Prevents re-entering the same pair again the same day, even after the first trade closes — designed to avoid repeated EDGE EXH triggers during range-bound price action.</td></tr>
+        </tbody>
+      </table>
+      <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>Position and pending-order checks are per-symbol</strong><p>An earlier version of this cBot checked positions account-wide without filtering by symbol name — which silently capped the entire portfolio at 1 trade total instead of 1 per symbol. This is fixed in v2.0: every check filters on <span class="param-name">SymbolName</span> explicitly.</p></div></div>
+      <div class="callout callout-new"><div class="callout-icon">⭐</div><div class="callout-body"><strong>Max Concurrent Trades — cross-instance race, confirmed and fixed</strong><p>Every symbol runs as its own cBot instance but shares the same AppDomain (confirmed via a shared static HTTP client). Two symbol instances evaluating the same M30 bar close could both read <span class="param-name">Positions.Count()</span> before either's order had actually registered — confirmed for real with two trades opening 1.13 seconds apart while the cap was set to 1. Fixed with a static lock (<span class="param-name">_tradeLock</span>) shared across every symbol instance, held through the entire check-then-place sequence, not just the count check — the race window was specifically the gap between reading the count and the broker registering the new order.</p></div></div>
+    </div>
+
+    <div class="plan-section" id="vx-d1">
+      <div class="plan-section-label cbot new">Section 11</div>
+      <h2>D1 Excursion Averages <span class="param-new">NEW</span></h2>
+      <p>A diagnostic-only statistic, shared with the indicator's own D1 Direction Dashboard. It measures, over the last <span class="param-name">D1 Excursion Lookback (days)</span> daily candles (default <span class="param-default">20</span>), how far price has typically traveled beyond the previous close on bullish vs. bearish days:</p>
+      <div class="code-block" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px 16px;font-family:var(--font-mono);font-size:12px;color:var(--gray);margin:12px 0">
+Bull Avg = average of |High − prevClose| on bullish D1 candles<br>
+Bear Avg = average of |Low − prevClose| on bearish D1 candles<br>
+<span style="color:var(--gray)">// Doji candles (close == open) are skipped</span>
+      </div>
+      <p>Shown on the cBot dashboard as two rows — <span class="param-name">D1 Bull Avg (Nd)</span> and <span class="param-name">D1 Bear Avg (Nd)</span> — and only recomputed once a genuinely new D1 bar appears, not every tick or every M30 bar close.</p>
+      <div class="callout callout-note"><div class="callout-icon">💡</div><div class="callout-body"><strong>Diagnostic, not a trading input</strong><p>This does not feed entry, exit, sizing, or expiry logic anywhere. It's a quick gut-check on how much daily range a symbol has typically shown recently — useful context when eyeballing whether an SL width looks reasonable for that symbol's current behavior.</p></div></div>
+    </div>
+
+    <div class="plan-section" id="vx-license">
+      <div class="plan-section-label cbot new">Section 12</div>
+      <h2>License System <span class="param-new">NEW</span></h2>
+      <p>Both the cBot and the indicator check a remote license list once at startup, before anything else runs. The list lives at a plain-text URL, one authorized entry per line:</p>
+      <div class="code-block" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px 16px;font-family:var(--font-mono);font-size:12.5px;color:var(--gray);margin:12px 0">
+5854663,Demo,#optional note after a second comma<br>
+12345678,Live,2026-08-01
+      </div>
+      <p><span class="param-name">Mode</span> is <span class="param-default">Live</span>, <span class="param-default">Demo</span>, or <span class="param-default">Any</span> (matches both). A third field is optional: if it's a strict <span class="param-default">yyyy-MM-dd</span> date, that account expires on that date, checked against <span class="param-name">Server.Time</span> — anything else there (a note, a name) is safely ignored, so existing non-expiring entries with a trailing comment keep working. Lines starting with <span class="param-name">#</span> are full comments, skipped entirely.</p>
+      <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>Fails closed on every problem</strong><p>Unreachable URL, empty response, account not on the list, account on the list but wrong mode, or an expired date — all result in every remaining line of <span class="param-name">OnStart</span>/<span class="param-name">Initialize</span> being skipped. No trading, no dashboard, no indicators computed. The cBot's <span class="param-name">OnTick</span> and the indicator's <span class="param-name">Calculate()</span> both carry their own explicit license guard too, since these are cAlgo lifecycle methods that fire automatically regardless of what <span class="param-name">OnStart</span>/<span class="param-name">Initialize</span> did — confirmed necessary for real, after an early build let market-open tracking keep running silently on a failed-license instance.</p></div></div>
+      <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>Not a [Parameter] — deliberately</strong><p>The license URL is a hardcoded constant, not a visible settings field. A user-editable URL would let anyone point it at their own always-valid list, or (if left as a toggle) simply switch the check off. This only stops someone going through the Parameters panel — it doesn't survive someone editing the raw source file directly, which is the fundamental limit of any check shipped as readable source rather than a compiled, obfuscated binary. Building with <strong>"Build with Source Code" unchecked</strong> in cTrader keeps the distributed <span class="param-name">.algo</span> file source-free by default, closing most of that gap in practice.</p></div></div>
+      <p>On success, both files print an identification banner to the log, and the cBot's Started Discord alert leads with a shorter version (no account number/type):</p>
+      <div class="code-block" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px 16px;font-family:var(--font-mono);font-size:11.5px;color:var(--gray);margin:12px 0;line-height:1.7">
+========================================================<br>
+VolumeEdgePro EXH cBot v2.6 — Initialized<br>
+Developed by AISprint.app using Claude AI<br>
+Licensed to: 5854663 (Demo)<br>
+--------------------------------------------------------<br>
+Disclaimer: Automated trading carries a substantial risk of loss...<br>
+========================================================
+      </div>
+    </div>
+
+    <div class="plan-section" id="vx-ftmo">
+      <div class="plan-section-label cbot new">Section 13</div>
+      <h2>FTMO / Prop-Firm Risk Mode <span class="param-new">NEW</span></h2>
+      <p>The generic Account Risk checks (below) assume a personal account: <span class="param-name">Max Daily Loss %</span> recalculates off <em>today's own</em> starting balance, and <span class="param-name">Max Equity Drawdown %</span> trails the equity <em>peak</em> upward as the account grows. Neither matches how FTMO — or most prop firms — actually define these limits.</p>
+      <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>Confirmed directly against FTMO's own Trading Objectives page and in-app tooltips</strong><p>FTMO's Max Loss is <strong>static</strong> — a fixed floor below the account's <em>initial</em> balance, permanently, that never moves even as the account grows. FTMO's Max Daily Loss is a <strong>fixed dollar amount</strong> based on initial capital, forever — not a percentage that grows with the account. The generic checks get both of these backwards for a funded challenge: drawdown would tighten unnecessarily as the account grows, while daily loss allowance would loosen — the dangerous direction, since it could let the cBot allow more daily loss than the account is actually permitted.</p></div></div>
+      <p><span class="param-name">FTMO Initial Balance (0 = generic mode)</span> is the single switch. Set it to the account's real, original starting capital — <strong>not current balance</strong> — and both checks switch to FTMO's exact mechanics:</p>
+      <div class="code-block" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px 16px;font-family:var(--font-mono);font-size:12.5px;color:var(--gray);margin:12px 0">
+Daily loss floor  = TodayStartBalance − (FtmoInitialBalance × MaxDailyLossPercent / 100)<br>
+Drawdown floor    = FtmoInitialBalance × (1 − MaxDrawdownPercent / 100)  <span style="color:var(--gray)">// static, never moves</span>
+      </div>
+      <p>Left at <span class="param-default">0</span>, both checks keep their original generic behavior — correct for a personal account, not for a funded challenge.</p>
+      <div class="callout callout-tip"><div class="callout-icon">💡</div><div class="callout-body"><strong>Build in a buffer below FTMO's actual numbers</strong><p>Real-world example from setup: FTMO's own limits were 5% daily / 10% max loss, but the settings actually used were <span class="param-default">4%</span> / <span class="param-default">8%</span> — a deliberate cushion so normal execution slippage on a force-close can't let real equity slip past FTMO's line before the safeguard finishes acting. The daily buffer was kept smaller (1%) since a false trigger only costs the rest of that day; the drawdown buffer was kept larger (2%) since a false trigger there is far less costly than an actual breach, which can end the account permanently.</p></div></div>
+      <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>Max Concurrent Trades ≠ trades per day</strong><p>Reducing <span class="param-name">Max Concurrent Trades</span> to 1 (as done for a 1:30-leverage FTMO Swing account) means never more than one position open at once across all symbols — it does not stop a symbol from closing a trade and opening a fresh one later the same day. If you want a genuine one-shot-per-symbol-per-day rule too, that's the separate <span class="param-name">One Trade Per Day (per symbol)</span> setting.</p></div></div>
+    </div>
+
+
+    <div class="plan-section" id="vx-manual">
+      <div class="plan-section-label cbot new">Section 14</div>
+      <h2>Manual Trade Integration <span class="param-new">NEW</span></h2>
+      <p>Every place the cBot checks "does this trade belong to me" — position recovery, break-even, trailing, the missing-SL fallback, Discord alerts, the daily-loss force-close, and the <span class="param-name">Max Concurrent Trades</span> count — used to check one thing only: <span class="param-name">Label == "VolumeEdgeSniper"</span>. A manually-placed trade never carries that label, so it was completely invisible to all of it.</p>
+      <p>A single helper now checks <strong>either</strong> Label <strong>or</strong> Comment:</p>
+      <div class="code-block" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px 16px;font-family:var(--font-mono);font-size:12.5px;color:var(--gray);margin:12px 0">
+IsOurTrade(label, comment) = (label == OrderLabel) || (comment == OrderLabel)
+      </div>
+      <p>Type the exact same text as the <span class="param-name">Label</span> parameter (default <span class="param-default">VolumeEdgeSniper</span>) into a manual order's <strong>Comment</strong> field, and that trade gets the full treatment — recovered correctly after a restart, BE/trailing/missing-SL fallback applied, counted toward the concurrent-trade cap, protected by the daily-loss force-close, and gets the normal Discord Trade Filled/Closed alerts.</p>
+      <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>Applied everywhere consistently, on purpose</strong><p>A partial version of this — say, only extending it to break-even/trailing — would create a confusing half-managed trade: protected by BE but invisible to the concurrent-trade cap, or not recovered properly after a restart. Applied to all 13 places a trade is identified as this cBot's own, so a tagged manual trade is either fully managed or not, never partially.</p></div></div>
+      <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>Strictly case-sensitive, exact match</strong><p>C#'s <span class="param-name">==</span> on strings is case-sensitive with no trimming. <span class="param-name">volumeedgesniper</span>, <span class="param-name">Volumeedgesniper</span>, or a trailing space all silently fail to match — no error, the trade just quietly doesn't get picked up. Copy-paste the exact Label value rather than typing it from memory.</p></div></div>
+      <h3 class="new">Enable Trading's actual scope</h3>
+      <p>Checked in exactly one place in the entire file: immediately before <span class="param-name">ArmStopOrder</span> calls <span class="param-name">PlaceStopOrder</span> for one of the cBot's <em>own</em> signal-driven trades. Nothing else depends on it.</p>
+      <div class="callout callout-tip"><div class="callout-icon">💡</div><div class="callout-body"><strong>A genuinely useful combination</strong><p>Set <span class="param-name">Enable Trading = No</span> on an account, and the cBot will never place its own trades there — but everything else keeps running fully, including full management of any manually-placed, Comment-tagged trade. This gives a real "visual-only, but still get automated risk management on my own manual trades" mode, not just a pure read-only display.</p></div></div>
+    </div>
+
+
+    <div class="plan-section" id="vx-params">
+      <div class="plan-section-label cbot">Section 15</div>
+      <h2>Parameter Reference</h2>
+      <p>Every parameter currently in the cBot, pulled directly from the code, grouped the same way they appear in cTrader's parameter panel.</p>
+
+      <h4 style="color:var(--gray);font-size:12px;letter-spacing:1px;text-transform:uppercase;margin:20px 0 6px">General</h4>
+      <table class="param-table">
+        <thead><tr><th>Parameter</th><th>Default</th><th>What it does</th></tr></thead>
+        <tbody>
+          <tr><td class="param-name">Label</td><td class="param-default">VEPX</td><td class="param-desc">Tags every order this cBot places. Used to tell its trades apart from manual ones or other bots on the same account.</td></tr>
+        </tbody>
+      </table>
+
+      <h4 style="color:var(--gray);font-size:12px;letter-spacing:1px;text-transform:uppercase;margin:20px 0 6px">Position Sizing</h4>
+      <table class="param-table">
+        <thead><tr><th>Parameter</th><th>Default</th><th>What it does</th></tr></thead>
+        <tbody>
+          <tr><td class="param-name">Position Sizing Mode</td><td class="param-default">FixedLot</td><td class="param-desc">FixedLot uses the same lot size every trade. PercentRisk calculates lot size backward from Risk % Per Trade and the structural SL distance, so it varies trade to trade.</td></tr>
+          <tr><td class="param-name">Lot Size</td><td class="param-default">0.10</td><td class="param-desc">Used only in FixedLot mode. Every trade opens at this size, regardless of stop distance.</td></tr>
+          <tr><td class="param-name">Risk % Per Trade</td><td class="param-default">2.5</td><td class="param-desc">Used only in PercentRisk mode, and only when Auto-Divide Daily Risk is off. Percent of account equity that trade risks if SL is hit.</td></tr>
+          <tr><td class="param-name">Auto-Divide Daily Risk <span class="param-new">NEW</span></td><td class="param-default">false</td><td class="param-desc">When on, overrides Risk % Per Trade entirely with Target Daily Risk % ÷ Trades Per Day Budget, computed live.</td></tr>
+          <tr><td class="param-name">Target Daily Risk % <span class="param-new">NEW</span></td><td class="param-default">5.0</td><td class="param-desc">Used only when Auto-Divide Daily Risk is on. The daily risk budget being divided.</td></tr>
+          <tr><td class="param-name">Trades Per Day Budget <span class="param-new">NEW</span></td><td class="param-default">3</td><td class="param-desc">Used only when Auto-Divide Daily Risk is on. A sizing-math input only — does not itself limit how many trades actually occur in a day.</td></tr>
+          <tr><td class="param-name">Max Lot Size (0 = auto from Max SL) <span class="param-new">NEW</span></td><td class="param-default">0</td><td class="param-desc">At 0, PercentRisk sizes against Max SL Distance instead of the actual signal SL, guaranteeing real risk never exceeds target. Any value &gt;0 is a flat manual ceiling applied after normal sizing.</td></tr>
+          <tr><td class="param-name">One Trade Per Day (per symbol)</td><td class="param-default">true</td><td class="param-desc">Blocks a second entry on the same symbol the same day, even after the first trade closes.</td></tr>
+          <tr><td class="param-name">Max Concurrent Trades (all symbols)</td><td class="param-default">3</td><td class="param-desc">Portfolio-wide cap, counted across every symbol sharing this cBot's Label. Not the same as trades-per-day — a freed slot can still be reused later the same day.</td></tr>
+        </tbody>
+      </table>
+
+      <h4 style="color:var(--gray);font-size:12px;letter-spacing:1px;text-transform:uppercase;margin:20px 0 6px">Stop Loss</h4>
+      <table class="param-table">
+        <thead><tr><th>Parameter</th><th>Default</th><th>What it does</th></tr></thead>
+        <tbody>
+          <tr><td class="param-name">ATR Period</td><td class="param-default">14</td><td class="param-desc">Period for the ATR indicator that drives the SL buffer, sanity cap, and trailing distance.</td></tr>
+          <tr><td class="param-name">Distance Unit Mode <span class="param-new">NEW</span></td><td class="param-default">AtrMultiple</td><td class="param-desc">Switches all five distance parameters below between ATR-multiple and fixed-pips. Fixed-pips is a genuine behavior change for Break-Even Trigger, not just a relabeling — see Structural Stop Loss section.</td></tr>
+          <tr><td class="param-name">SL Buffer (x ATR) / (pips) <span class="param-new">NEW pips variant</span></td><td class="param-default">0.15 / 5.0</td><td class="param-desc">Small cushion added beyond the profile High/Low, so ordinary noise at that level doesn't stop the trade out early.</td></tr>
+          <tr><td class="param-name">Max SL Distance (x ATR) / (pips) <span class="param-new">NEW pips variant</span></td><td class="param-default">2.0 / 100.0</td><td class="param-desc">Sanity cap. If the structural SL distance exceeds this, the trade is skipped entirely instead of risking an oversized stop. Also the sizing basis for Max Lot Size = 0 (auto mode).</td></tr>
+          <tr><td class="param-name">Break-Even Trigger (x Risk) / (pips) <span class="param-new">NEW pips variant</span></td><td class="param-default">1.0 / 15.0</td><td class="param-desc">ATR mode: multiple of that trade's own risk distance. Pips mode: same flat distance for every trade regardless of its own SL size — a real behavior difference, not just a unit swap.</td></tr>
+          <tr><td class="param-name">BE Lock Profit (pips) <span class="param-new">NEW</span></td><td class="param-default">2.0</td><td class="param-desc">Where SL actually lands once Break-Even triggers: entry + this many pips, not exactly entry. Locks in a small real profit instead of pure breakeven.</td></tr>
+          <tr><td class="param-name">Trailing Distance (x ATR) / (pips) <span class="param-new">NEW pips variant</span></td><td class="param-default">1.0 / 15.0</td><td class="param-desc">Distance behind price cTrader's native trailing stop maintains, once switched on after break-even. ATR mode uses ATR frozen at entry, not live ATR.</td></tr>
+        </tbody>
+      </table>
+
+      <h4 style="color:var(--gray);font-size:12px;letter-spacing:1px;text-transform:uppercase;margin:20px 0 6px">Chart Display</h4>
+      <table class="param-table">
+        <thead><tr><th>Parameter</th><th>Default</th><th>What it does</th></tr></thead>
+        <tbody>
+          <tr><td class="param-name">Show EDGE EXH Labels</td><td class="param-default">true</td><td class="param-desc">Draws the chart labels for the last few EDGE EXH signals (same History count concept as the Sniper cBot).</td></tr>
+          <tr><td class="param-name">Show Empty Bin Boundary Line <span class="param-new">NEW</span></td><td class="param-default">true</td><td class="param-desc">The yellow line - innermost edge of the empty-bin cluster at each extreme, not the raw High/Low.</td></tr>
+          <tr><td class="param-name">Empty Bin Boundary Color/Width/Style <span class="param-new">NEW</span></td><td class="param-default">Yellow / 1 / Dots</td><td class="param-desc">Fully independent styling from the Profile High/Low line below.</td></tr>
+          <tr><td class="param-name">Show Profile High/Low Line <span class="param-new">NEW</span></td><td class="param-default">true</td><td class="param-desc">The gray dotted line at the raw profile extremes, with "High: X.XXXXX" / "Low: X.XXXXX" text - same style as the indicator's own boundary lines.</td></tr>
+          <tr><td class="param-name">Profile High/Low Color/Width/Style <span class="param-new">NEW</span></td><td class="param-default">Gray / 1 / Dots</td><td class="param-desc">Fully independent styling from the Empty Bin Boundary line above.</td></tr>
+        </tbody>
+      </table>
+
+      <h4 style="color:var(--gray);font-size:12px;letter-spacing:1px;text-transform:uppercase;margin:20px 0 6px">Entry Buffer / Order Expiry</h4>
+      <table class="param-table">
+        <thead><tr><th>Parameter</th><th>Default</th><th>What it does</th></tr></thead>
+        <tbody>
+          <tr><td class="param-name">Entry Buffer (x ATR) / (pips) <span class="param-new">NEW naming</span></td><td class="param-default">0.2 / 3.0</td><td class="param-desc">How far past the EDGE EXH signal bar's own close price the stop order sits - not PDC, VEPX has no PDC anywhere. ATR mode scales correctly across symbols with very different pip sizes.</td></tr>
+          <tr><td class="param-name">Expiry Bars <span class="param-new">renamed, one window only</span></td><td class="param-default">3</td><td class="param-desc">Candles the placed order stays live before being cancelled unfilled. Only one expiry window exists in VEPX - no separate watch-phase budget, since there's no watch phase at all.</td></tr>
+          <tr><td class="param-name">Order Type Mode</td><td class="param-default">StopOrder</td><td class="param-desc">StopOrder (default, unchanged) or StopLimit - caps acceptable slippage via Max Stop-Limit Slippage, at the cost of sometimes not filling at all. Identical mechanism to the Sniper cBot.</td></tr>
+          <tr><td class="param-name">Max Stop-Limit Slippage (pips)</td><td class="param-default">5.0</td><td class="param-desc">Only relevant in StopLimit mode.</td></tr>
+        </tbody>
+      </table>
+
+      <h4 style="color:var(--gray);font-size:12px;letter-spacing:1px;text-transform:uppercase;margin:20px 0 6px">Dead Time Filter <span class="param-new">NEW</span></h4>
+      <table class="param-table">
+        <thead><tr><th>Parameter</th><th>Default</th><th>What it does</th></tr></thead>
+        <tbody>
+          <tr><td class="param-name">Enable Dead Time Filter</td><td class="param-default">false</td><td class="param-desc">Blocks new watches/entries near market close/open, reading live from Symbol.MarketHours.</td></tr>
+          <tr><td class="param-name">Dead Time Before Close (min)</td><td class="param-default">120</td><td class="param-desc">Reads TimeTillClose() fresh every check — no memory, no tick-gap dependency.</td></tr>
+          <tr><td class="param-name">Dead Time After Open (min)</td><td class="param-default">30</td><td class="param-desc">Measured from the last detected (or inferred) open transition.</td></tr>
+        </tbody>
+      </table>
+
+      <h4 style="color:var(--gray);font-size:12px;letter-spacing:1px;text-transform:uppercase;margin:20px 0 6px">D1 Excursion Averages <span class="param-new">NEW</span></h4>
+      <table class="param-table">
+        <thead><tr><th>Parameter</th><th>Default</th><th>What it does</th></tr></thead>
+        <tbody>
+          <tr><td class="param-name">Log D1 Excursion Averages</td><td class="param-default">false</td><td class="param-desc">Also prints the computed averages to the log, not just the dashboard.</td></tr>
+          <tr><td class="param-name">D1 Excursion Lookback (days)</td><td class="param-default">20</td><td class="param-desc">How many D1 candles the bull/bear excursion averages are computed over. Diagnostic only — feeds no trading logic.</td></tr>
+        </tbody>
+      </table>
+
+      <h4 style="color:var(--gray);font-size:12px;letter-spacing:1px;text-transform:uppercase;margin:20px 0 6px">Dashboard Rows <span class="param-new">Different from the Sniper cBot</span></h4>
+      <p style="color:var(--gray);font-size:12.5px">Not parameters — computed live every bar. VEPX's dashboard is deliberately simpler than the Sniper cBot's: no Entry/SL Point or Recommended Lot rows exist here, since those relied on inferring a hypothetical direction from current price vs PDC — a concept that doesn't exist in VEPX's immediate-placement model. The real Order Armed log/Discord alert already reports the real numbers directly once a signal actually fires.</p>
+      <table class="param-table">
+        <thead><tr><th>Row</th><th>Shows</th><th>Colored</th></tr></thead>
+        <tbody>
+          <tr><td class="param-name">Pending Order</td><td class="param-desc">Real expiry countdown for an actual placed order (not a hypothetical watch) - e.g. "BUY 2/3" counting down candles remaining, or "None" if nothing's currently pending.</td><td class="param-desc">Green (Buy) / Red (Sell) / Gray (None or Blocked)</td></tr>
+          <tr><td class="param-name">Entry / SL Buffer</td><td class="param-desc">Just the two buffer cushions themselves — small distances added past the signal bar's close and past the profile boundary. Live-ATR based, symmetric, not tied to a direction.</td><td class="param-desc">White (neutral)</td></tr>
+        </tbody>
+      </table>
+      <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>XAUUSD numbers look enormous — confirmed correct, not a bug</strong><p>IC Markets defines XAUUSD's pip at the 2nd decimal (<span class="param-name">Pip position: 2</span> in the symbol specification) — a genuinely small unit relative to gold's large dollar moves. Verified directly against a live fill's log line before trusting it, on the Sniper cBot; identical convention applies here since both cBots read the same <span class="param-name">Symbol.PipSize</span>. Every FX pair uses the familiar 0.0001 (or 0.01 for JPY pairs) convention — this is specific to gold.</p></div></div>
+
+
+      <h4 style="color:var(--gray);font-size:12px;letter-spacing:1px;text-transform:uppercase;margin:20px 0 6px">Account Risk</h4>
+      <table class="param-table">
+        <thead><tr><th>Parameter</th><th>Default</th><th>What it does</th></tr></thead>
+        <tbody>
+          <tr><td class="param-name">Max Daily Loss %</td><td class="param-default">8.0</td><td class="param-desc">Generic mode: % of today's own starting balance, recalculated fresh each day. FTMO mode: fixed dollar amount off FTMO Initial Balance, forever.</td></tr>
+          <tr><td class="param-name">Max Equity Drawdown %</td><td class="param-default">10.0</td><td class="param-desc">Generic mode: trails the equity peak. FTMO mode: static floor below FTMO Initial Balance, never moves. Only clears on a manual cBot restart.</td></tr>
+          <tr><td class="param-name">FTMO Initial Balance <span class="param-new">NEW</span></td><td class="param-default">0</td><td class="param-desc">0 = generic mode. Any other value = FTMO's exact static/fixed-dollar mechanics for both rows above. Use the account's true original starting capital, not current balance.</td></tr>
+          <tr><td class="param-name">Min Margin Level %</td><td class="param-default">500.0</td><td class="param-desc">Blocks new entries once margin level drops to or below this floor.</td></tr>
+        </tbody>
+      </table>
+
+
+      <h4 style="color:var(--gray);font-size:12px;letter-spacing:1px;text-transform:uppercase;margin:20px 0 6px">Symbol Profile &amp; Range Settings</h4>
+      <table class="param-table">
+        <thead><tr><th>Parameter</th><th>Default</th><th>What it does</th></tr></thead>
+        <tbody>
+          <tr><td class="param-name">Auto-Detect Symbol Settings</td><td class="param-default">true</td><td class="param-desc">Pulls Bins, Value Area %, and active hours from the built-in symbol table. While on, it overrides Price Bins and Value Area Volume % below — they're only used when this is off.</td></tr>
+          <tr><td class="param-name">Price Bins</td><td class="param-default">30</td><td class="param-desc">Used only when Auto-Detect is off. Number of price bins in the FRVP profile.</td></tr>
+          <tr><td class="param-name">Value Area Volume %</td><td class="param-default">40.0</td><td class="param-desc">Used only when Auto-Detect is off. Percent of volume that defines the value area around POC.</td></tr>
+          <tr><td class="param-name">Use Auto Lookback</td><td class="param-default">true</td><td class="param-desc">Sets the profile's bar lookback automatically per timeframe (e.g. 48 bars on M30).</td></tr>
+          <tr><td class="param-name">Bars Lookback</td><td class="param-default">24</td><td class="param-desc">Used only when Use Auto Lookback is off. Manual bar count for the profile window.</td></tr>
+        </tbody>
+      </table>
+
+      <h4 style="color:var(--gray);font-size:12px;letter-spacing:1px;text-transform:uppercase;margin:20px 0 6px">Session Filter</h4>
+      <table class="param-table">
+        <thead><tr><th>Parameter</th><th>Default</th><th>What it does</th></tr></thead>
+        <tbody>
+          <tr><td class="param-name">Enable Session Filter</td><td class="param-default">true</td><td class="param-desc">Turns on the per-symbol active-hours check from the symbol table. Off means that check is skipped entirely.</td></tr>
+          <tr><td class="param-name">Auto DST Adjustment</td><td class="param-default">true</td><td class="param-desc">Shifts the UTC hour by 1 during UK British Summer Time, so the session table stays aligned with real market hours.</td></tr>
+          <tr><td class="param-name">Enable Custom Time Filter</td><td class="param-default">false</td><td class="param-desc">Adds a second, independent hour-window check on top of the symbol table's own hours.</td></tr>
+          <tr><td class="param-name">Trade Start Hour (UTC)</td><td class="param-default">0</td><td class="param-desc">Start of the custom trading window. Wraps past midnight correctly if start is later than end.</td></tr>
+          <tr><td class="param-name">Trade End Hour (UTC)</td><td class="param-default">23</td><td class="param-desc">End of the custom trading window.</td></tr>
+          <tr><td class="param-name">Use Local Time for Filters</td><td class="param-default">false</td><td class="param-desc">Applies the Time Zone Offset below to the custom time and day filters only. The symbol table's own hours always stay UTC-based regardless.</td></tr>
+          <tr><td class="param-name">Time Zone Offset (UTC+)</td><td class="param-default">8</td><td class="param-desc">Fixed offset used when Use Local Time for Filters is on. Default 8 matches HKT. Not auto-detected from any device — cBots can't read a PC's local clock.</td></tr>
+          <tr><td class="param-name">Enable Day Filter</td><td class="param-default">false</td><td class="param-desc">Turns on the seven day-of-week toggles below.</td></tr>
+          <tr><td class="param-name">Trade Monday – Trade Friday</td><td class="param-default">true</td><td class="param-desc">One toggle per weekday. Only used when Enable Day Filter is on.</td></tr>
+          <tr><td class="param-name">Trade Saturday / Trade Sunday</td><td class="param-default">false</td><td class="param-desc">Off by default — thin or no forex liquidity on these days for most pairs.</td></tr>
+        </tbody>
+      </table>
+
+      <h4 style="color:var(--gray);font-size:12px;letter-spacing:1px;text-transform:uppercase;margin:20px 0 6px">Discord Alerts</h4>
+      <table class="param-table">
+        <thead><tr><th>Parameter</th><th>Default</th><th>What it does</th></tr></thead>
+        <tbody>
+          <tr><td class="param-name">Enable Discord Alerts</td><td class="param-default">false</td><td class="param-desc">Turns on every Discord alert this cBot sends — trade lifecycle (armed, filled, expired, closed), account risk (daily loss cap, drawdown halt, margin low), missing-SL escalation, and Started/Stopped. All of them share one gate: if this is off, nothing posts to Discord at all.</td></tr>
+          <tr><td class="param-name">Discord Webhook URL</td><td class="param-default">(empty)</td><td class="param-desc">Separate from the indicator's own webhook. Needs its own URL to post anywhere.</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout callout-note"><div class="callout-icon">💡</div><div class="callout-body"><strong>Symbol table</strong><p>Auto-Detect Symbol Settings pulls Bins, Value Area %, active hours, and boundary-scan % from a built-in table covering XAUUSD, EURUSD, GBPUSD, and CADJPY. Any other symbol falls back to generic values (30 bins, 40% VA, 7-17 UTC) and prints a warning to the log the first time it runs.</p></div></div>
+    </div>
+
+    <div class="plan-section" id="vx-discord">
+      <div class="plan-section-label cbot">Section 16</div>
+      <h2>Discord Alerts</h2>
+      <p>Separate from the indicator's Discord/Telegram system — this is the cBot's own webhook, covering trade-lifecycle events rather than chart signals.</p>
+      <table class="param-table">
+        <thead><tr><th>Event</th><th>Fires when</th></tr></thead>
+        <tbody>
+          <tr><td class="param-name">Started <span class="param-new">NEW</span></td><td class="param-desc">The cBot instance starts, once all state recovery finishes. Summarizes trading mode (live/visual), sizing mode, unit mode, Max Lot Size setting, Dead Time config, and whether an already-open position was recovered.</td></tr>
+          <tr><td class="param-name">Order Armed</td><td class="param-desc">A stop order is successfully placed. Includes direction, target price, SL in pips with the raw price distance alongside it (e.g. "1622.0 pips (16.22)" on XAUUSD, so a large pip count on a small-pip symbol doesn't look alarming), volume in units with lot size alongside it, risk amount, and — in PercentRisk mode — which sizing path produced it ("auto-sized from Max SL" or "manual cap").</td></tr>
+          <tr><td class="param-name">Order Expired</td><td class="param-desc">A pending order is cancelled after the expiry window with no fill.</td></tr>
+          <tr><td class="param-name">Trade Filled</td><td class="param-desc">Fires from cAlgo's own <span class="param-name">Positions.Opened</span> event, the moment the pending stop order actually fills into a live position. Includes entry price, volume, SL, and <span class="param-name">BE Trigger = X pips</span> <span class="param-new">NEW</span> — how far price needs to move in favor before break-even fires on this specific trade, computed from its own frozen risk distance.</td></tr>
+          <tr><td class="param-name">Trade Closed</td><td class="param-desc">Fires from cAlgo's own <span class="param-name">Positions.Closed</span> event — catches every close cause: SL hit, manual close, or a daily-loss force-close. Includes net P/L, pips, and close reason.</td></tr>
+          <tr><td class="param-name">Missing SL Escalation <span class="param-new">NEW</span></td><td class="param-desc">A position is found without a stop loss attached and the retry loop hasn't succeeded within 5 minutes. Retries are throttled to once per 15 seconds — an earlier version retried every tick for hours on one real incident, flooding the broker and delaying other Discord sends behind it in the queue.</td></tr>
+          <tr><td class="param-name">Daily Loss Cap Hit</td><td class="param-desc">The 8% daily loss threshold is reached. Positions closed, no further entries that day.</td></tr>
+          <tr><td class="param-name">Max Drawdown Hit</td><td class="param-desc">The 10% peak-equity drawdown threshold is reached. New entries halted until manual restart.</td></tr>
+          <tr><td class="param-name">Margin Level Low</td><td class="param-desc">Margin level drops to or below the floor. Fires once, then stays quiet until margin recovers above the floor again — avoids spamming the channel every bar while margin stays low.</td></tr>
+          <tr><td class="param-name">Stopped <span class="param-new">NEW</span></td><td class="param-desc">The cBot instance stops. Reports whether an open position or a pending order existed at that moment — both are recovered correctly on the next restart, since VEPX has no internal watch state to lose in the first place.</td></tr>
+        </tbody>
+      </table>
+      <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>Stopped alert reliability during shutdown — confirmed working, but not guaranteed by design</strong><p>Discord sends are fire-and-forget (<span class="param-name">async void</span>), and <span class="param-name">OnStop</span> is exactly the moment cTrader may tear the instance down. There's no structural guarantee the async call completes before the process exits. Verified working on a real deliberate stop/restart test — both instances' Stopped alerts landed — but this is an empirical confirmation for this environment, not a guarantee that holds in every shutdown scenario.</p></div></div>
+      <div class="callout callout-note"><div class="callout-icon">💡</div><div class="callout-body"><strong>Duplicate-fire guard</strong><p>Trade Filled and Trade Closed each track the last position ID they alerted on. If cAlgo's event fires more than once for the same fill or close — observed once after a quick stop/restart cycle — only the first alert goes out. The <span class="param-name">[HH:mm:ss HKT]</span>-prefixed log line still prints every time the event actually fires, so repeated firing is still visible there even though Discord only shows it once.</p></div></div>
+    </div>
+
+    <div class="plan-section" id="vx-checklist">
+      <div class="plan-section-label cbot">Section 17</div>
+      <h2>Pre-Flight Checklist</h2>
+      <div class="chk-list" id="vx-chk-list">
+        <div class="chk-item"><div class="chk-box cbot" onclick="toggleChk(this,'cbot')"></div><div class="chk-text"><strong>Build clean</strong> — Compile in cAlgo with zero errors. Warnings about obsolete API overloads should be resolved by hovering the warning for the exact new signature, not guessed.</div></div>
+        <div class="chk-item"><div class="chk-box cbot" onclick="toggleChk(this,'cbot')"></div><div class="chk-text"><strong>Backtest first</strong> — Run on historical data before going live. Position sizing and margin-level checks haven't been validated against a live broker feed.</div></div>
+        <div class="chk-item"><div class="chk-box cbot" onclick="toggleChk(this,'cbot')"></div><div class="chk-text"><strong>Set Risk % Per Trade</strong> deliberately — default 2.5% assumes up to 3 concurrent trades hitting SL simultaneously lands near the 8% daily cap, not past it.</div></div>
+        <div class="chk-item"><div class="chk-box cbot" onclick="toggleChk(this,'cbot')"></div><div class="chk-text"><strong>Confirm the symbol table</strong> — only symbols explicitly added get tuned Bins/VA%/session hours. Check the log for the fallback-config warning on any new pair.</div></div>
+        <div class="chk-item"><div class="chk-box cbot" onclick="toggleChk(this,'cbot')"></div><div class="chk-text"><strong>Set the Discord webhook</strong> if you want trade-lifecycle alerts — separate URL from the indicator's own alert system.</div></div>
+        <div class="chk-item"><div class="chk-box cbot" onclick="toggleChk(this,'cbot')"></div><div class="chk-text"><strong>Know the drawdown reset behavior</strong> — the 10% kill-switch does not clear automatically. Only restarting the cBot clears it, by design.</div></div>
+        <div class="chk-item"><div class="chk-box cbot" onclick="toggleChk(this,'cbot')"></div><div class="chk-text"><strong>Decide on Max Lot Size</strong> deliberately, don't leave it at a guessed value — 0 auto-derives from Max SL Distance (safe default), any other number is a flat manual ceiling. Confirmed live that PercentRisk without this cap can size a tight-SL signal into a dangerously large position.</div></div>
+        <div class="chk-item"><div class="chk-box cbot" onclick="toggleChk(this,'cbot')"></div><div class="chk-text"><strong>If using Auto-Divide Daily Risk</strong>, remember Trades Per Day Budget only feeds the sizing math — it doesn't cap actual trade count. Pair it with Max Daily Loss % for a real enforced daily ceiling.</div></div>
+        <div class="chk-item"><div class="chk-box cbot" onclick="toggleChk(this,'cbot')"></div><div class="chk-text"><strong>If enabling Dead Time Filter</strong>, don't assume standard market hours — confirm this broker's actual close/open gap from chart/log data first. Verified this can differ meaningfully from commonly assumed hours.</div></div>
+      </div>
+    </div>
+
+    <div class="plan-section" id="vx-notes">
+      <div class="plan-section-label cbot">Section 18</div>
+      <h2>Known Limitations</h2>
+      <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>No confluence check</strong><p>The cBot arms purely on EDGE EXH validity plus session filter — it does not weigh the Confluence Gate that the indicator's chart display uses. This was a deliberate simplification, not an oversight.</p></div></div>
+      <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>Bar-close evaluation only</strong><p>Entry signal detection runs on the last closed bar, not live tick price. The actual stop order still fills intrabar the instant price touches it — only the signal detection itself waits for the candle to close.</p></div></div>
+      <div class="callout callout-new"><div class="callout-icon">⭐</div><div class="callout-body"><strong>Pending-order restart recovery — fixed</strong><p>Only open positions were ever recovered on restart — an already-placed but still-unfilled pending order was completely untracked, meaning its expiry never fired and it could sit on the broker indefinitely. Confirmed for real: an order visibly still active well past its 5-candle limit. Fixed: restart now also checks <span class="param-name">PendingOrders</span> for a matching order and re-establishes tracking. Honest limitation that remains: the true original arm time is gone after a restart, so the expiry countdown restarts fresh from the moment of recovery rather than continuing where it left off — a recovered order can end up living somewhat longer in total than its expiry setting intends.</p></div></div>
+      <div class="callout callout-new"><div class="callout-icon">⭐</div><div class="callout-body"><strong>Cross-account state file collision — fixed</strong><p>The duplicate-close-alert guard file was keyed only by symbol name, not by account. Running two different broker accounts (e.g. FTMO and Spotware) on the same machine meant both shared the exact same state file per symbol — and since broker-assigned position IDs are typically small sequential integers, not globally unique, two unrelated accounts could easily collide on the same ID. A restart on one account could then load a stale ID actually written by the other account, incorrectly suppressing a genuine close alert. Fixed: state files now live under a per-account-number subfolder.</p></div></div>
+      <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>Native trailing stop unverified live</strong><p>Trailing hands off to cTrader's own <span class="param-name">ModifyPosition</span> trailing flag rather than a manual per-tick loop. The parameter is confirmed to exist in this cTrader version, but its exact behavior on an already-open position hasn't been demo-tested yet.</p></div></div>
+      <div class="callout callout-tip"><div class="callout-icon">💡</div><div class="callout-body"><strong>No watch-loss risk, by design</strong><p>The Sniper cBot's "an armed watch does not survive a restart" limitation doesn't apply here at all — VEPX has no internal watch state anywhere in its code. A restart can only ever affect an already-open position or an already-placed pending order, both of which are recovered correctly (same recovery logic, copied unchanged from the Sniper cBot).</p></div></div>
+      <div class="callout callout-note"><div class="callout-icon">💡</div><div class="callout-body"><strong>PercentRisk auto mode is a ceiling, not a reliable average</strong><p>Sizing off <span class="param-name">Max SL Distance</span> (Max Lot Size = 0) guarantees real risk never exceeds target, but most real signals will have a tighter actual SL than that worst case — so realized risk on any individual trade will typically land noticeably below the stated target %, not right at it. Confirmed on the first live AUDJPY trade: target ceiling ≈$17.10, actual realized risk $14.48.</p></div></div>
+      <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>Silent no-tick gap detection is a heuristic, not a guarantee</strong><p>The Dead Time / market-open tracking infers a reopen from a &gt;2-minute gap since the last tick seen — a threshold picked to catch a real confirmed XAUUSD closure, not derived from any broker specification. An unusually quiet but still-open market could in theory trip this same threshold; conversely a closure shorter than 2 minutes wouldn't be caught. Treat the "MARKET OPEN (inferred)" log line as a best-effort signal, not a certainty.</p></div></div>
+      <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>Recovered pending order's StopLossPips property is unverified</strong><p>Recovering risk distance for a pending order uses <span class="param-name">pendingOrd.StopLossPips</span>, based on standard cAlgo API knowledge but not personally confirmed against IntelliSense. If the property name is wrong, it's a compile error you'll see immediately on build, not a silent runtime issue.</p></div></div>
+    </div>
+
+  </main>
+</div>
+
+<div class="tab-page" id="tab-compare" style="padding-top:118px">
+<div class="plan-wrap">
+  <nav class="plan-sidebar">
+    <div class="plan-nav-label">Overview</div>
+    <a class="plan-nav-item" href="#cmp-pros">Strengths by Product</a>
+    <a class="plan-nav-item" href="#cmp-table">Full Comparison Table</a>
+    <a class="plan-nav-item" href="#cmp-choosing">Which One Should I Use</a>
+  </nav>
+  <main class="plan-main">
+    <div class="plan-hero">
+      <div class="plan-hero-badge cbot" style="background:rgba(212,83,126,.12);color:#D4537E;border-color:rgba(212,83,126,.3)">COMPARISON</div>
+      <h1><span style="color:#D4537E">Indicator vs Sniper vs EXH</span><br>Three Tools, One Codebase</h1>
+      <p class="plan-hero-sub">Grounded in what the code actually does — not trading outcomes, which forward testing across all three will settle separately.</p>
+    </div>
+
+    <div class="plan-section" id="cmp-pros">
+      <div class="plan-section-label cbot" style="background:rgba(212,83,126,.12);color:#D4537E">Strengths</div>
+      <h2>Strengths by Product</h2>
+      <p>Each column lists what's genuinely true about that product's code and function — not a claim about which performs better, which only real forward-test data across all three can answer.</p>
+
+      <div class="phase-row" style="grid-template-columns:repeat(3,1fr)">
+        <div class="phase-card">
+          <div class="phase-num" style="color:var(--accent)">📊 INDICATOR</div>
+          <h4>VolumeEdge Pro</h4>
+          <ul style="margin:8px 0 0;padding-left:18px;font-size:13px;color:var(--gray);line-height:1.8">
+            <li>Renders every price bin as colored rectangles sized by volume, plus dedicated POC/VAH/VAL lines — neither cBot draws the full bin-by-bin profile</li>
+            <li>Four independent detection functions — POC, VA TRAP, EDGE EXH, REJECTION — each with its own toggle and alert format</li>
+            <li>No order-placement call exists anywhere in the file — structurally can't place a trade, not just disabled by a setting</li>
+            <li>Calls out to Claude/Gemini/DeepSeek for a bias reading, with per-provider quirks already handled in code</li>
+            <li>Separate D1 Direction Dashboard panel for higher-timeframe context, distinct from the main HUD</li>
+            <li>Win-ratio scanner compares historical performance across all four signal categories</li>
+          </ul>
+        </div>
+        <div class="phase-card">
+          <div class="phase-num" style="color:var(--green)">🎯 VEPS</div>
+          <h4>VolumeEdgePro Sniper</h4>
+          <ul style="margin:8px 0 0;padding-left:18px;font-size:13px;color:var(--gray);line-height:1.8">
+            <li>Two sequential gates before any order exists: EDGE EXH match, then a separate later candle closing back across PDC</li>
+            <li>Order can be placed 1 to Watch Expiry candles after the original signal — only once PDC actually confirms it</li>
+            <li>Two-stage internal state machine — a pre-order watch phase and a post-cross order phase, tracked separately</li>
+            <li>Two independently-tunable expiry windows — Watch Expiry and Stop Order Limit apart, not one shared budget</li>
+            <li>Entry buffer is measured off PDC's value, not the original signal candle — anchors to a second, independent price level</li>
+            <li>Hard dependency on PDC — if no D1 close data is available, no watch can ever arm at all</li>
+          </ul>
+        </div>
+        <div class="phase-card">
+          <div class="phase-num" style="color:var(--yellow)">⚡ VEPX</div>
+          <h4>VolumeEdgePro EXH</h4>
+          <ul style="margin:8px 0 0;padding-left:18px;font-size:13px;color:var(--gray);line-height:1.8">
+            <li>One gate only: EDGE EXH match with Min Empty Bins met on the current closed bar — no second confirmation required</li>
+            <li>Order placed the same bar the signal fires — no internal watch fields exist in the class at all</li>
+            <li>Entry buffer is measured off the signal bar's own close price — never references PDC anywhere in the file</li>
+            <li>One expiry window only — Expiry Bars, default 3 — covering the single order-placement phase</li>
+            <li>Empty-bin boundary line — the innermost edge of the empty-bin cluster, separate from raw profile High/Low</li>
+            <li>Draws both the raw High/Low line and the empty-bin boundary together, each independently configurable</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>What this comparison deliberately leaves out</strong><p>Win rate, slippage, and forward-test performance are not included here — those are empirical, market-dependent outcomes, not facts the code guarantees. An earlier draft of this comparison claimed VEPX "solves" VEPS's slippage — that was wrong and has been removed. VEPX still places a real stop (or stop-limit) order that fills at market once triggered, the same underlying mechanism as VEPS. Whichever design actually performs better is exactly what running all three in parallel forward tests will answer — not something readable from the code alone.</p></div></div>
+    </div>
+
+    <div class="plan-section" id="cmp-table">
+      <div class="plan-section-label cbot" style="background:rgba(212,83,126,.12);color:#D4537E">Reference</div>
+      <h2>Full Comparison Table</h2>
+      <table class="param-table">
+        <thead><tr><th>Capability</th><th>VolumeEdge Pro (indicator)</th><th>VEPS</th><th>VEPX</th></tr></thead>
+        <tbody>
+          <tr><td class="param-name">Signal types detected</td><td class="param-desc">POC, VA TRAP, EDGE EXH, REJECTION — four independent detection functions</td><td class="param-desc">EDGE EXH only</td><td class="param-desc">EDGE EXH only</td></tr>
+          <tr><td class="param-name">Order placement</td><td class="param-desc">None — no order-placement call exists anywhere in the file</td><td class="param-desc">PlaceStopOrder or PlaceStopLimitOrder, user-selectable via Order Type Mode</td><td class="param-desc">Identical — same toggle, same two options, inherited unchanged</td></tr>
+          <tr><td class="param-name">Gates before an order exists</td><td class="param-desc">N/A — never places one</td><td class="param-desc">Two, sequential: (1) EDGE EXH pattern match, (2) a later candle's close crossing PDC</td><td class="param-desc">One: EDGE EXH pattern match (Min Empty Bins ≥ 2) on the current bar</td></tr>
+          <tr><td class="param-name">Order timing relative to signal</td><td class="param-desc">N/A</td><td class="param-desc">Only after PDC is crossed — could be 1 to Watch Expiry candles after the original signal</td><td class="param-desc">Same bar the signal fires, immediately</td></tr>
+          <tr><td class="param-name">Internal state machine</td><td class="param-desc">N/A</td><td class="param-desc">Two-stage: _watchActive tracks the pre-order phase, separate _pendingOrderId tracks the post-cross order phase</td><td class="param-desc">One-stage: only _pendingOrderId — no pre-order watch fields exist in the class at all</td></tr>
+          <tr><td class="param-name">Dependency on PDC's price level</td><td class="param-desc">Uses PDC for its own separate PDC Cross Alert feature, optional</td><td class="param-desc">Hard dependency — no PDC value means no watch ever arms</td><td class="param-desc">None — PDC plays no role anywhere in the file</td></tr>
+          <tr><td class="param-name">Structural SL anchor</td><td class="param-desc">N/A</td><td class="param-desc">Profile boundary + ATR buffer</td><td class="param-desc">Identical formula — profile boundary + ATR buffer</td></tr>
+          <tr><td class="param-name">Entry buffer reference point</td><td class="param-desc">N/A</td><td class="param-desc">PDC value ± buffer</td><td class="param-desc">Signal bar's own close price ± buffer</td></tr>
+          <tr><td class="param-name">Chart visuals drawn</td><td class="param-desc">Full bin-by-bin profile rectangles, POC/VAH/VAL lines, PDC line, D1 dashboard</td><td class="param-desc">EDGE EXH label + PDC line only (minimal, by design)</td><td class="param-desc">EDGE EXH label + raw profile High/Low line + empty-bin boundary line (no PDC line)</td></tr>
+          <tr><td class="param-name">Empty-bin boundary visualization</td><td class="param-desc">Not present</td><td class="param-desc">Not present</td><td class="param-desc">Present — separately configurable line showing the innermost edge of the empty-bin cluster</td></tr>
+          <tr><td class="param-name">Expiry/timeout structure</td><td class="param-desc">N/A</td><td class="param-desc">Two independently-tunable windows: Watch Expiry and Stop Order Limit</td><td class="param-desc">One window: Expiry Bars, default 3</td></tr>
+          <tr><td class="param-name">AI provider integration</td><td class="param-desc">Yes — Claude/Gemini/DeepSeek bias calls</td><td class="param-desc">None</td><td class="param-desc">None</td></tr>
+          <tr><td class="param-name">Backtest/win-ratio scanner</td><td class="param-desc">Yes — compares historical win rates across all four signal types</td><td class="param-desc">None</td><td class="param-desc">None</td></tr>
+          <tr><td class="param-name">D1 higher-timeframe dashboard</td><td class="param-desc">Yes — separate dashboard panel</td><td class="param-desc">No (D1 Excursion Averages diagnostic stat only)</td><td class="param-desc">No (same single diagnostic stat as VEPS)</td></tr>
+          <tr><td class="param-name">Manual trade integration (IsOurTrade)</td><td class="param-desc">N/A — doesn't manage positions</td><td class="param-desc">Yes — Comment-tag matching extends full management to manually-placed trades</td><td class="param-desc">Yes — identical mechanism, copied unchanged</td></tr>
+          <tr><td class="param-name">Risk infrastructure shared</td><td class="param-desc">N/A</td><td class="param-desc">FTMO static/fixed-dollar mode, Max Lot Size auto/manual, Auto-Divide Daily Risk, concurrent-trade race lock</td><td class="param-desc">Identical — all inherited unchanged from VEPS</td></tr>
+        </tbody>
+      </table>
+      <div class="callout callout-tip"><div class="callout-icon">💡</div><div class="callout-body"><strong>The one row that actually matters most</strong><p>"Gates before an order exists" and "Order timing relative to signal" are the only two rows where VEPS and VEPX genuinely diverge in mechanism. Every other risk/execution row — sizing, SL, BE/trailing, order type choice, FTMO mode, manual-trade integration, the concurrent-trade lock — is shared, identical code between them, since VEPX was built as a copy of VEPS with one core logic swap.</p></div></div>
+    </div>
+
+    <div class="plan-section" id="cmp-choosing">
+      <div class="plan-section-label cbot" style="background:rgba(212,83,126,.12);color:#D4537E">Guidance</div>
+      <h2>Which One Should I Use</h2>
+      <div class="phase-row">
+        <div class="phase-card"><div class="phase-num" style="color:var(--accent)">Use the indicator when</div><h4>You want to see, not act</h4><p>Manual discretionary trading, cross-checking a cBot's signal visually, or catching a signal either cBot structurally missed (occupied watch/order) — via a Comment-tagged manual trade fed into either cBot's full management.</p></div>
+        <div class="phase-card"><div class="phase-num" style="color:var(--green)">Use VEPS when</div><h4>You want more confirmation before risking capital</h4><p>Willing to potentially miss faster-moving reversals in exchange for requiring price to actually travel to and cross PDC first — a second, independent condition beyond the EDGE EXH pattern itself.</p></div>
+        <div class="phase-card"><div class="phase-num" style="color:var(--yellow)">Use VEPX when</div><h4>You want to act on EDGE EXH itself, immediately</h4><p>No dependency on PDC's position that day at all — every qualifying signal (Min Empty Bins met) gets a real order, on the same bar it fires, with the order itself as the only remaining confirmation.</p></div>
+      </div>
+      <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>This isn't a "pick one" situation</strong><p>Both cBots share the same license system, risk infrastructure, and can run simultaneously on the same or different accounts. The real decision worth making deliberately is whether to run them on the <em>same</em> account with the <em>same</em> Label/Comment (letting each other's checks see combined exposure, at the cost of cross-instance interference risk) or with different Labels (clean separation, but each cBot's Max Concurrent Trades only sees its own trades — size each one's cap with the combined total in mind).</p></div></div>
+    </div>
+
+  </main>
+</div>
+</div><!-- #tab-compare -->
+
+
 
 
 <script>
