@@ -452,7 +452,7 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
 <!-- TAB BAR -->
 <div class="tab-bar">
   <div class="tab-bar-brand">
-    <div><div class="b-name">VolumeEdge Pro</div><div class="b-ver">v2.4 · cTrader · May 2026</div></div>
+    <div><div class="b-name">VolumeEdge Pro</div><div class="b-ver">v2.5 · cTrader · Jul 2026</div></div>
   </div>
   <button class="tab-btn active" onclick="switchTab('guide',this)">📖 VolumeEdgePro Parameter Guide</button>
   <button class="tab-btn t-cbot" onclick="switchTab('cbot',this)">🎯 VolumeEdgePro Sniper cBot Guide</button>
@@ -472,11 +472,11 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
 <nav class="sidebar" id="sidebar">
   <div class="sidebar-logo">
     <div class="name">VolumeEdge Pro</div>
-    <div class="ver">v2.4 · COMPLETE GUIDE · MAY 2026</div>
+    <div class="ver">v2.5 · COMPLETE GUIDE · JUL 2026</div>
   </div>
   <div class="nav-group">
     <div class="nav-group-label">Overview</div>
-    <a class="nav-item active" href="#changelog"><span class="nav-num">00</span>What's New in v2.4</a>
+    <a class="nav-item active" href="#changelog"><span class="nav-num">00</span>What's New in v2.5</a>
     <a class="nav-item" href="#intro"><span class="nav-num">01</span>What is VolumeEdge Pro</a>
     <a class="nav-item" href="#colors"><span class="nav-num">02</span>Color System</a>
   </div>
@@ -523,9 +523,9 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
 
 <!-- HERO -->
 <div class="hero">
-  <div class="version-badge">VolumeEdge Pro v2.4 — May 2026</div>
-  <div class="hero-badge">FRVP MASTER PRO v3.2 → VOLUMEEDGE PRO v2.4</div>
-  <h1>VolumeEdge<br><span>Pro Guide</span></h1>
+  <div class="version-badge">VolumeEdgePro v2.5 — Jul 2026</div>
+  <div class="hero-badge">FRVP MASTER PRO v3.2 → VOLUMEEDGEPRO v2.5</div>
+  <h1>VolumeEdgePro<br><span>Parameter Guide</span></h1>
   <p class="hero-sub">Bin-Based Signal Engine · Phase 1 Gates · Discord Alerts · Trading Workflow</p>
   <div class="hero-pills">
     <div class="pill"><strong>cTrader</strong> / .NET 6</div>
@@ -543,7 +543,7 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
 
 <!-- TOC -->
 <div class="toc-grid">
-  <a class="toc-item new-item" href="#changelog"><span class="toc-num">00</span><span class="toc-name">What's New in v2.1 <span class="toc-badge">NEW</span></span></a>
+  <a class="toc-item new-item" href="#changelog"><span class="toc-num">00</span><span class="toc-name">What's New in v2.5 <span class="toc-badge">NEW</span></span></a>
   <a class="toc-item" href="#intro"><span class="toc-num">01</span><span class="toc-name">What is VolumeEdge Pro</span></a>
   <a class="toc-item" href="#colors"><span class="toc-num">02</span><span class="toc-name">Color System</span></a>
   <a class="toc-item" href="#params-discord"><span class="toc-num">10</span><span class="toc-name">Discord / Communications</span></a>
@@ -571,8 +571,7 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
     <div class="changelog-item"><span class="changelog-tag tag-added">ADDED</span><span class="changelog-text"><strong>Indicator — Dead Time Filter ported from the cBot:</strong> Same mechanics, including the silent-gap inference fix and expiry-restart-on-skip behavior, applied to the PDC Cross Alert watch.</span></div>
   </div>
   <hr class="sec">
-  <h2>What's New in v2.5 (Indicator) / v2.6 (cBot)</h2>
-  <p style="color:var(--gray);font-size:12.5px;margin-bottom:16px">Driven by preparing for real distribution and a live FTMO Swing account, plus continued forward-test findings.</p>
+  <h2>What's New — License, FTMO Mode &amp; Manual Trade Integration</h2>
   <div class="changelog">
     <div class="changelog-item"><span class="changelog-tag tag-added">ADDED</span><span class="changelog-text"><strong>Both files — License System:</strong> Remote account-based license check at startup, fails closed on every problem. Hardcoded, not a Parameter, to prevent trivial bypass through the settings panel. See License System section.</span></div>
     <div class="changelog-item"><span class="changelog-tag tag-fixed">FIXED</span><span class="changelog-text"><strong>Both files — License guard on lifecycle methods:</strong> A failed license didn't fully stop the cBot's OnTick / indicator's Calculate() — both are cAlgo lifecycle methods that fire regardless of what OnStart/Initialize did. Confirmed for real: market-open tracking kept running silently on a failed-license instance until both methods got their own explicit guard.</span></div>
@@ -583,8 +582,7 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
     <div class="changelog-item"><span class="changelog-tag tag-added">ADDED</span><span class="changelog-text"><strong>cBot v2.6 — BE Trigger pips on Trade Filled alert:</strong> Both the log line and Discord alert now show exactly how many pips of favorable movement will trigger break-even on that specific trade.</span></div>
   </div>
   <hr class="sec">
-  <h2>What's New in v2.5 (Indicator) / v2.6 (cBot)</h2>
-  <p style="color:var(--gray);font-size:12.5px;margin-bottom:16px">This round of changes was driven mostly by real forward-test logs and live order tickets, not planned features — several items below are bug fixes confirmed against an actual log or chart before being called fixed.</p>
+  <h2>What's New — Dead Time Filter, D1 Excursion &amp; Risk Sizing Overhaul</h2>
   <div class="changelog">
     <div class="changelog-item"><span class="changelog-tag tag-added">ADDED</span><span class="changelog-text"><strong>cBot v2.6 — Dead Time Filter:</strong> Blocks new watches/entries near market close/open, reading live from Symbol.MarketHours (DST-correct automatically). Confirmed on a real XAUUSD closure that this broker's actual daily gap runs later than the commonly assumed hours — chart/log data is authoritative, not assumed market hours.</span></div>
 
@@ -832,7 +830,8 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
     <tbody>
       <tr><td class="param-name">Enable POC Signals</td><td class="param-default">Yes</td><td class="param-desc">POC Touch chart arrows + Discord POC alerts.</td></tr>
       <tr><td class="param-name">Enable VA TRAP Signals</td><td class="param-default">Yes</td><td class="param-desc">VA Trap chart arrows + Discord VA TRAP alerts.</td></tr>
-      <tr><td class="param-name">Enable EDGE EXH Signals</td><td class="param-default">Yes</td><td class="param-desc">Edge Exhaustion chart arrows + Discord EDGE EXH alerts. Uses empty bin rule in v2.1.</td></tr>
+      <tr><td class="param-name">Enable EDGE EXH Signals</td><td class="param-default">Yes</td><td class="param-desc">Edge Exhaustion chart arrows + Discord EDGE EXH alerts.</td></tr>
+      <tr><td class="param-name">Min Empty Bins for EDGE EXH <span class="toc-badge" style="font-size:9px">NEW</span></td><td class="param-default">2</td><td class="param-desc">Not a bonus filter — the actual definition of the signal. How many consecutive empty bins at the boundary are required before EDGE EXH fires at all. Range 1–5. Raised from the original hardcoded 1, since a single marginal empty bin was found to trigger on moves that turned out to be continuation, not genuine exhaustion. Same parameter, same name, same default on both cBots — a mismatch here previously caused a real, confirmed entry/SL discrepancy between the indicator and the Sniper cBot.</td></tr>
       <tr><td class="param-name">Enable REJECTION Signals</td><td class="param-default">Yes</td><td class="param-desc">Rejection chart arrows + Discord Rejection alerts.</td></tr>
     </tbody>
   </table>
@@ -3048,7 +3047,7 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
   <main class="plan-main">
     <div class="plan-hero">
       <div class="plan-hero-badge cbot">CBOT · VOLUMEEDGEPRO SNIPER v2.6</div>
-      <h1><span class="hl-cbot" style="color:#FF6B9D">VolumeEdge Sniper</span><br>Automated PDC Stop-Order Entries</h1>
+      <h1><span class="hl-cbot" style="color:#FF6B9D">VolumeEdgePro Sniper</span><br>Automated PDC Stop-Order Entries</h1>
       <p class="plan-hero-sub">EDGE EXH signal + PDC cross · Percent-risk sizing · Structural SL · No fixed TP</p>
       <div class="plan-pills">
         <div class="plan-pill"><strong>1 trade/symbol</strong> at a time</div>
@@ -3302,9 +3301,9 @@ Drawdown floor    = FtmoInitialBalance × (1 − MaxDrawdownPercent / 100)  <spa
       <div class="code-block" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px 16px;font-family:var(--font-mono);font-size:12.5px;color:var(--gray);margin:12px 0">
 IsOurTrade(label, comment) = (label == OrderLabel) || (comment == OrderLabel)
       </div>
-      <p>Type the exact same text as the <span class="param-name">Label</span> parameter (default <span class="param-default">VolumeEdgeSniper</span>) into a manual order's <strong>Comment</strong> field, and that trade gets the full treatment — recovered correctly after a restart, BE/trailing/missing-SL fallback applied, counted toward the concurrent-trade cap, protected by the daily-loss force-close, and gets the normal Discord Trade Filled/Closed alerts.</p>
+      <p>Type the exact same text as the <span class="param-name">Label</span> parameter (default <span class="param-default">VEPS</span>) into a manual order's <strong>Comment</strong> field, and that trade gets the full treatment — recovered correctly after a restart, BE/trailing/missing-SL fallback applied, counted toward the concurrent-trade cap, protected by the daily-loss force-close, and gets the normal Discord Trade Filled/Closed alerts.</p>
       <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>Applied everywhere consistently, on purpose</strong><p>A partial version of this — say, only extending it to break-even/trailing — would create a confusing half-managed trade: protected by BE but invisible to the concurrent-trade cap, or not recovered properly after a restart. Applied to all 13 places a trade is identified as this cBot's own, so a tagged manual trade is either fully managed or not, never partially.</p></div></div>
-      <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>Strictly case-sensitive, exact match</strong><p>C#'s <span class="param-name">==</span> on strings is case-sensitive with no trimming. <span class="param-name">volumeedgesniper</span>, <span class="param-name">Volumeedgesniper</span>, or a trailing space all silently fail to match — no error, the trade just quietly doesn't get picked up. Copy-paste the exact Label value rather than typing it from memory.</p></div></div>
+      <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>Strictly case-sensitive, exact match</strong><p>C#'s <span class="param-name">==</span> on strings is case-sensitive with no trimming. <span class="param-name">veps</span>, <span class="param-name">Veps</span>, or a trailing space all silently fail to match — no error, the trade just quietly doesn't get picked up. Copy-paste the exact Label value rather than typing it from memory.</p></div></div>
       <h3 class="new">Enable Trading's actual scope</h3>
       <p>Checked in exactly one place in the entire file: immediately before <span class="param-name">ArmStopOrder</span> calls <span class="param-name">PlaceStopOrder</span> for one of the cBot's <em>own</em> signal-driven trades. Nothing else depends on it.</p>
       <div class="callout callout-tip"><div class="callout-icon">💡</div><div class="callout-body"><strong>A genuinely useful combination</strong><p>Set <span class="param-name">Enable Trading = No</span> on an account, and the cBot will never place its own trades there — but everything else keeps running fully, including full management of any manually-placed, Comment-tagged trade. This gives a real "visual-only, but still get automated risk management on my own manual trades" mode, not just a pure read-only display.</p></div></div>
@@ -3320,7 +3319,7 @@ IsOurTrade(label, comment) = (label == OrderLabel) || (comment == OrderLabel)
       <table class="param-table">
         <thead><tr><th>Parameter</th><th>Default</th><th>What it does</th></tr></thead>
         <tbody>
-          <tr><td class="param-name">Label</td><td class="param-default">VolumeEdgeSniper</td><td class="param-desc">Tags every order this cBot places. Used to tell its trades apart from manual ones or other bots on the same account.</td></tr>
+          <tr><td class="param-name">Label</td><td class="param-default">VEPS</td><td class="param-desc">Tags every order this cBot places. Used to tell its trades apart from manual ones or other bots on the same account.</td></tr>
         </tbody>
       </table>
 
@@ -3806,9 +3805,9 @@ Drawdown floor    = FtmoInitialBalance × (1 − MaxDrawdownPercent / 100)  <spa
       <div class="code-block" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px 16px;font-family:var(--font-mono);font-size:12.5px;color:var(--gray);margin:12px 0">
 IsOurTrade(label, comment) = (label == OrderLabel) || (comment == OrderLabel)
       </div>
-      <p>Type the exact same text as the <span class="param-name">Label</span> parameter (default <span class="param-default">VolumeEdgeSniper</span>) into a manual order's <strong>Comment</strong> field, and that trade gets the full treatment — recovered correctly after a restart, BE/trailing/missing-SL fallback applied, counted toward the concurrent-trade cap, protected by the daily-loss force-close, and gets the normal Discord Trade Filled/Closed alerts.</p>
+      <p>Type the exact same text as the <span class="param-name">Label</span> parameter (default <span class="param-default">VEPX</span>) into a manual order's <strong>Comment</strong> field, and that trade gets the full treatment — recovered correctly after a restart, BE/trailing/missing-SL fallback applied, counted toward the concurrent-trade cap, protected by the daily-loss force-close, and gets the normal Discord Trade Filled/Closed alerts.</p>
       <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>Applied everywhere consistently, on purpose</strong><p>A partial version of this — say, only extending it to break-even/trailing — would create a confusing half-managed trade: protected by BE but invisible to the concurrent-trade cap, or not recovered properly after a restart. Applied to all 13 places a trade is identified as this cBot's own, so a tagged manual trade is either fully managed or not, never partially.</p></div></div>
-      <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>Strictly case-sensitive, exact match</strong><p>C#'s <span class="param-name">==</span> on strings is case-sensitive with no trimming. <span class="param-name">volumeedgesniper</span>, <span class="param-name">Volumeedgesniper</span>, or a trailing space all silently fail to match — no error, the trade just quietly doesn't get picked up. Copy-paste the exact Label value rather than typing it from memory.</p></div></div>
+      <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>Strictly case-sensitive, exact match</strong><p>C#'s <span class="param-name">==</span> on strings is case-sensitive with no trimming. <span class="param-name">vepx</span>, <span class="param-name">Vepx</span>, or a trailing space all silently fail to match — no error, the trade just quietly doesn't get picked up. Copy-paste the exact Label value rather than typing it from memory.</p></div></div>
       <h3 class="new">Enable Trading's actual scope</h3>
       <p>Checked in exactly one place in the entire file: immediately before <span class="param-name">ArmStopOrder</span> calls <span class="param-name">PlaceStopOrder</span> for one of the cBot's <em>own</em> signal-driven trades. Nothing else depends on it.</p>
       <div class="callout callout-tip"><div class="callout-icon">💡</div><div class="callout-body"><strong>A genuinely useful combination</strong><p>Set <span class="param-name">Enable Trading = No</span> on an account, and the cBot will never place its own trades there — but everything else keeps running fully, including full management of any manually-placed, Comment-tagged trade. This gives a real "visual-only, but still get automated risk management on my own manual trades" mode, not just a pure read-only display.</p></div></div>
@@ -4020,6 +4019,7 @@ IsOurTrade(label, comment) = (label == OrderLabel) || (comment == OrderLabel)
 
   </main>
 </div>
+</div><!-- #tab-vepx -->
 
 <div class="tab-page" id="tab-compare" style="padding-top:118px">
 <div class="plan-wrap">
