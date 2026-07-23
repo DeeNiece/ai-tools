@@ -462,6 +462,7 @@ code{font-family:var(--font-mono);font-size:11px;background:rgba(108,140,255,.1)
   <button class="tab-btn t-fade" onclick="switchTab('fade',this)">📉 Session Fade</button>
   <button class="tab-btn t-magnet" onclick="switchTab('magnet',this)">🧲 POC Magnet</button>
   <button class="tab-btn t-playbook" onclick="switchTab('playbook',this)">📚 Playbook</button>
+  <button class="tab-btn t-faq" onclick="switchTab('faq',this)">❓ FAQ</button>
 </div>
 
 <!-- ═══ TAB 1: PARAMETER GUIDE (original content) ═══ -->
@@ -4164,6 +4165,149 @@ IsOurTrade(label, comment) = (label == OrderLabel) || (comment == OrderLabel)
   </main>
 </div>
 </div><!-- #tab-compare -->
+
+<div class="tab-page" id="tab-faq" style="padding-top:118px">
+<div class="plan-wrap">
+  <nav class="plan-sidebar">
+    <div class="plan-nav-label">Order Placement</div>
+    <a class="plan-nav-item" href="#faq-stoplimit-cancel">StopLimit cancelled / Label mismatch</a>
+    <a class="plan-nav-item" href="#faq-stopvslimit">StopOrder vs StopLimit</a>
+    <a class="plan-nav-item" href="#faq-slippage">Max Stop-Limit Slippage per symbol</a>
+    <div class="plan-nav-label">Signal Detection</div>
+    <a class="plan-nav-item" href="#faq-emptybins">Empty bin count looks wrong</a>
+    <a class="plan-nav-item" href="#faq-highlow-split">Why High/Low are separate</a>
+    <a class="plan-nav-item" href="#faq-emptylabel">EMPTY label vs boundary line</a>
+    <div class="plan-nav-label">Manual Trades &amp; Risk</div>
+    <a class="plan-nav-item" href="#faq-manual-be">Manual trade + BE/trailing</a>
+    <a class="plan-nav-item" href="#faq-manual-nosl">Manual trade with no SL</a>
+    <a class="plan-nav-item" href="#faq-labelcomment">Label vs Comment matching</a>
+    <a class="plan-nav-item" href="#faq-crosslabel">Does VEPX recognize VEPS trades?</a>
+    <a class="plan-nav-item" href="#faq-maxconcurrent">Max Concurrent Trades and untagged trades</a>
+    <div class="plan-nav-label">General</div>
+    <a class="plan-nav-item" href="#faq-vepsvsvepx">VEPS vs VEPX, which to use</a>
+    <a class="plan-nav-item" href="#faq-opposing">Opposing-signal alert — why VEPX only</a>
+    <a class="plan-nav-item" href="#faq-unitmode">What Distance Unit Mode controls</a>
+    <a class="plan-nav-item" href="#faq-tsl">Trailing stop seems stuck</a>
+    <a class="plan-nav-item" href="#faq-lag">Chart lines/labels look delayed</a>
+  </nav>
+  <main class="plan-main">
+    <div class="plan-hero">
+      <div class="plan-hero-badge" style="background:rgba(108,140,255,.12);color:#6C8CFF;border-color:rgba(108,140,255,.3)">FAQ</div>
+      <h1><span style="color:#6C8CFF">Frequently Asked</span><br>Questions</h1>
+      <p class="plan-hero-sub">The questions that came up most across real forward-testing — with the actual reasoning, not just the short answer.</p>
+    </div>
+
+    <div class="plan-section" id="faq-stoplimit-cancel">
+      <div class="plan-section-label cbot">Order Placement</div>
+      <h2>Why did my StopLimit order get cancelled, or show a "Label mismatch"?</h2>
+      <p><span class="param-name">PlaceStopLimitOrder</span>'s basic call doesn't set the Label at all, on its own — confirmed for real on multiple live fills (a blank Label on the resulting order). Both cBots now use the correct extended overload (confirmed via an actual compile error, not just documentation), so this should be rare now. A safety net still watches for it as a defensive fallback regardless — even a compiler-confirmed fix doesn't guarantee every runtime case behaves exactly as expected.</p>
+      <div class="callout callout-note"><div class="callout-icon">💡</div><div class="callout-body"><strong>Three possible outcomes if it happens</strong><p><span class="param-name">STOP LIMIT LABEL MISMATCH</span> — mismatch caught, cancel succeeded, no position ever opened. <span class="param-name">UNTRACKED POSITION OPENED</span> — the cancel lost a race against a fast fill; a real position exists but is invisible to BE/trailing/daily-loss/concurrent-trade counting, so an emergency SL gets attached and this needs manual monitoring. <span class="param-name">LABEL MISMATCH, RETRYING CANCEL</span> — the cancel failed for a reason other than "already filled" (often a transient <span class="param-name">PENDING_EXECUTION</span> rejection, confirmed via the broker Journal to often resolve on its own within milliseconds) — the cBot keeps retrying automatically every 15 seconds.</p></div></div>
+      <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>Confirmed for real: the safety net can look scary but be perfectly safe</strong><p>A live journal showed a cancel rejected with <span class="param-name">PENDING_EXECUTION</span>, then the SAME order showing as cancelled 63 milliseconds later. The alert fired, but zero capital was ever actually at risk — the broker's own matching engine resolved it before the retry even needed to run.</p></div></div>
+    </div>
+
+    <div class="plan-section" id="faq-stopvslimit">
+      <div class="plan-section-label cbot">Order Placement</div>
+      <h2>Should I use StopOrder or StopLimit?</h2>
+      <p><span class="param-name">StopOrder</span> (the default) has zero open questions — proven, no label issues, always fills. Its tradeoff: a plain stop order can fill well past its nominal target on a fast move (11–25 pips seen on live USDJPY/AUDJPY fills), since it fills at market once triggered, whatever the current price is at that instant.</p>
+      <p><span class="param-name">StopLimit</span> caps how much slippage is acceptable — trading that protection for a chance of no fill at all on the fastest moves. The Label-mismatch history above applies specifically to this mode.</p>
+      <div class="callout callout-tip"><div class="callout-icon">💡</div><div class="callout-body"><strong>If testing StopLimit</strong><p>Keep position size modest while watching the first several real fills specifically for which of the three outcomes above shows up — that tells you whether it's behaving safely in practice, not just in theory.</p></div></div>
+    </div>
+
+    <div class="plan-section" id="faq-slippage">
+      <div class="plan-section-label cbot">Order Placement</div>
+      <h2>Why does Max Stop-Limit Slippage need to scale per symbol?</h2>
+      <p>A flat pips number treats every symbol as if it moves similarly, which isn't true — confirmed for real when a live CADJPY order got cancelled by the <strong>broker itself</strong> (no cancel request from the cBot at all), since a fixed 5 pips was a far tighter real cap there than intended. <span class="param-name">Max Stop-Limit Slippage (x ATR)</span> scales this correctly per-symbol, same as every other distance parameter, controlled by the same <span class="param-name">Distance Unit Mode</span> switch.</p>
+    </div>
+
+    <div class="plan-section" id="faq-emptybins">
+      <div class="plan-section-label cbot new">Signal Detection</div>
+      <h2>Why does the empty bin count look wrong on my chart?</h2>
+      <p>This was a real, confirmed bug across all three tools: the original counting logic counted <em>any</em> zero-volume bin anywhere in the scan window — not just a genuinely unbroken run from the true price extreme. A pattern like <span class="param-name">[empty, filled, empty]</span> wrongly counted as 2 empty bins, when only the first one is actually connected to the edge.</p>
+      <div class="callout callout-new"><div class="callout-icon">⭐</div><div class="callout-body"><strong>Fixed everywhere, all at once</strong><p>The count now walks inward from the true price extreme and stops counting the instant it hits real volume — matching exactly what "empty bins at the boundary" should mean. This is the same logic behind the indicator's chart labels, VEPX's boundary line, and the actual EDGE EXH detection in every file.</p></div></div>
+    </div>
+
+    <div class="plan-section" id="faq-highlow-split">
+      <div class="plan-section-label cbot new">Signal Detection</div>
+      <h2>Why are Min Empty Bins split into High/Low instead of one shared value?</h2>
+      <p>A real structural bias, not a symmetry choice: volume is attributed by each candle's <strong>CLOSE price only</strong>, not its full high/low range. Whichever candle set the profile's High almost never closed exactly there — so the very topmost bin shows empty far more often than genuine exhaustion alone would explain. The bottom side has a milder version of the same bias.</p>
+      <div class="callout callout-tip"><div class="callout-icon">💡</div><div class="callout-body"><strong>Why compensate instead of fixing the root cause</strong><p>A true fix would mean rewriting how volume gets attributed to bins across the whole profile — affecting POC/VAH/VAL too, a much larger and riskier change. A stricter <span class="param-name">Min Empty Bins (High/Sell Side)</span> threshold (default 3, vs 2 on the Low/Buy side) compensates for the bias directly, without touching the core profile math.</p></div></div>
+    </div>
+
+    <div class="plan-section" id="faq-emptylabel">
+      <div class="plan-section-label cbot">Signal Detection</div>
+      <h2>What's the difference between the EMPTY label and the boundary line (VEPX)?</h2>
+      <p>Same underlying data, two different visual purposes. The <strong>EMPTY</strong> text labels mark every bin that's part of the genuine consecutive void. The <strong>boundary line</strong> (VEPX only) marks specifically the innermost edge of that void — where real trading activity actually resumed. Both are computed from the exact same consecutive-count logic, so they can never disagree with each other.</p>
+    </div>
+
+    <div class="plan-section" id="faq-manual-be">
+      <div class="plan-section-label cbot new">Manual Trades &amp; Risk</div>
+      <h2>If I place a manual trade with the right Comment tag, does it get BE/trailing automatically?</h2>
+      <p>Yes — <strong>if it has an SL already</strong>. Manual Trade Integration means any trade where Label or Comment matches the cBot's own Label gets full management: BE, trailing, restart recovery, concurrent-trade counting, daily-loss protection, Discord alerts.</p>
+      <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>The one real gap this didn't originally cover</strong><p>See the next question — a manual trade with genuinely no SL at all didn't get BE/trailing until a dedicated fix was built for it. This is now handled (see <strong>Missing-SL Auto-Attachment</strong> in each cBot's own guide), but it's worth understanding why it wasn't automatic before.</p></div></div>
+    </div>
+
+    <div class="plan-section" id="faq-manual-nosl">
+      <div class="plan-section-label cbot new">Manual Trades &amp; Risk</div>
+      <h2>What happens if I place a manual trade with no SL at all?</h2>
+      <p>Originally: nothing good. BE/trailing depend on a risk-distance value only ever set when the cBot's own <span class="param-name">ArmStopOrder</span> places a trade — a manual trade never goes through that path, so <span class="param-name">ManageOpenPositionStops</span>'s very first check (<span class="param-name">if _armedRiskDistPrice &lt;= 0 return</span>) meant BE was never even evaluated for it, not just "delayed."</p>
+      <div class="callout callout-new"><div class="callout-icon">⭐</div><div class="callout-body"><strong>Now fixed with direction-aware auto-attachment</strong><p>Both cBots now scan continuously (every 15s) for a recognized position with no SL, and attach one from <span class="param-name">Max SL Distance</span> and current ATR. If price is already favorable, the new SL anchors off <strong>current price</strong> (locks in the move). If already unfavorable, it anchors off <strong>entry price</strong> instead — so <span class="param-name">Max SL Distance</span> keeps meaning "a real, honored cap on total risk from entry" everywhere, not something that can silently balloon.</p></div></div>
+      <p>This is a backstop, not a substitute for deliberate SL placement — it uses a generic ATR-scaled distance, not a real structural stop anchored to that specific trade's own setup.</p>
+    </div>
+
+    <div class="plan-section" id="faq-labelcomment">
+      <div class="plan-section-label cbot">Manual Trades &amp; Risk</div>
+      <h2>Does a trade need to match on Label, Comment, or both?</h2>
+      <p>Either one is enough. The actual check is <span class="param-name">label == OrderLabel || comment == OrderLabel</span> — an exact, case-sensitive match on just one of the two fields is sufficient for a trade to be recognized as the cBot's own.</p>
+    </div>
+
+    <div class="plan-section" id="faq-crosslabel">
+      <div class="plan-section-label cbot">Manual Trades &amp; Risk</div>
+      <h2>Will VEPX recognize a trade tagged "VEPS", or vice versa?</h2>
+      <p>No. Each running instance only ever recognizes its own configured Label — VEPX's check is hardcoded to whatever its own <span class="param-name">Label</span> parameter says (default <span class="param-name">VEPX</span>), and has no awareness of <span class="param-name">VEPS</span> at all, or vice versa. Making them recognize each other's trades was considered and deliberately rejected — it would mean both cBots trying to independently manage the same position (conflicting BE/trailing modifications, a daily-loss breach on one force-closing the other's trades too), a worse problem than the one it would solve.</p>
+    </div>
+
+    <div class="plan-section" id="faq-maxconcurrent">
+      <div class="plan-section-label cbot">Manual Trades &amp; Risk</div>
+      <h2>Why doesn't Max Concurrent Trades count my manual or untagged trades?</h2>
+      <p>The same Label/Comment matching described above applies here too — a trade with no matching Label or Comment at all is completely invisible to this count, exactly as it is to every other trade-recognition check.</p>
+      <div class="callout callout-warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>A real, concrete risk worth knowing</strong><p>If a StopLimit order ever slips through with a blank label and becomes a real position (the <span class="param-name">UNTRACKED POSITION OPENED</span> case), that position is <em>also</em> invisible to <span class="param-name">Max Concurrent Trades</span> — the cBot could then open a second, fully-tracked trade believing it's still at zero, while the orphaned one sits unmanaged in the background. Treat that alert as meaning your real exposure just increased, even though the dashboard won't reflect it.</p></div></div>
+    </div>
+
+    <div class="plan-section" id="faq-vepsvsvepx">
+      <div class="plan-section-label cbot">General</div>
+      <h2>What's the core difference between VEPS and VEPX?</h2>
+      <p>VEPS requires a second, independent confirmation before an order exists at all — EDGE EXH fires, then a <em>later</em> candle must close back across PDC before a real order is placed. VEPX treats a genuinely strong EDGE EXH signal as sufficient on its own, and places a real order immediately, on the same bar. See the <strong>Comparison Tables</strong> tab for the full breakdown.</p>
+    </div>
+
+    <div class="plan-section" id="faq-opposing">
+      <div class="plan-section-label cbot new">General</div>
+      <h2>There's an opposing-signal alert on VEPX — why not VEPS too?</h2>
+      <p>VEPX treats a bare EDGE EXH signal as fully sufficient — so an opposing one appearing while a trade is open is directly meaningful: it's exactly the kind of signal VEPX itself would have traded immediately. VEPS never treats a bare EDGE EXH as sufficient by itself — it always needs the later PDC cross too — so a bare opposing signal isn't yet something VEPS's own logic would consider valid. Alerting on it there would be noisier without being more meaningful.</p>
+    </div>
+
+    <div class="plan-section" id="faq-unitmode">
+      <div class="plan-section-label cbot">General</div>
+      <h2>What does Distance Unit Mode actually control?</h2>
+      <p>A single global switch (now under <strong>General</strong> in both cBots) deciding whether SL Buffer, Max SL Distance, Break-Even Trigger, Trailing Distance, Entry Buffer, and Max Stop-Limit Slippage all calculate from an ATR multiple, or from flat pip values — every one of those parameters has both an <span class="param-name">(x ATR)</span> and a <span class="param-name">(pips)</span> version, and this switch decides which set is actually in effect. Whichever mode is off is completely ignored, no matter what value sits in it.</p>
+    </div>
+
+    <div class="plan-section" id="faq-tsl">
+      <div class="plan-section-label cbot">General</div>
+      <h2>My trailing stop seems stuck — is that a bug in the cBot?</h2>
+      <p>Once trailing hands off, it's <strong>100% cTrader's own native platform feature</strong> — confirmed directly in the log (<span class="param-name">"native trailing stop enabled... No further manual SL calls"</span>). Neither cBot touches the SL again after that point, so anything trailing does or doesn't do afterward is a cTrader platform question, not something in this codebase to fix.</p>
+      <div class="callout callout-note"><div class="callout-icon">💡</div><div class="callout-body"><strong>If you want to report it</strong><p>Pull the exact Journal timestamps around the moment it should have moved, plus a chart screenshot — that combination is concrete enough to be a useful report to cTrader/broker support directly.</p></div></div>
+    </div>
+
+    <div class="plan-section" id="faq-lag">
+      <div class="plan-section-label cbot">General</div>
+      <h2>Why do chart lines/labels look delayed compared to the indicator?</h2>
+      <p>The indicator redraws continuously, every tick — standard behavior for a cTrader indicator evaluating the live bar. The cBots originally only redrew once per bar close, since that matched their own trading-decision cadence — meaning up to a full bar's worth of visual staleness was possible, more noticeable on H1 than it was on M30.</p>
+      <div class="callout callout-new"><div class="callout-icon">⭐</div><div class="callout-body"><strong>Fixed — now also redraws from OnTick</strong><p>Both cBots now redraw every 2 seconds via OnTick, not just on bar close — confirmed this specifically fixes the case where a manual chart refresh re-indexes cTrader's own bar history, which previously left lines/labels visibly stale until the next natural bar close.</p></div></div>
+    </div>
+
+  </main>
+</div>
+</div><!-- #tab-faq -->
 
 
 
